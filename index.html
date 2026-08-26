@@ -1,0 +1,1170 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" id="htmlRoot">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CRASH CART · OT7</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&family=Space+Mono:wght@400;700&display=swap');
+
+  :root{
+    --navy:#101B33;
+    --navy-2:#1B2A4A;
+    --paper:#F5F7FB;
+    --card:#FFFFFF;
+    --line:#E3E8F1;
+    --ink:#101B33;
+    --muted:#6B7690;
+    --red:#D8425A;
+    --red-bg:#FDECEF;
+    --amber:#DE9A2E;
+    --amber-bg:#FBF2E1;
+    --green:#2C9A72;
+    --green-bg:#E7F5EF;
+    --steel:#3E6FA8;
+    --accent:#3E6FA8;
+  }
+
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--paper);
+    font-family:'Tajawal',sans-serif;
+    color:var(--ink);
+    min-height:100vh;
+    padding-bottom:60px;
+  }
+  html[dir="ltr"] body{ font-family:'Tajawal',sans-serif; }
+
+  .wrap{max-width:1080px;margin:0 auto;padding:0 16px;}
+
+  /* header */
+  .page-header{background:var(--navy);padding-bottom:56px;}
+  .page-header .wrap{padding-top:28px;padding-bottom:22px;}
+  .eyebrow-row{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;}
+  .eyebrow{
+    display:flex;align-items:center;gap:8px;
+    color:#8FA7D6;font-size:12.5px;letter-spacing:.14em;
+    font-family:'Space Mono',monospace;font-weight:600;
+    margin-bottom:10px;
+  }
+  .eyebrow .dot{width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 0 4px rgba(44,154,114,.25);}
+
+  .lang-toggle{
+    display:flex;align-items:center;gap:6px;cursor:pointer;user-select:none;
+    background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.16);
+    border-radius:999px;padding:7px 14px;color:#EAF0FF;font-size:13px;font-weight:700;
+    font-family:'Space Mono',monospace;
+    transition:background .15s ease, transform .12s ease;
+    margin-bottom:10px;
+  }
+  .lang-toggle:hover{background:rgba(255,255,255,.14);}
+  .lang-toggle:active{transform:scale(.96);}
+
+  .cart-switcher{
+    display:flex;gap:6px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.14);
+    border-radius:12px;padding:4px;margin-bottom:16px;width:fit-content;
+  }
+  .cart-tab{
+    background:transparent;border:none;cursor:pointer;
+    font-family:'Space Mono',monospace;font-size:13px;font-weight:700;letter-spacing:.02em;
+    color:#AFBBDA;padding:8px 18px;border-radius:9px;transition:background .15s ease, color .15s ease;
+  }
+  .cart-tab:hover{color:#EAF0FF;}
+  .cart-tab.active{background:#fff;color:var(--navy);}
+  .cart-tab:disabled{opacity:.5;cursor:default;}
+
+  h1{color:#fff;font-size:34px;font-weight:900;margin:0 0 4px;letter-spacing:.01em;}
+  h1 span{color:#7FA6E8;}
+  .sub{color:#B7C2DD;font-size:14.5px;margin:0;}
+
+  .dash-row{display:flex;flex-direction:column;gap:16px;margin-top:20px;}
+  @media (min-width:640px){.dash-row{flex-direction:row;align-items:stretch;}}
+
+  .gauge-card{
+    background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.14);border-radius:14px;
+    display:flex;flex-direction:row;align-items:center;justify-content:center;gap:14px;padding:14px 18px;
+    flex-shrink:0;
+  }
+  @media (min-width:640px){.gauge-card{flex-direction:column;width:130px;padding:14px 12px;}}
+  .gauge-circle-wrap{position:relative;width:72px;height:72px;flex-shrink:0;}
+  .gauge-svg{width:72px;height:72px;transform:rotate(-90deg);}
+  .gauge-track{fill:none;stroke:rgba(255,255,255,.14);stroke-width:9;}
+  .gauge-arc{
+    fill:none;stroke:#5FD3A5;stroke-width:9;stroke-linecap:round;
+    stroke-dasharray:264;stroke-dashoffset:264;
+    transition:stroke-dashoffset .5s ease, stroke .3s ease;
+  }
+  .gauge-arc.gauge-warn{stroke:#F5C05C;}
+  .gauge-arc.gauge-bad{stroke:#FF7A90;}
+  .gauge-pct{
+    position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+    font-family:'Space Mono',monospace;font-size:17px;font-weight:700;color:#fff;
+  }
+  .gauge-label{font-size:11px;color:#B7C2DD;letter-spacing:.03em;text-align:center;}
+
+  .statbar{display:grid;grid-template-columns:repeat(2, 1fr);gap:10px;flex:1;}
+  @media (min-width:640px){.statbar{grid-template-columns:repeat(4, 1fr);}}
+  .stat{
+    background:rgba(255,255,255,.07);
+    border:1px solid rgba(255,255,255,.14);
+    border-top:3px solid rgba(255,255,255,.35);
+    border-radius:12px;
+    padding:14px 10px;
+    text-align:center;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    gap:6px;
+    min-height:78px;
+  }
+  .stat.red-s{border-top-color:#FF6B7A;}
+  .stat.amber-s{border-top-color:#F5C05C;}
+  .stat.green-s{border-top-color:#5FD3A5;}
+  .stat b{display:block;font-family:'Space Mono',monospace;font-size:22px;color:#fff;line-height:1;}
+  .stat.red-s b{color:#FF95A3;}
+  .stat.amber-s b{color:#F5C05C;}
+  .stat.green-s b{color:#5FD3A5;}
+  .stat span{font-size:11px;color:#E3B8BF;line-height:1.3;max-width:100%;word-break:break-word;}
+
+  /* card */
+  .card{
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:18px;
+    box-shadow:0 10px 30px -18px rgba(16,27,51,.35);
+    overflow:hidden;
+    margin-top:-40px;
+    position:relative;
+  }
+
+  .toolbar{
+    display:flex;align-items:center;justify-content:space-between;
+    padding:16px 18px;border-bottom:1px solid var(--line);
+    flex-wrap:wrap;gap:10px;
+  }
+  .toolbar-title{font-weight:700;font-size:15px;color:var(--navy-2);}
+  .toolbar-title span{color:var(--muted);font-weight:500;font-size:12.5px;}
+
+  .btn{
+    border:none;cursor:pointer;font-family:'Tajawal',sans-serif;font-weight:700;
+    border-radius:10px;padding:9px 16px;font-size:13.5px;
+    display:inline-flex;align-items:center;gap:6px;
+    transition:transform .12s ease, box-shadow .12s ease;
+  }
+  .btn:active{transform:scale(.97);}
+  .btn-add{background:var(--navy-2);color:#fff;}
+  .btn-add:hover{box-shadow:0 6px 16px -6px rgba(27,42,74,.55);}
+  .btn-ghost{background:transparent;color:var(--muted);border:1px solid var(--line);}
+  .btn-ghost:hover{border-color:var(--steel);color:var(--steel);}
+
+  .legend{display:flex;gap:14px;padding:12px 18px;flex-wrap:wrap;background:#FAFBFD;border-bottom:1px solid var(--line);}
+  .legend-item{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--muted);}
+  .legend-item i{width:10px;height:10px;border-radius:3px;display:inline-block;}
+
+  .tbl-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;}
+  table{width:100%;border-collapse:collapse;min-width:900px;}
+  thead th{
+    background:#F0F3F9;color:var(--navy-2);
+    font-size:11.5px;letter-spacing:.05em;text-transform:uppercase;
+    padding:12px 12px;text-align:right;font-weight:700;
+    border-bottom:1px solid var(--line);
+    position:sticky;top:0;
+  }
+  html[dir="ltr"] thead th{text-align:left;}
+  thead th.center{text-align:center;}
+  tbody td{padding:10px 12px;border-bottom:1px solid var(--line);vertical-align:middle;font-size:14px;}
+  tbody tr:hover{background:#FAFBFE;}
+  tbody tr:last-child td{border-bottom:none;}
+
+  tr.section-row{cursor:pointer;user-select:none;}
+  tr.section-row td{
+    background:#EEF2F9;color:var(--navy-2);font-weight:800;font-size:12.5px;
+    padding:9px 14px;letter-spacing:.03em;border-bottom:1px solid var(--line);
+    position:relative;
+  }
+  tr.section-row:hover td{background:#E6EBF5;}
+  .section-row-inner{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+  .section-chevron{
+    display:inline-block;font-size:11px;color:var(--muted);transition:transform .15s ease;
+    transform:rotate(0deg);
+  }
+  .section-chevron.collapsed{transform:rotate(-90deg);}
+  html[dir="ltr"] .section-chevron.collapsed{transform:rotate(90deg);}
+  .section-title{font-weight:800;}
+  .section-count{color:var(--muted);font-weight:600;font-size:11.5px;}
+  .section-flags{display:flex;gap:6px;margin-inline-start:auto;}
+  .section-flag{
+    font-size:10.5px;font-weight:700;padding:2px 8px;border-radius:10px;letter-spacing:.02em;
+  }
+  .section-flag-red{background:var(--red-bg);color:var(--red);}
+  .section-flag-amber{background:var(--amber-bg);color:var(--amber);}
+
+  .alert-banner{
+    align-items:center;gap:10px;
+    background:var(--red-bg);color:var(--red);border-bottom:1px solid var(--line);
+    padding:11px 18px;font-size:13px;font-weight:700;
+  }
+
+  .idx{
+    width:26px;height:26px;border-radius:50%;background:var(--accent);color:#fff;
+    display:flex;align-items:center;justify-content:center;font-family:'Space Mono',monospace;
+    font-size:12px;font-weight:600;
+  }
+
+  input.cell{
+    border:1px solid transparent;background:transparent;font-family:'Tajawal',sans-serif;
+    font-size:14px;color:var(--ink);width:100%;padding:6px 8px;border-radius:8px;
+    touch-action:manipulation;
+  }
+  input.cell:hover{border-color:var(--line);}
+  input.cell:focus{outline:none;border-color:var(--steel);background:#fff;box-shadow:0 0 0 3px rgba(62,111,168,.12);}
+  input.date-cell{font-family:'Space Mono',monospace;font-size:14px;font-weight:700;letter-spacing:.03em;color:var(--accent);}
+
+  .item-name{
+    font-family:'Tajawal',sans-serif;font-size:14px;font-weight:700;color:var(--ink);
+    padding:6px 8px;line-height:1.4;
+  }
+
+  .qty-pair{
+    display:inline-flex;align-items:stretch;gap:0;
+    border:1px solid var(--line);border-radius:10px;overflow:hidden;background:#FAFBFD;
+  }
+  .qty-pair.qty-pair-short{border-color:var(--red);}
+  .qty-box{display:flex;flex-direction:column;align-items:center;padding:5px 8px;min-width:40px;}
+  .qty-box:first-child{border-inline-end:1px solid var(--line);}
+  .qty-box input{
+    border:none;background:transparent;text-align:center;font-family:'Space Mono',monospace;
+    font-size:14px;font-weight:700;color:var(--ink);width:36px;padding:0;
+  }
+  .qty-box input:focus{outline:none;}
+  .qty-box-cap{font-size:9px;color:var(--muted);letter-spacing:.04em;margin-top:1px;}
+  .qty-box-locked{background:#F0F2F6;}
+  .qty-box-locked input{color:#8A93A8;cursor:not-allowed;}
+  input.qty-actual-input.qty-short{color:var(--red);}
+  .qty-pair-short .qty-box:last-child{background:var(--red-bg);}
+  .qty-warn{font-size:10.5px;color:var(--red);font-weight:700;margin-top:4px;white-space:nowrap;text-align:center;}
+
+  .days{font-family:'Space Mono',monospace;font-weight:600;font-size:14px;text-align:center;}
+
+  .badge{
+    display:inline-flex;align-items:center;gap:6px;justify-content:center;
+    padding:6px 12px;border-radius:20px;font-size:12.5px;font-weight:700;white-space:nowrap;
+  }
+  .badge i{width:7px;height:7px;border-radius:50%;}
+  .badge.red{background:var(--red-bg);color:var(--red);}
+  .badge.red i{background:var(--red);}
+  .badge.amber{background:var(--amber-bg);color:var(--amber);}
+  .badge.amber i{background:var(--amber);}
+  .badge.green{background:var(--green-bg);color:var(--green);}
+  .badge.green i{background:var(--green);}
+  .badge.none{background:#F0F2F6;color:#8A93A8;}
+  .badge.none i{background:#C7CEDD;}
+  .badge.na{background:#EDEEF3;color:#6B7690;}
+  .badge.na i{background:#9AA3B8;}
+
+  .dates-cell{display:flex;flex-direction:column;gap:6px;padding:2px 0;}
+  .date-row{display:flex;align-items:center;gap:6px;}
+  .mini-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
+  .date-row .date-input{flex:1;min-width:0;}
+  .mini-del{
+    background:transparent;border:none;cursor:pointer;color:#C7CEDD;font-size:16px;
+    width:22px;height:22px;border-radius:6px;flex-shrink:0;line-height:1;
+  }
+  .mini-del:hover{background:var(--red-bg);color:var(--red);}
+  .add-date-btn{
+    align-self:flex-start;background:transparent;border:1px dashed var(--line);color:var(--muted);
+    font-family:'Tajawal',sans-serif;font-size:12px;font-weight:700;padding:4px 10px;
+    border-radius:8px;cursor:pointer;margin-top:2px;
+  }
+  .add-date-btn:hover{border-color:var(--steel);color:var(--steel);}
+
+  .na-btn{
+    background:transparent;border:1px solid var(--line);color:#AAB2C5;cursor:pointer;
+    font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.03em;
+    padding:5px 9px;border-radius:8px;transition:all .12s ease;
+  }
+  .na-btn:hover{border-color:#8A93A8;color:#6B7690;}
+  .na-btn.active{background:#5B6478;border-color:#5B6478;color:#fff;}
+
+  tr.row-na .idx, tr.row-na .item-name, tr.row-na .dates-cell, tr.row-na .days{opacity:.55;}
+  tr.row-na td{background:#FBFBFD;}
+
+  .signoff{
+    padding:18px;background:#FAFBFD;border-top:1px solid var(--line);
+    display:flex;gap:16px;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;
+  }
+  .signoff-left{display:flex;gap:14px;flex-wrap:wrap;}
+  .field{display:flex;flex-direction:column;gap:5px;}
+  .field label{font-size:11.5px;color:var(--muted);font-weight:700;letter-spacing:.03em;}
+  .field input, .field select{
+    border:1px solid var(--line);border-radius:10px;padding:9px 12px;font-family:'Tajawal',sans-serif;
+    font-size:14px;min-width:200px;background:#fff;
+  }
+  .field input:focus, .field select:focus{outline:none;border-color:var(--steel);box-shadow:0 0 0 3px rgba(62,111,168,.12);}
+
+  .update-readout{
+    border:1px solid var(--line);border-radius:10px;padding:9px 12px;
+    font-family:'Space Mono',monospace;font-size:13px;color:var(--navy-2);font-weight:600;
+    background:#F0F3F9;min-width:220px;width:100%;
+    white-space:normal;word-break:break-word;line-height:1.5;
+  }
+
+  footer{
+    max-width:1080px;margin:22px auto 0;padding:0 16px;
+    display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;
+  }
+  .save-indicator{font-size:12px;color:var(--muted);display:flex;align-items:center;gap:6px;}
+  .save-indicator i{width:6px;height:6px;border-radius:50%;background:var(--green);}
+  .credit{
+    margin-right:auto;
+    font-family:'Space Mono',monospace;font-size:11.5px;color:#96A2C0;
+    display:flex;align-items:center;gap:6px;
+  }
+  html[dir="ltr"] .credit{margin-right:0;margin-left:auto;}
+
+  @media (max-width:640px){
+    h1{font-size:26px;}
+    .card{margin-top:-24px;}
+    .signoff{flex-direction:column;align-items:stretch;}
+  }
+
+  /* Display mode — large, high-contrast, distance-readable status view */
+  .display-mode{
+    position:fixed;inset:0;z-index:999;background:var(--navy);
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    padding:40px 24px;gap:18px;text-align:center;overflow-y:auto;
+  }
+  .display-close{
+    position:absolute;top:24px;inset-inline-end:24px;
+    background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);color:#fff;
+    font-family:'Tajawal',sans-serif;font-size:14px;font-weight:700;
+    padding:10px 20px;border-radius:10px;cursor:pointer;
+  }
+  .display-close:hover{background:rgba(255,255,255,.18);}
+  .display-cart{
+    font-family:'Space Mono',monospace;font-size:28px;font-weight:700;color:#7FA6E8;
+    letter-spacing:.06em;
+  }
+  .display-gauge-wrap{position:relative;width:220px;height:220px;}
+  .display-gauge-svg{width:220px;height:220px;transform:rotate(-90deg);}
+  .display-gauge-pct{
+    position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+    font-family:'Space Mono',monospace;font-size:56px;font-weight:700;color:#fff;
+  }
+  .display-gauge-label{color:#B7C2DD;font-size:16px;letter-spacing:.05em;margin-top:-10px;}
+  .display-stats{display:flex;gap:16px;flex-wrap:wrap;justify-content:center;margin-top:6px;}
+  .display-stat{
+    background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.14);border-radius:16px;
+    padding:18px 28px;min-width:140px;display:flex;flex-direction:column;align-items:center;gap:6px;
+  }
+  .display-stat b{font-family:'Space Mono',monospace;font-size:40px;color:#fff;line-height:1;}
+  .display-stat span{font-size:14px;color:#B7C2DD;}
+  .display-stat-red b{color:#FF95A3;}
+  .display-stat-amber b{color:#F5C05C;}
+  .display-stat-green b{color:#5FD3A5;}
+  .display-issues{
+    display:flex;flex-direction:column;gap:8px;max-width:640px;width:100%;margin-top:10px;
+  }
+  .display-issue{
+    background:var(--red-bg);color:var(--red);border-radius:12px;padding:12px 18px;
+    font-size:16px;font-weight:700;text-align:start;
+  }
+  .display-footer{color:#8A93B3;font-size:14px;font-family:'Space Mono',monospace;margin-top:8px;}
+</style>
+</head>
+<body>
+
+<div class="page-header">
+  <div class="wrap">
+    <div class="eyebrow-row">
+      <div class="eyebrow"><span class="dot"></span> <span data-i18n="eyebrow">EMERGENCY DRUG TRAY</span></div>
+      <div class="lang-toggle" id="langToggle"><span id="langLabel">English</span></div>
+    </div>
+
+    <div class="cart-switcher" id="cartSwitcher"></div>
+
+    <h1>CRASH CART <span id="cartLabel">· CC1</span></h1>
+    <p class="sub" data-i18n="subtitle">جدول متابعة صلاحية أدوية ومعدات عربة الإنعاش — حسب دليل المستشفى الرسمي</p>
+
+    <div class="dash-row">
+      <div class="gauge-card">
+        <div class="gauge-circle-wrap">
+          <svg viewBox="0 0 100 100" class="gauge-svg">
+            <circle class="gauge-track" cx="50" cy="50" r="42"></circle>
+            <circle id="gaugeArc" class="gauge-arc" cx="50" cy="50" r="42"></circle>
+          </svg>
+          <div class="gauge-pct" id="gaugePct">0%</div>
+        </div>
+        <span class="gauge-label" data-i18n="gaugeLabel">الجاهزية</span>
+      </div>
+      <div class="statbar">
+        <div class="stat red-s"><b id="statRed">0</b><span data-i18n="statRedLabel">منتهي</span></div>
+        <div class="stat amber-s"><b id="statAmber">0</b><span data-i18n="statAmberLabel">قريب الانتهاء</span></div>
+        <div class="stat green-s"><b id="statGreen">0</b><span data-i18n="statGreenLabel">صالح</span></div>
+        <div class="stat"><b id="statTotal">0</b><span data-i18n="statTotalLabel">إجمالي الأصناف</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="wrap">
+  <div class="card">
+    <div class="toolbar">
+      <div class="toolbar-title"><span data-i18n="listTitle">قائمة العربة</span> <span id="loadState">· <span data-i18n="loading">جارٍ التحميل...</span></span></div>
+      <button class="btn btn-ghost" id="displayModeBtn" type="button" data-i18n="displayModeBtn">وضع العرض</button>
+    </div>
+
+    <div id="alertBanner" class="alert-banner" style="display:none;"></div>
+
+    <div class="legend">
+      <div class="legend-item"><i style="background:var(--red)"></i> <span data-i18n="legendRed">منتهي الصلاحية</span></div>
+      <div class="legend-item"><i style="background:var(--amber)"></i> <span data-i18n="legendAmber">أقل من 3 أشهر</span></div>
+      <div class="legend-item"><i style="background:var(--green)"></i> <span data-i18n="legendGreen">أكثر من 3 أشهر</span></div>
+    </div>
+
+    <div class="tbl-scroll">
+      <table>
+        <thead>
+          <tr>
+            <th class="center">#</th>
+            <th data-i18n="thName">الاسم</th>
+            <th class="center" data-i18n="thQty">الكمية</th>
+            <th data-i18n="thExpiry">تاريخ الانتهاء</th>
+            <th class="center" data-i18n="thDays">الأيام المتبقية</th>
+            <th class="center" data-i18n="thStatus">الحالة</th>
+            <th class="center" data-i18n="thNA">N/A</th>
+          </tr>
+        </thead>
+        <tbody id="tbody"></tbody>
+      </table>
+    </div>
+
+    <div class="signoff">
+      <div class="signoff-left">
+        <div class="field" style="flex:1;min-width:200px;">
+          <label data-i18n="checkedByLabel">تم الفحص بواسطة</label>
+          <select id="checkedBy" style="width:100%;">
+            <option value="" data-i18n="checkedBySelectPh">اختر الاسم</option>
+          </select>
+        </div>
+        <div class="field" style="flex:1;min-width:220px;">
+          <label data-i18n="lastUpdateLabel">آخر تحديث</label>
+          <div id="lastUpdateDisplay" class="update-readout"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <div class="save-indicator"><i></i> <span id="saveText" data-i18n="savedAuto">محفوظ تلقائياً</span></div>
+    <div class="credit">© <span data-i18n="creditLine">تصميم Ahmed Ali Almamari · 76221</span></div>
+  </footer>
+</div>
+
+<div id="displayMode" class="display-mode" style="display:none;">
+  <button class="display-close" id="displayCloseBtn" type="button" data-i18n="displayClose">إغلاق</button>
+  <div class="display-cart" id="displayCart">CC1</div>
+  <div class="display-gauge-wrap">
+    <svg viewBox="0 0 100 100" class="display-gauge-svg">
+      <circle class="gauge-track" cx="50" cy="50" r="42"></circle>
+      <circle id="displayGaugeArc" class="gauge-arc" cx="50" cy="50" r="42"></circle>
+    </svg>
+    <div class="display-gauge-pct" id="displayGaugePct">0%</div>
+  </div>
+  <div class="display-gauge-label" data-i18n="gaugeLabel">الجاهزية</div>
+  <div class="display-stats">
+    <div class="display-stat display-stat-red"><b id="displayStatRed">0</b><span data-i18n="statRedLabel">منتهي</span></div>
+    <div class="display-stat display-stat-amber"><b id="displayStatAmber">0</b><span data-i18n="statAmberLabel">قريب الانتهاء</span></div>
+    <div class="display-stat display-stat-green"><b id="displayStatGreen">0</b><span data-i18n="statGreenLabel">صالح</span></div>
+  </div>
+  <div class="display-issues" id="displayIssues"></div>
+  <div class="display-footer" id="displayFooter"></div>
+</div>
+
+<script>
+// Multiple physical carts, each with its own saved dataset (same Supabase table, different row id).
+const CARTS = ['CC1', 'CC2', 'OT7'];
+let currentCart = CARTS[0];
+function storageKey(){ return `crash-cart-${currentCart}-data`; }
+
+// Supabase configuration — stores all cart data as one JSON row per cart in the crash_cart_data table.
+const SUPABASE_URL = 'https://yvvigwzxasmjplowmrye.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl2dmlnd3p4YXNtanBsb3dtcnllIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODc2MDMzODAsImV4cCI6MjEwMzE3OTM4MH0.AUSFaUsvcyUuMHPRrdYLkzo5RVgwrkPqydIMQGj9S70';
+const SUPABASE_HEADERS = {
+  'apikey': SUPABASE_ANON_KEY,
+  'Authorization': 'Bearer ' + SUPABASE_ANON_KEY,
+  'Content-Type': 'application/json'
+};
+
+async function supabaseLoad(){
+  const res = await fetch(
+    `${SUPABASE_URL}/rest/v1/crash_cart_data?id=eq.${storageKey()}&select=data`,
+    { headers: SUPABASE_HEADERS }
+  );
+  if(!res.ok) throw new Error('HTTP ' + res.status);
+  const rows = await res.json();
+  return (rows && rows.length > 0) ? rows[0].data : null;
+}
+
+async function supabaseSave(payload){
+  const res = await fetch(`${SUPABASE_URL}/rest/v1/crash_cart_data`, {
+    method: 'POST',
+    headers: Object.assign({}, SUPABASE_HEADERS, { 'Prefer': 'resolution=merge-duplicates' }),
+    body: JSON.stringify([{ id: storageKey(), data: payload, updated_at: new Date().toISOString() }])
+  });
+  if(!res.ok) throw new Error('HTTP ' + res.status);
+  return true;
+}
+
+// Names available in the "Checked by" dropdown. Add more names here as needed.
+const CHECKER_NAMES = [
+  'Ahmed Almamari'
+];
+
+// Section (drawer) order and bilingual labels — matches Suhar Hospital SOP Of Crush Trolley (6-drawer version).
+const SECTIONS = [
+  { id: 'top',     ar: 'خارج العربة وأعلاها',                 en: 'Crash Cart Side & Top' },
+  { id: 'd1',      ar: 'الدرج 1 — أدوية الطوارئ',              en: 'Drawer 1 — Emergency Medications' },
+  { id: 'd2',      ar: 'الدرج 2 — أدوية الطوارئ',              en: 'Drawer 2 — Emergency Medications' },
+  { id: 'd3',      ar: 'الدرج 3 — أنابيب الوريد والمعدات',      en: 'Drawer 3 — Venipuncture & Equipment' },
+  { id: 'd4',      ar: 'الدرج 4 — أدوات الدعم',                en: 'Drawer 4 — Support Items' },
+  { id: 'd5',      ar: 'الدرج 5 — إدارة مجرى الهواء',          en: 'Drawer 5 — Airway Management' },
+  { id: 'd6',      ar: 'الدرج 6 — السوائل الوريدية',           en: 'Drawer 6 — IV Fluids' },
+  { id: 'general', ar: 'عناصر إضافية',                        en: 'Additional Items' }
+];
+function sectionLabel(id){
+  const s = SECTIONS.find(x => x.id === id) || SECTIONS[SECTIONS.length - 1];
+  return lang === 'ar' ? s.ar : s.en;
+}
+
+// Sections currently collapsed (in-memory UI state, resets each visit).
+const collapsedSections = new Set(SECTIONS.map(s => s.id));
+
+// Master item list with fixed standard quantities from the hospital SOP checklist.
+// qtyStd is code-only — it is never editable from the UI.
+const DEFAULT_ITEMS = [
+  // --- Crash Cart Side & Top ---
+  { section:'top', name:'CPR Back Board', qtyStd:1 },
+  { section:'top', name:'Emergency Oxygen Cylinder with regulator & nipple attached', qtyStd:1 },
+  { section:'top', name:'Bag-Valve-Mask (BVM) with reservoir', qtyStd:1 },
+  { section:'top', name:'Adult BVM connected to size 4 mask', qtyStd:1 },
+  { section:'top', name:'Pediatric BVM connected to size 0 mask', qtyStd:1 },
+  { section:'top', name:'Oxygen tubing for BVM', qtyStd:1 },
+  { section:'top', name:'Ambu mask sizes 1, 2, 3, 4 (each)', qtyStd:1 },
+  { section:'top', name:'IV Stand with BLS & ACLS Algorithm (each)', qtyStd:1 },
+  { section:'top', name:'Defibrillator Machine in functioning status', qtyStd:1 },
+  { section:'top', name:'Working Stop Watch (Timer)', qtyStd:1 },
+  { section:'top', name:'Side bag with 3-Lead ECG incl. electrodes, adult & paediatric (each)', qtyStd:6 },
+  { section:'top', name:'Suction apparatus, jar & Yankauer attached (each)', qtyStd:1 },
+  { section:'top', name:'Suction catheter sizes 6, 8, 10, 12, 14 (each)', qtyStd:2 },
+  { section:'top', name:'Sphygmomanometer with adult cuff', qtyStd:1 },
+  { section:'top', name:'Pressure bag', qtyStd:1 },
+  { section:'top', name:'Stethoscope, adult, labeled for CPR', qtyStd:1 },
+  { section:'top', name:'K.Y Jell / ECG Jell', qtyStd:1 },
+  { section:'top', name:'Examination Light', qtyStd:1 },
+
+  // --- Drawer 1: Emergency Medication ---
+  { section:'d1', name:'Epinephrine 1:1000 amp, 1mg', qtyStd:10 },
+  { section:'d1', name:'Epinephrine (Prefilled)', qtyStd:4 },
+  { section:'d1', name:'Atropine 0.5mg / 0.6mg', qtyStd:6 },
+  { section:'d1', name:'Amiodarone 150mg', qtyStd:3 },
+  { section:'d1', name:'Sodium Bicarbonate 8.4%', qtyStd:2 },
+  { section:'d1', name:'Adenosine 6mg', qtyStd:5 },
+  { section:'d1', name:'Diltiazem 5mg/1ml', qtyStd:1 },
+  { section:'d1', name:'Magnesium Sulfate 50%', qtyStd:2 },
+  { section:'d1', name:'Inj. Cisatracurium besylate 20mg/10ml (in fridge)', qtyStd:3 },
+  { section:'d1', name:'Inj. Suxamethonium chloride 100mg/2ml (in fridge)', qtyStd:3 },
+
+  // --- Drawer 2: Emergency Medication ---
+  { section:'d2', name:'Verapamil 5mg', qtyStd:2 },
+  { section:'d2', name:'Naloxone 0.4mg', qtyStd:2 },
+  { section:'d2', name:'Calcium Gluconate 10%', qtyStd:2 },
+  { section:'d2', name:'Dextrose 50%', qtyStd:2 },
+  { section:'d2', name:'Dobutamine 250mg', qtyStd:2 },
+  { section:'d2', name:'Dopamine 200mg', qtyStd:2 },
+  { section:'d2', name:'Lidocaine 2% 20ml', qtyStd:2 },
+  { section:'d2', name:'Norepinephrine 4mg/4ml', qtyStd:2 },
+
+  // --- Drawer 3: Venipuncture Tubes and Equipment ---
+  { section:'d3', name:'IV Cannula sizes 16, 18, 20, 22, 24 (each)', qtyStd:2 },
+  { section:'d3', name:'Syringes 1, 2, 5, 10, 20ml (each)', qtyStd:5 },
+  { section:'d3', name:'ABG Syringe', qtyStd:5 },
+  { section:'d3', name:'Syringe 50ml', qtyStd:2 },
+  { section:'d3', name:'Needles sizes 19, 20, 23, 25 (each)', qtyStd:10 },
+  { section:'d3', name:'Assorted Butterflies sizes 21, 23, 25, 27 (each)', qtyStd:2 },
+  { section:'d3', name:'3-Way stop cocks', qtyStd:3 },
+  { section:'d3', name:'Extension set Microbore (paediatric units only)', qtyStd:2 },
+  { section:'d3', name:'Alcohol swab', qtyStd:10 },
+  { section:'d3', name:'IV Tegaderm Dressing', qtyStd:5 },
+  { section:'d3', name:'Adhesive tape', qtyStd:1 },
+  { section:'d3', name:'Tourniquet', qtyStd:1 },
+  { section:'d3', name:'Scissors', qtyStd:1 },
+  { section:'d3', name:'Medication Additive labels', qtyStd:5 },
+  { section:'d3', name:'ECG paper, one channel', qtyStd:1 },
+  { section:'d3', name:'Magnet (A&E and CCU only)', qtyStd:1 },
+  { section:'d3', name:'Crash Cart Locks', qtyStd:5 },
+  { section:'d3', name:'Defibrillator pads (if available)', qtyStd:2 },
+  { section:'d3', name:'Spanner', qtyStd:2 },
+
+  // --- Drawer 4: Support Items ---
+  { section:'d4', name:'Flashlight (battery replaced monthly)', qtyStd:1 },
+  { section:'d4', name:'Magill forceps: small & large (each)', qtyStd:1 },
+  { section:'d4', name:'Artery forceps', qtyStd:1 },
+  { section:'d4', name:'Mouth Gag', qtyStd:1 },
+  { section:'d4', name:'Roller Gauze', qtyStd:2 },
+  { section:'d4', name:'Pacing Pads (CCU & A&E only)', qtyStd:1 },
+  { section:'d4', name:'Pack sterile Gauze 10x10', qtyStd:3 },
+
+  // --- Drawer 5: Airway Management ---
+  { section:'d5', name:'Complete functioning Laryngoscope set (5 disposable blade sizes)', qtyStd:1 },
+  { section:'d5', name:'Spare bulb for Laryngoscope', qtyStd:1 },
+  { section:'d5', name:'Spare batteries for Laryngoscope', qtyStd:2 },
+  { section:'d5', name:'Oropharyngeal Airway sizes 000, 00, 1, 2, 3, 4 (each)', qtyStd:1 },
+  { section:'d5', name:'Nasopharyngeal Airway sizes 4, 6, 7, 8 (each)', qtyStd:1 },
+  { section:'d5', name:'Laryngeal Mask Airway LMA size 4', qtyStd:2 },
+  { section:'d5', name:'Stylet for ETT: adult & paediatric (each)', qtyStd:1 },
+  { section:'d5', name:'Bougie', qtyStd:1 },
+  { section:'d5', name:'Endotracheal Tube — cuffed sizes 5, 5.5, 6, 6.5, 7, 7.5, 8 (each)', qtyStd:1 },
+  { section:'d5', name:'Endotracheal Tube — uncuffed sizes 2.5, 3, 3.5, 4, 4.5, 5, 5.5 (each)', qtyStd:1 },
+
+  // --- Drawer 6: IV Fluids ---
+  { section:'d6', name:'NS 0.9% Sodium Chloride 500ml', qtyStd:1 },
+  { section:'d6', name:'DNS 0.9% Sodium Chloride + 5% Dextrose 500ml', qtyStd:1 },
+  { section:'d6', name:'1/2 NS 0.45% Sodium Chloride 500ml', qtyStd:1 },
+  { section:'d6', name:'Hartmann Solution R/L 500ml', qtyStd:1 },
+  { section:'d6', name:'Dextrose 5% 500ml', qtyStd:1 },
+  { section:'d6', name:'Microdrips (60 drops/ml) & Macrodrips (20 drops/ml) (each)', qtyStd:2 },
+  { section:'d6', name:'Gemini IV infusion set or Allarise (per machine type)', qtyStd:1 },
+  { section:'d6', name:'Sterile Gloves sizes 6, 6.5, 7, 7.5 (each)', qtyStd:1 },
+  { section:'d6', name:'Normal IV set', qtyStd:1 },
+  { section:'d6', name:'Non-sterile Gloves — small, medium, large (each)', qtyStd:1 },
+  { section:'d6', name:'Lacto Cath 150cm', qtyStd:2 },
+  { section:'d6', name:'Sharp disposal Bin', qtyStd:1 },
+];
+
+const I18N = {
+  ar: {
+    eyebrow: 'OPERATING THEATRE 7 · EMERGENCY DRUG TRAY',
+    title: 'CRASH CART <span>· OT7</span>',
+    subtitle: 'جدول متابعة صلاحية أدوية ومعدات عربة الإنعاش — حسب دليل المستشفى الرسمي',
+    statRedLabel: 'منتهي', statAmberLabel: 'قريب الانتهاء', statGreenLabel: 'صالح', statTotalLabel: 'إجمالي الأصناف',
+    listTitle: 'قائمة العربة', loading: 'جارٍ التحميل...',
+    legendRed: 'منتهي الصلاحية', legendAmber: 'أقل من 3 أشهر', legendGreen: 'أكثر من 3 أشهر',
+    thName: 'الاسم', thQty: 'الكمية', thExpiry: 'تاريخ الانتهاء', thDays: 'الأيام المتبقية', thStatus: 'الحالة', thNA: 'N/A',
+    checkedByLabel: 'تم الفحص بواسطة', checkedBySelectPh: 'اختر الاسم',
+    lastUpdateLabel: 'آخر تحديث', noUpdateYet: 'لم يُحدَّث بعد',
+    savedAuto: 'محفوظ تلقائياً', saving: 'جارٍ الحفظ...', saveFail: 'تعذّر الحفظ',
+    creditLine: 'تصميم Ahmed Ali Almamari · 76221',
+    badgeRed: 'منتهي', badgeAmber: 'قريب الانتهاء', badgeGreen: 'صالح',
+    addDateBtn: '＋ إضافة تاريخ',
+    noDateLabel: 'بدون تاريخ',
+    badgeNA: 'غير مطبق',
+    qtyShortLabel: 'ناقص',
+    qtyStdCaption: 'ثابت',
+    qtyActualCaption: 'فعلي',
+    qtyStdLocked: 'الكمية الثابتة تُعدَّل من خلال البرمجة فقط',
+    alertExpired: 'يوجد {n} عنصر منتهي الصلاحية',
+    alertShort: '{n} عنصر ناقص عن الكمية الثابتة',
+    gaugeLabel: 'الجاهزية',
+    displayModeBtn: 'وضع العرض',
+    displayClose: 'إغلاق',
+    displayNoIssues: 'لا يوجد عناصر تحتاج انتباه'
+  },
+  en: {
+    eyebrow: 'OPERATING THEATRE 7 · EMERGENCY DRUG TRAY',
+    title: 'CRASH CART <span>· OT7</span>',
+    subtitle: 'Expiry &amp; stock tracking for the crash cart medications and equipment — per the hospital SOP',
+    statRedLabel: 'Expired', statAmberLabel: 'Near expiry', statGreenLabel: 'Valid', statTotalLabel: 'Total items',
+    listTitle: 'Cart checklist', loading: 'Loading...',
+    legendRed: 'Expired', legendAmber: 'Under 3 months', legendGreen: 'Over 3 months',
+    thName: 'Item', thQty: 'Qty', thExpiry: 'Expiry date', thDays: 'Days left', thStatus: 'Status', thNA: 'N/A',
+    checkedByLabel: 'Checked by', checkedBySelectPh: 'Select name',
+    lastUpdateLabel: 'Last updated', noUpdateYet: 'Not updated yet',
+    savedAuto: 'Saved automatically', saving: 'Saving...', saveFail: 'Save failed',
+    creditLine: 'Designed by Ahmed Ali Almamari · 76221',
+    badgeRed: 'Expired', badgeAmber: 'Near expiry', badgeGreen: 'Valid',
+    addDateBtn: '＋ Add date',
+    noDateLabel: 'No date',
+    badgeNA: 'N/A',
+    qtyShortLabel: 'Short',
+    qtyStdCaption: 'std',
+    qtyActualCaption: 'actual',
+    qtyStdLocked: 'Standard quantity is code-only and cannot be edited here',
+    alertExpired: '{n} item(s) expired',
+    alertShort: '{n} item(s) short of standard quantity',
+    gaugeLabel: 'Readiness',
+    displayModeBtn: 'Display Mode',
+    displayClose: 'Close',
+    displayNoIssues: 'No items need attention'
+  }
+};
+
+let lang = 'ar';
+
+let state = {
+  meds: [],
+  checkedBy: '',
+  lastUpdate: null,
+  lang: 'ar'
+};
+
+function t(key){ return I18N[lang][key] || key; }
+
+function uid(){ return 'm_' + Math.random().toString(36).slice(2, 10); }
+function duid(){ return 'd_' + Math.random().toString(36).slice(2, 10); }
+
+function daysLeft(dateStr){
+  if(!dateStr) return null;
+  const today = new Date();
+  today.setHours(0,0,0,0);
+  const target = new Date(dateStr + 'T00:00:00');
+  if(isNaN(target.getTime())) return null;
+  return Math.round((target - today) / (1000*60*60*24));
+}
+
+function flagFor(days){
+  if(days === null) return 'none';
+  if(days < 0) return 'red';
+  if(days <= 90) return 'amber';
+  return 'green';
+}
+
+function badgeLabel(flag, na){
+  if(na) return t('badgeNA');
+  if(flag === 'red') return t('badgeRed');
+  if(flag === 'amber') return t('badgeAmber');
+  if(flag === 'none') return t('noDateLabel');
+  return t('badgeGreen');
+}
+
+function flagColor(flag){
+  if(flag === 'red') return 'var(--red)';
+  if(flag === 'amber') return 'var(--amber)';
+  if(flag === 'none') return '#C7CEDD';
+  return 'var(--green)';
+}
+
+// Earliest (soonest) date among a medication's date entries drives its overall alert level.
+function rowStatus(m){
+  let minDate = null;
+  (m.dates || []).forEach(d => {
+    if(!d.date) return;
+    const target = new Date(d.date + 'T00:00:00');
+    if(isNaN(target.getTime())) return;
+    if(minDate === null || target < minDate) minDate = target;
+  });
+  if(minDate === null) return { days: null, flag: 'none' };
+  const today = new Date();
+  today.setHours(0,0,0,0);
+  const days = Math.round((minDate - today) / (1000*60*60*24));
+  return { days, flag: flagFor(days) };
+}
+
+function fmtDate(d){
+  if(!d) return '—';
+  const dt = new Date(d);
+  const locale = lang === 'ar' ? 'ar-EG' : 'en-GB';
+  return dt.toLocaleString(locale, { day:'2-digit', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit' });
+}
+
+function lastUpdateText(){
+  if(!state.lastUpdate) return t('noUpdateYet');
+  const stamp = fmtDate(state.lastUpdate);
+  const by = (state.checkedBy || '').trim();
+  return by ? `${stamp} — ${by}` : stamp;
+}
+
+function applyI18n(){
+  document.getElementById('htmlRoot').setAttribute('lang', lang);
+  document.getElementById('htmlRoot').setAttribute('dir', lang === 'ar' ? 'rtl' : 'ltr');
+  document.getElementById('langLabel').textContent = lang === 'ar' ? 'English' : 'العربية';
+
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.getAttribute('data-i18n');
+    if(key === 'subtitle'){
+      el.innerHTML = t(key);
+    } else {
+      el.textContent = t(key);
+    }
+  });
+
+  document.getElementById('cartLabel').textContent = '· ' + currentCart;
+  document.getElementById('lastUpdateDisplay').textContent = lastUpdateText();
+  populateCheckedBySelect();
+  renderCartSwitcher();
+}
+
+function renderCartSwitcher(){
+  const el = document.getElementById('cartSwitcher');
+  el.innerHTML = CARTS.map(c =>
+    `<button class="cart-tab ${c === currentCart ? 'active' : ''}" data-cart="${c}" type="button">${escapeHtml(c)}</button>`
+  ).join('');
+  el.querySelectorAll('.cart-tab').forEach(btn => {
+    btn.addEventListener('click', () => switchCart(btn.getAttribute('data-cart')));
+  });
+}
+
+async function switchCart(cartId){
+  if(cartId === currentCart) return;
+  currentCart = cartId;
+  document.getElementById('cartLabel').textContent = '· ' + currentCart;
+  document.querySelectorAll('.cart-tab').forEach(btn => {
+    btn.classList.toggle('active', btn.getAttribute('data-cart') === currentCart);
+    btn.disabled = true;
+  });
+  document.getElementById('loadState').innerHTML = '· ' + t('loading');
+  await loadState();
+}
+
+// Migrate legacy records (single `expiry`, single `qty`, no `section`) to the current shape.
+function normalizeMeds(meds){
+  return (meds || []).map(m => {
+    const dates = Array.isArray(m.dates)
+      ? m.dates.map(d => ({ id: d.id || duid(), date: d.date || '' }))
+      : (m.expiry ? [{ id: duid(), date: m.expiry }] : [{ id: duid(), date: '' }]);
+    return {
+      id: m.id || uid(),
+      section: m.section || 'general',
+      name: m.name || '',
+      qtyStd: (m.qtyStd === undefined ? (m.qty === undefined ? '' : m.qty) : m.qtyStd),
+      qtyActual: (m.qtyActual === undefined ? '' : m.qtyActual),
+      dates,
+      na: !!m.na
+    };
+  });
+}
+
+function populateCheckedBySelect(){
+  const sel = document.getElementById('checkedBy');
+  const current = state.checkedBy || '';
+  sel.innerHTML = `<option value="">${escapeHtml(t('checkedBySelectPh'))}</option>` +
+    CHECKER_NAMES.map(name => `<option value="${escapeHtml(name)}">${escapeHtml(name)}</option>`).join('');
+  sel.value = CHECKER_NAMES.includes(current) ? current : '';
+}
+
+async function loadState(){
+  try{
+    const parsed = await supabaseLoad();
+    if(parsed){
+      state = Object.assign({meds:[], checkedBy:'', lastUpdate:null, lang:'ar'}, parsed);
+      state.meds = normalizeMeds(state.meds);
+      lang = state.lang === 'en' ? 'en' : 'ar';
+    } else {
+      seedDefault();
+    }
+  }catch(e){
+    seedDefault();
+  }
+  document.getElementById('loadState').innerHTML = '';
+  applyI18n();
+  render();
+}
+
+function seedDefault(){
+  state.meds = DEFAULT_ITEMS.map(it => ({
+    id: uid(),
+    section: it.section,
+    name: it.name,
+    qtyStd: it.qtyStd,
+    qtyActual: '',
+    dates: [{ id: duid(), date: '' }],
+    na: false
+  }));
+  state.checkedBy = '';
+  state.lastUpdate = null;
+  state.lang = lang;
+}
+
+let saveTimer = null;
+function saveState(touch){
+  if(touch){
+    state.lastUpdate = new Date().toISOString();
+    document.getElementById('lastUpdateDisplay').textContent = lastUpdateText();
+  }
+  state.lang = lang;
+  const indicator = document.getElementById('saveText');
+  indicator.textContent = t('saving');
+  clearTimeout(saveTimer);
+  saveTimer = setTimeout(async () => {
+    try{
+      await supabaseSave(state);
+      indicator.textContent = t('savedAuto');
+    }catch(e){
+      indicator.textContent = t('saveFail') + ': ' + (e && e.message ? e.message : String(e));
+    }
+  }, 350);
+}
+
+function updateStats(){
+  let red=0, amber=0, green=0, short=0, none=0, ready=0, active=0;
+  const issues = [];
+  state.meds.forEach(m => {
+    if(m.na) return;
+    active++;
+    const f = rowStatus(m).flag;
+    if(f==='red') red++; else if(f==='amber') amber++; else if(f==='green') green++; else none++;
+    const stdVal = (m.qtyStd === '' || m.qtyStd === undefined || m.qtyStd === null) ? null : Number(m.qtyStd);
+    const actualVal = (m.qtyActual === '' || m.qtyActual === undefined || m.qtyActual === null) ? null : Number(m.qtyActual);
+    const itemShort = stdVal !== null && actualVal !== null && actualVal < stdVal;
+    if(itemShort) short++;
+    if(f === 'green' && !itemShort) ready++;
+    if(f === 'red') issues.push(`${m.name} — ${t('badgeRed')}`);
+    if(itemShort) issues.push(`${m.name} — ${t('qtyShortLabel')}`);
+  });
+  document.getElementById('statRed').textContent = red;
+  document.getElementById('statAmber').textContent = amber;
+  document.getElementById('statGreen').textContent = green;
+  document.getElementById('statTotal').textContent = state.meds.length;
+  renderAlertBanner(red, short);
+  const pct = active === 0 ? 100 : Math.round((ready / active) * 100);
+  renderGauge(pct);
+  updateDisplayMode(red, amber, green, pct, issues);
+}
+
+function renderGauge(pct){
+  const circumference = 264;
+  const offset = circumference - (circumference * pct / 100);
+  const arc = document.getElementById('gaugeArc');
+  arc.style.strokeDashoffset = offset;
+  arc.classList.remove('gauge-warn', 'gauge-bad');
+  if(pct < 60) arc.classList.add('gauge-bad');
+  else if(pct < 90) arc.classList.add('gauge-warn');
+  document.getElementById('gaugePct').textContent = pct + '%';
+}
+
+function updateDisplayMode(red, amber, green, pct, issues){
+  document.getElementById('displayCart').textContent = currentCart;
+  document.getElementById('displayStatRed').textContent = red;
+  document.getElementById('displayStatAmber').textContent = amber;
+  document.getElementById('displayStatGreen').textContent = green;
+
+  const circumference = 264;
+  const offset = circumference - (circumference * pct / 100);
+  const arc = document.getElementById('displayGaugeArc');
+  arc.style.strokeDashoffset = offset;
+  arc.classList.remove('gauge-warn', 'gauge-bad');
+  if(pct < 60) arc.classList.add('gauge-bad');
+  else if(pct < 90) arc.classList.add('gauge-warn');
+  document.getElementById('displayGaugePct').textContent = pct + '%';
+
+  const issuesEl = document.getElementById('displayIssues');
+  if(issues.length === 0){
+    issuesEl.innerHTML = '';
+  } else {
+    issuesEl.innerHTML = issues.map(msg => `<div class="display-issue">${escapeHtml(msg)}</div>`).join('');
+  }
+
+  document.getElementById('displayFooter').textContent = lastUpdateText();
+}
+
+let displayRefreshTimer = null;
+
+function openDisplayMode(){
+  document.getElementById('displayMode').style.display = 'flex';
+  clearInterval(displayRefreshTimer);
+  displayRefreshTimer = setInterval(async () => {
+    try{
+      const parsed = await supabaseLoad();
+      if(parsed){
+        state = Object.assign({meds:[], checkedBy:'', lastUpdate:null, lang:'ar'}, parsed);
+        state.meds = normalizeMeds(state.meds);
+        render();
+      }
+    }catch(e){ /* silent — keep showing last known state */ }
+  }, 25000);
+}
+
+function closeDisplayMode(){
+  document.getElementById('displayMode').style.display = 'none';
+  clearInterval(displayRefreshTimer);
+  displayRefreshTimer = null;
+}
+
+function renderAlertBanner(redCount, shortCount){
+  const el = document.getElementById('alertBanner');
+  if(redCount === 0 && shortCount === 0){
+    el.style.display = 'none';
+    el.innerHTML = '';
+    return;
+  }
+  const parts = [];
+  if(redCount > 0) parts.push(t('alertExpired').replace('{n}', redCount));
+  if(shortCount > 0) parts.push(t('alertShort').replace('{n}', shortCount));
+  el.style.display = 'flex';
+  el.innerHTML = `<span>${escapeHtml(parts.join(' · '))}</span>`;
+}
+
+function escapeHtml(s){
+  const div = document.createElement('div');
+  div.textContent = s || '';
+  return div.innerHTML;
+}
+
+function buildRow(m, displayIndex){
+  const status = rowStatus(m);
+  const tr = document.createElement('tr');
+  if(m.na) tr.className = 'row-na';
+  tr.style.borderInlineStart = `5px solid ${m.na ? '#C7CEDD' : flagColor(status.flag)}`;
+
+  const datesHtml = (m.dates || []).map(d => {
+    const f = flagFor(daysLeft(d.date));
+    return `
+      <div class="date-row" data-date-id="${d.id}">
+        <span class="mini-dot" style="background:${flagColor(f)}"></span>
+        <input class="cell date-cell date-input" type="date" value="${d.date || ''}" ${m.na ? 'disabled' : ''}>
+        <button class="mini-del" title="remove date" ${m.na ? 'disabled' : ''}>×</button>
+      </div>`;
+  }).join('');
+
+  const stdVal = (m.qtyStd === '' || m.qtyStd === undefined || m.qtyStd === null) ? null : Number(m.qtyStd);
+  const actualVal = (m.qtyActual === '' || m.qtyActual === undefined || m.qtyActual === null) ? null : Number(m.qtyActual);
+  const qtyShort = stdVal !== null && actualVal !== null && actualVal < stdVal;
+
+  tr.innerHTML = `
+    <td class="center"><div class="idx">${displayIndex}</div></td>
+    <td><div class="item-name">${escapeHtml(m.name)}</div></td>
+    <td class="center">
+      <div class="qty-pair ${qtyShort ? 'qty-pair-short' : ''}">
+        <div class="qty-box qty-box-locked">
+          <input class="cell qty-std-input" type="number" value="${m.qtyStd === '' || m.qtyStd === undefined || m.qtyStd === null ? '' : m.qtyStd}" placeholder="—" disabled title="${escapeHtml(t('qtyStdLocked'))}">
+          <span class="qty-box-cap">${escapeHtml(t('qtyStdCaption'))}</span>
+        </div>
+        <div class="qty-box">
+          <input class="cell qty-actual-input ${qtyShort ? 'qty-short' : ''}" type="number" min="0" step="1" value="${m.qtyActual === '' || m.qtyActual === undefined || m.qtyActual === null ? '' : m.qtyActual}" placeholder="0">
+          <span class="qty-box-cap">${escapeHtml(t('qtyActualCaption'))}</span>
+        </div>
+      </div>
+      ${qtyShort ? `<div class="qty-warn">${escapeHtml(t('qtyShortLabel'))}</div>` : ''}
+    </td>
+    <td>
+      <div class="dates-cell">
+        ${datesHtml}
+        <button class="add-date-btn" type="button" ${m.na ? 'disabled' : ''}>${escapeHtml(t('addDateBtn'))}</button>
+      </div>
+    </td>
+    <td class="days">${m.na ? '—' : (status.days === null ? '—' : status.days)}</td>
+    <td class="center"><span class="badge ${m.na ? 'na' : status.flag}"><i></i>${badgeLabel(status.flag, m.na)}</span></td>
+    <td class="center"><button class="na-btn ${m.na ? 'active' : ''}" title="N/A" type="button">N/A</button></td>
+  `;
+
+
+  const qtyActualInput = tr.querySelector('.qty-actual-input');
+  qtyActualInput.addEventListener('input', (e) => {
+    m.qtyActual = e.target.value === '' ? '' : Number(e.target.value);
+    saveState(true);
+  });
+  qtyActualInput.addEventListener('change', () => render());
+
+  tr.querySelectorAll('.date-row').forEach(row => {
+    const dId = row.getAttribute('data-date-id');
+    row.querySelector('.date-input').addEventListener('change', (e) => {
+      const entry = m.dates.find(x => x.id === dId);
+      if(entry) entry.date = e.target.value;
+      saveState(true);
+      // Defer the re-render so the native date picker fully closes on its own first —
+      // rebuilding the input's DOM node while the picker is still active makes some
+      // mobile browsers snap/close it prematurely.
+      setTimeout(render, 0);
+    });
+    row.querySelector('.mini-del').addEventListener('click', () => {
+      m.dates = m.dates.filter(x => x.id !== dId);
+      if(m.dates.length === 0) m.dates.push({ id: duid(), date: '' });
+      saveState(true);
+      render();
+    });
+  });
+
+  tr.querySelector('.add-date-btn').addEventListener('click', () => {
+    m.dates.push({ id: duid(), date: '' });
+    saveState(true);
+    render();
+  });
+
+  tr.querySelector('.na-btn').addEventListener('click', () => {
+    m.na = !m.na;
+    saveState(true);
+    render();
+  });
+
+  return tr;
+}
+
+function render(){
+  const tbody = document.getElementById('tbody');
+  tbody.innerHTML = '';
+
+  // Group items by section, preserving the SECTIONS order; unknown sections fall back to 'general'.
+  const knownIds = SECTIONS.map(s => s.id);
+  const grouped = {};
+  knownIds.forEach(id => grouped[id] = []);
+  state.meds.forEach(m => {
+    const sec = knownIds.includes(m.section) ? m.section : 'general';
+    grouped[sec].push(m);
+  });
+
+  let counter = 0;
+  knownIds.forEach(secId => {
+    const items = grouped[secId];
+    if(items.length === 0) return;
+
+    let secRed = 0, secAmber = 0;
+    items.forEach(m => {
+      if(m.na) return;
+      const f = rowStatus(m).flag;
+      if(f === 'red') secRed++; else if(f === 'amber') secAmber++;
+    });
+
+    const collapsed = collapsedSections.has(secId);
+    const headerRow = document.createElement('tr');
+    headerRow.className = 'section-row';
+    headerRow.setAttribute('data-section-toggle', secId);
+    const flagsHtml = [
+      secRed > 0 ? `<span class="section-flag section-flag-red">${secRed} ${escapeHtml(t('badgeRed'))}</span>` : '',
+      secAmber > 0 ? `<span class="section-flag section-flag-amber">${secAmber} ${escapeHtml(t('badgeAmber'))}</span>` : ''
+    ].join('');
+    headerRow.innerHTML = `
+      <td colspan="7">
+        <div class="section-row-inner">
+          <span class="section-chevron ${collapsed ? 'collapsed' : ''}">▾</span>
+          <span class="section-title">${escapeHtml(sectionLabel(secId))}</span>
+          <span class="section-count">(${items.length})</span>
+          <span class="section-flags">${flagsHtml}</span>
+        </div>
+      </td>`;
+    headerRow.addEventListener('click', () => {
+      if(collapsedSections.has(secId)) collapsedSections.delete(secId);
+      else collapsedSections.add(secId);
+      render();
+    });
+    tbody.appendChild(headerRow);
+
+    items.forEach(m => {
+      counter++;
+      const row = buildRow(m, counter);
+      if(collapsed) row.style.display = 'none';
+      tbody.appendChild(row);
+    });
+  });
+
+  updateStats();
+}
+
+document.getElementById('checkedBy').addEventListener('change', (e) => {
+  state.checkedBy = e.target.value;
+  saveState(true);
+  document.getElementById('lastUpdateDisplay').textContent = lastUpdateText();
+});
+
+document.getElementById('langToggle').addEventListener('click', () => {
+  lang = lang === 'ar' ? 'en' : 'ar';
+  applyI18n();
+  render();
+  saveState(false);
+});
+
+document.getElementById('displayModeBtn').addEventListener('click', openDisplayMode);
+document.getElementById('displayCloseBtn').addEventListener('click', closeDisplayMode);
+
+loadState();
+</script>
+</body>
+</html>
