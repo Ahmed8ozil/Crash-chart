@@ -48,7 +48,6 @@
     font-family:'Space Mono',monospace;font-weight:600;
     margin-bottom:10px;
   }
-  .eyebrow .dot{width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 0 4px rgba(44,154,114,.25);}
 
   .lang-toggle{
     display:flex;align-items:center;gap:6px;cursor:pointer;user-select:none;
@@ -344,13 +343,13 @@
     font-family:'Space Mono',monospace;font-size:28px;font-weight:700;color:#7FA6E8;
     letter-spacing:.06em;
   }
-  .display-gauge-wrap{position:relative;width:220px;height:220px;}
-  .display-gauge-svg{width:220px;height:220px;transform:rotate(-90deg);}
+  .display-gauge-wrap{position:relative;width:140px;height:140px;}
+  .display-gauge-svg{width:140px;height:140px;transform:rotate(-90deg);}
   .display-gauge-pct{
     position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
-    font-family:'Space Mono',monospace;font-size:56px;font-weight:700;color:#fff;
+    font-family:'Space Mono',monospace;font-size:36px;font-weight:700;color:#fff;
   }
-  .display-gauge-label{color:#B7C2DD;font-size:16px;letter-spacing:.05em;margin-top:-10px;}
+  .display-gauge-label{color:#B7C2DD;font-size:14px;letter-spacing:.05em;margin-top:-6px;}
   .display-stats{display:flex;gap:16px;flex-wrap:wrap;justify-content:center;margin-top:6px;}
   .display-stat{
     background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.14);border-radius:16px;
@@ -363,11 +362,14 @@
   .display-stat-green b{color:#5FD3A5;}
   .display-issues{
     display:flex;flex-direction:column;gap:8px;max-width:640px;width:100%;margin-top:10px;
+    max-height:38vh;overflow-y:auto;
   }
   .display-issue{
-    background:var(--red-bg);color:var(--red);border-radius:12px;padding:12px 18px;
+    border-radius:12px;padding:12px 18px;
     font-size:16px;font-weight:700;text-align:start;
   }
+  .display-issue-red{background:var(--red-bg);color:var(--red);}
+  .display-issue-amber{background:var(--amber-bg);color:var(--amber);}
   .display-footer{color:#8A93B3;font-size:14px;font-family:'Space Mono',monospace;margin-top:8px;}
 </style>
 </head>
@@ -376,7 +378,7 @@
 <div class="page-header">
   <div class="wrap">
     <div class="eyebrow-row">
-      <div class="eyebrow"><span class="dot"></span> <span data-i18n="eyebrow">EMERGENCY DRUG TRAY</span></div>
+      <div class="eyebrow"><span data-i18n="eyebrow">EMERGENCY DRUG TRAY</span></div>
       <div class="lang-toggle" id="langToggle"><span id="langLabel">English</span></div>
     </div>
 
@@ -517,7 +519,9 @@ async function supabaseSave(payload){
 
 // Names available in the "Checked by" dropdown. Add more names here as needed.
 const CHECKER_NAMES = [
-  'Ahmed Almamari'
+  'Ahmed Almamari',
+  'Amira Almamari',
+  'Nada Albalushi'
 ];
 
 // Section (drawer) order and bilingual labels — matches Suhar Hospital SOP Of Crush Trolley (6-drawer version).
@@ -907,8 +911,9 @@ function updateStats(){
     const itemShort = stdVal !== null && actualVal !== null && actualVal < stdVal;
     if(itemShort) short++;
     if(f === 'green' && !itemShort) ready++;
-    if(f === 'red') issues.push(`${m.name} — ${t('badgeRed')}`);
-    if(itemShort) issues.push(`${m.name} — ${t('qtyShortLabel')}`);
+    if(f === 'red') issues.push({ text: `${m.name} — ${t('badgeRed')}`, type: 'red' });
+    if(f === 'amber') issues.push({ text: `${m.name} — ${t('badgeAmber')}`, type: 'amber' });
+    if(itemShort) issues.push({ text: `${m.name} — ${t('qtyShortLabel')}`, type: 'red' });
   });
   document.getElementById('statRed').textContent = red;
   document.getElementById('statAmber').textContent = amber;
@@ -950,7 +955,9 @@ function updateDisplayMode(red, amber, green, pct, issues){
   if(issues.length === 0){
     issuesEl.innerHTML = '';
   } else {
-    issuesEl.innerHTML = issues.map(msg => `<div class="display-issue">${escapeHtml(msg)}</div>`).join('');
+    issuesEl.innerHTML = issues.map(it =>
+      `<div class="display-issue display-issue-${it.type}">${escapeHtml(it.text)}</div>`
+    ).join('');
   }
 
   document.getElementById('displayFooter').textContent = lastUpdateText();
