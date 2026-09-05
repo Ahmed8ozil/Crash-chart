@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>CRASH CART · OT7</title>
+<title>CRUSH CHART</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&family=Space+Mono:wght@400;700&display=swap');
 
@@ -450,6 +450,8 @@
   .badge.green{background:var(--green-bg);color:var(--green);}
   .badge.green i{background:var(--green);}
   .badge.none{background:var(--neutral-bg);color:var(--neutral-text);}
+  .badge.noexp{background:var(--neutral-bg);color:var(--neutral-text);}
+  .badge.noexp i{background:var(--neutral-text);}
   .badge.none i{background:#C7CEDD;}
   .badge.na{background:var(--neutral-bg);color:var(--neutral-text);}
   .badge.na i{background:#9AA3B8;}
@@ -469,6 +471,9 @@
     border-radius:8px;cursor:pointer;margin-top:2px;
   }
   .add-date-btn:hover{border-color:var(--steel);color:var(--steel);}
+  .no-expiry-note{
+    font-size:12px;color:var(--muted);font-style:italic;padding:6px 2px;
+  }
 
   .na-btn{
     background:transparent;border:1px solid var(--line);color:#AAB2C5;cursor:pointer;
@@ -595,9 +600,83 @@
   .toast-error .toast-icon{background:rgba(255,107,122,.25);color:#FF7A90;}
   .toast-info{background:var(--navy-2);}
   .toast-info .toast-icon{background:rgba(127,166,232,.25);color:#7FA6E8;}
+
+  .cart-switcher-row{display:flex;align-items:center;gap:8px;margin-bottom:14px;}
+  .qr-btn{
+    width:38px;height:38px;border-radius:10px;
+    background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.14);color:#EAF0FF;
+    cursor:pointer;display:flex;align-items:center;justify-content:center;
+    transition:background .15s ease;
+  }
+  .qr-btn:hover{background:rgba(255,255,255,.12);}
+  .qr-btn svg{width:18px;height:18px;}
+
+  .qr-modal{
+    position:fixed;inset:0;z-index:1300;background:rgba(10,15,28,.72);
+    display:flex;align-items:center;justify-content:center;padding:20px;
+    animation:fadeIn .2s ease both;
+  }
+  .qr-card{
+    background:var(--card);border-radius:20px;padding:28px 26px;max-width:320px;width:100%;
+    text-align:center;box-shadow:0 20px 50px -12px rgba(0,0,0,.5);position:relative;
+    animation:toastIn .28s cubic-bezier(.34,1.56,.64,1) both;
+  }
+  .qr-close{
+    position:absolute;top:12px;inset-inline-end:12px;background:transparent;border:none;
+    font-size:22px;color:var(--muted);cursor:pointer;width:30px;height:30px;border-radius:8px;line-height:1;
+  }
+  .qr-close:hover{background:var(--surface-2);}
+  .qr-cart-name{font-family:'Space Mono',monospace;font-size:20px;font-weight:700;color:var(--ink);margin-bottom:16px;}
+  .qr-code-box{display:flex;align-items:center;justify-content:center;margin-bottom:16px;background:#fff;padding:12px;border-radius:12px;display:inline-flex;}
+  .qr-hint{font-size:12.5px;color:var(--muted);margin-bottom:8px;line-height:1.5;}
+  .qr-url{font-family:'Space Mono',monospace;font-size:10.5px;color:var(--steel);word-break:break-all;}
+
+  .page-loader{
+    position:fixed;inset:0;z-index:2000;
+    background:linear-gradient(160deg,#0A0F1C 0%, #16223B 55%, #1E2E4E 100%);
+    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;
+    transition:opacity .4s ease, visibility .4s ease;
+  }
+  .page-loader.loader-hidden{opacity:0;visibility:hidden;pointer-events:none;}
+  .loader-icon{
+    width:60px;height:60px;border-radius:16px;
+    background:linear-gradient(160deg,#E4485E,#B5283D);
+    display:flex;align-items:center;justify-content:center;
+    box-shadow:0 10px 26px -8px rgba(216,66,90,.6);
+    animation:loaderPulse 1.4s ease-in-out infinite;
+  }
+  .loader-icon svg{width:32px;height:32px;}
+  @keyframes loaderPulse{
+    0%,100%{transform:scale(1);}
+    50%{transform:scale(1.08);}
+  }
+  .loader-bar{width:160px;height:4px;border-radius:4px;background:rgba(255,255,255,.12);overflow:hidden;}
+  .loader-bar-fill{
+    width:40%;height:100%;border-radius:4px;
+    background:linear-gradient(90deg,#7FA6E8,#5FD3A5);
+    animation:loaderSlide 1.1s ease-in-out infinite;
+  }
+  @keyframes loaderSlide{
+    0%{transform:translateX(-100%);}
+    100%{transform:translateX(350%);}
+  }
+  .loader-text{
+    font-family:'Space Mono',monospace;font-size:13px;font-weight:700;letter-spacing:.12em;
+    color:#B7C2DD;
+  }
 </style>
 </head>
 <body>
+
+<div id="pageLoader" class="page-loader">
+  <div class="loader-icon">
+    <svg viewBox="0 0 24 24" fill="none">
+      <path d="M2.5 12H7l2-4 3 8 2-5.5 1.5 1.5H21.5" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+  </div>
+  <div class="loader-bar"><div class="loader-bar-fill"></div></div>
+  <div class="loader-text">CRUSH CHART</div>
+</div>
 
 <div class="page-header">
   <div class="wrap">
@@ -609,12 +688,17 @@
         </svg>
       </div>
       <div class="brand-text">
-        <h1>CRASH CART <span id="cartLabel">· CC1</span></h1>
+        <h1>CRUSH CHART <span id="cartLabel">· CC1</span></h1>
         <p class="sub" data-i18n="subtitle">جدول متابعة صلاحية أدوية ومعدات عربة الإنعاش — حسب دليل المستشفى الرسمي</p>
       </div>
     </div>
 
-    <div class="cart-switcher" id="cartSwitcher"></div>
+    <div class="cart-switcher-row">
+      <div class="cart-switcher" id="cartSwitcher"></div>
+      <button class="qr-btn" id="qrBtn" type="button" title="QR Code">
+        <svg viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="7" height="7" rx="1" stroke="currentColor" stroke-width="1.6"/><rect x="14" y="3" width="7" height="7" rx="1" stroke="currentColor" stroke-width="1.6"/><rect x="3" y="14" width="7" height="7" rx="1" stroke="currentColor" stroke-width="1.6"/><path d="M14 14h3v3h-3zM20 14v3M14 20h3M20 20v.01" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+      </button>
+    </div>
 
     <div class="controls-row">
       <div class="clock-box">
@@ -755,6 +839,16 @@
 
 <div id="toastContainer" class="toast-container"></div>
 
+<div id="qrModal" class="qr-modal" style="display:none;">
+  <div class="qr-card">
+    <button class="qr-close" id="qrCloseBtn" type="button">×</button>
+    <div class="qr-cart-name" id="qrCartName">CC1</div>
+    <div id="qrCodeBox" class="qr-code-box"></div>
+    <div class="qr-hint" data-i18n="qrHint">امسح الرمز بالجوال للوصول المباشر لهذي العربة</div>
+    <div class="qr-url" id="qrUrl"></div>
+  </div>
+</div>
+
 <div id="displayMode" class="display-mode" style="display:none;">
   <button class="display-close" id="displayCloseBtn" type="button" data-i18n="displayClose">إغلاق</button>
   <div class="display-cart" id="displayCart">CC1</div>
@@ -775,10 +869,20 @@
   <div class="display-footer" id="displayFooter"></div>
 </div>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <script>
 // Multiple physical carts, each with its own saved dataset (same Supabase table, different row id).
 const CARTS = ['CC1', 'CC2', 'OT7', 'GOT'];
-let currentCart = CARTS[0];
+function initialCartFromUrl(){
+  try{
+    const params = new URLSearchParams(window.location.search);
+    const fromUrl = params.get('cart');
+    return (fromUrl && CARTS.includes(fromUrl)) ? fromUrl : CARTS[0];
+  }catch(e){
+    return CARTS[0];
+  }
+}
+let currentCart = initialCartFromUrl();
 function storageKey(){ return `crash-cart-${currentCart}-data`; }
 
 // Supabase configuration — stores all cart data as one JSON row per cart in the crash_cart_data table.
@@ -859,24 +963,24 @@ let searchQuery = '';
 // qtyStd is code-only — it is never editable from the UI.
 const DEFAULT_ITEMS = [
   // --- Crash Cart Side & Top ---
-  { section:'top', name:'CPR Back Board', qtyStd:1 },
-  { section:'top', name:'Emergency Oxygen Cylinder with regulator & nipple attached', qtyStd:1 },
-  { section:'top', name:'Bag-Valve-Mask (BVM) with reservoir', qtyStd:1 },
-  { section:'top', name:'Adult BVM connected to size 4 mask', qtyStd:1 },
-  { section:'top', name:'Pediatric BVM connected to size 0 mask', qtyStd:1 },
-  { section:'top', name:'Oxygen tubing for BVM', qtyStd:1 },
-  { section:'top', name:'Ambu mask sizes 1, 2, 3, 4 (each)', qtyStd:1 },
-  { section:'top', name:'IV Stand with BLS & ACLS Algorithm (each)', qtyStd:1 },
-  { section:'top', name:'Defibrillator Machine in functioning status', qtyStd:1 },
-  { section:'top', name:'Working Stop Watch (Timer)', qtyStd:1 },
+  { section:'top', name:'CPR Back Board', qtyStd:1, noExpiry:true },
+  { section:'top', name:'Emergency Oxygen Cylinder with regulator & nipple attached', qtyStd:1, noExpiry:true },
+  { section:'top', name:'Bag-Valve-Mask (BVM) with reservoir', qtyStd:1, noExpiry:true },
+  { section:'top', name:'Adult BVM connected to size 4 mask', qtyStd:1, noExpiry:true },
+  { section:'top', name:'Pediatric BVM connected to size 0 mask', qtyStd:1, noExpiry:true },
+  { section:'top', name:'Oxygen tubing for BVM', qtyStd:1, noExpiry:true },
+  { section:'top', name:'Ambu mask sizes 1, 2, 3, 4 (each)', qtyStd:1, noExpiry:true },
+  { section:'top', name:'IV Stand with BLS & ACLS Algorithm (each)', qtyStd:1, noExpiry:true },
+  { section:'top', name:'Defibrillator Machine in functioning status', qtyStd:1, noExpiry:true },
+  { section:'top', name:'Working Stop Watch (Timer)', qtyStd:1, noExpiry:true },
   { section:'top', name:'Side bag with 3-Lead ECG incl. electrodes, adult & paediatric (each)', qtyStd:6 },
-  { section:'top', name:'Suction apparatus, jar & Yankauer attached (each)', qtyStd:1 },
+  { section:'top', name:'Suction apparatus, jar & Yankauer attached (each)', qtyStd:1, noExpiry:true },
   { section:'top', name:'Suction catheter sizes 6, 8, 10, 12, 14 (each)', qtyStd:2 },
-  { section:'top', name:'Sphygmomanometer with adult cuff', qtyStd:1 },
-  { section:'top', name:'Pressure bag', qtyStd:1 },
-  { section:'top', name:'Stethoscope, adult, labeled for CPR', qtyStd:1 },
+  { section:'top', name:'Sphygmomanometer with adult cuff', qtyStd:1, noExpiry:true },
+  { section:'top', name:'Pressure bag', qtyStd:1, noExpiry:true },
+  { section:'top', name:'Stethoscope, adult, labeled for CPR', qtyStd:1, noExpiry:true },
   { section:'top', name:'K.Y Jell / ECG Jell', qtyStd:1 },
-  { section:'top', name:'Examination Light', qtyStd:1 },
+  { section:'top', name:'Examination Light', qtyStd:1, noExpiry:true },
 
   // --- Drawer 1: Emergency Medication ---
   { section:'d1', name:'Epinephrine 1:1000 amp, 1mg', qtyStd:10 },
@@ -912,27 +1016,27 @@ const DEFAULT_ITEMS = [
   { section:'d3', name:'Alcohol swab', qtyStd:10 },
   { section:'d3', name:'IV Tegaderm Dressing', qtyStd:5 },
   { section:'d3', name:'Adhesive tape', qtyStd:1 },
-  { section:'d3', name:'Tourniquet', qtyStd:1 },
-  { section:'d3', name:'Scissors', qtyStd:1 },
-  { section:'d3', name:'Medication Additive labels', qtyStd:5 },
-  { section:'d3', name:'ECG paper, one channel', qtyStd:1 },
-  { section:'d3', name:'Magnet (A&E and CCU only)', qtyStd:1 },
-  { section:'d3', name:'Crash Cart Locks', qtyStd:5 },
+  { section:'d3', name:'Tourniquet', qtyStd:1, noExpiry:true },
+  { section:'d3', name:'Scissors', qtyStd:1, noExpiry:true },
+  { section:'d3', name:'Medication Additive labels', qtyStd:5, noExpiry:true },
+  { section:'d3', name:'ECG paper, one channel', qtyStd:1, noExpiry:true },
+  { section:'d3', name:'Magnet (A&E and CCU only)', qtyStd:1, noExpiry:true },
+  { section:'d3', name:'Crash Cart Locks', qtyStd:5, noExpiry:true },
   { section:'d3', name:'Defibrillator pads (if available)', qtyStd:2 },
-  { section:'d3', name:'Spanner', qtyStd:2 },
+  { section:'d3', name:'Spanner', qtyStd:2, noExpiry:true },
 
   // --- Drawer 4: Support Items ---
-  { section:'d4', name:'Flashlight (battery replaced monthly)', qtyStd:1 },
-  { section:'d4', name:'Magill forceps: small & large (each)', qtyStd:1 },
-  { section:'d4', name:'Artery forceps', qtyStd:1 },
-  { section:'d4', name:'Mouth Gag', qtyStd:1 },
+  { section:'d4', name:'Flashlight (battery replaced monthly)', qtyStd:1, noExpiry:true },
+  { section:'d4', name:'Magill forceps: small & large (each)', qtyStd:1, noExpiry:true },
+  { section:'d4', name:'Artery forceps', qtyStd:1, noExpiry:true },
+  { section:'d4', name:'Mouth Gag', qtyStd:1, noExpiry:true },
   { section:'d4', name:'Roller Gauze', qtyStd:2 },
   { section:'d4', name:'Pacing Pads (CCU & A&E only)', qtyStd:1 },
   { section:'d4', name:'Pack sterile Gauze 10x10', qtyStd:3 },
 
   // --- Drawer 5: Airway Management ---
-  { section:'d5', name:'Complete functioning Laryngoscope set (5 disposable blade sizes)', qtyStd:1 },
-  { section:'d5', name:'Spare bulb for Laryngoscope', qtyStd:1 },
+  { section:'d5', name:'Complete functioning Laryngoscope set (5 disposable blade sizes)', qtyStd:1, noExpiry:true },
+  { section:'d5', name:'Spare bulb for Laryngoscope', qtyStd:1, noExpiry:true },
   { section:'d5', name:'Spare batteries for Laryngoscope', qtyStd:2 },
   { section:'d5', name:'Oropharyngeal Airway sizes 000, 00, 1, 2, 3, 4 (each)', qtyStd:1 },
   { section:'d5', name:'Nasopharyngeal Airway sizes 4, 6, 7, 8 (each)', qtyStd:1 },
@@ -954,13 +1058,13 @@ const DEFAULT_ITEMS = [
   { section:'d6', name:'Normal IV set', qtyStd:1 },
   { section:'d6', name:'Non-sterile Gloves — small, medium, large (each)', qtyStd:1 },
   { section:'d6', name:'Lacto Cath 150cm', qtyStd:2 },
-  { section:'d6', name:'Sharp disposal Bin', qtyStd:1 },
+  { section:'d6', name:'Sharp disposal Bin', qtyStd:1, noExpiry:true },
 ];
 
 const I18N = {
   ar: {
-    eyebrow: 'OPERATING THEATRE 7 · EMERGENCY DRUG TRAY',
-    title: 'CRASH CART <span>· OT7</span>',
+    eyebrow: 'Operation Theater',
+    title: 'CRUSH CHART <span>· OT7</span>',
     subtitle: 'جدول متابعة صلاحية أدوية ومعدات عربة الإنعاش — حسب دليل المستشفى الرسمي',
     statRedLabel: 'منتهي', statAmberLabel: 'قريب الانتهاء', statGreenLabel: 'صالح', statTotalLabel: 'إجمالي الأصناف',
     listTitle: 'قائمة العربة', loading: 'جارٍ التحميل...',
@@ -992,11 +1096,13 @@ const I18N = {
     legendNA: 'N/A',
     toastSaved: 'تم الحفظ بنجاح',
     toastSaveFail: 'تعذّر الحفظ',
-    sparklineLabel: 'اتجاه الجاهزية'
+    sparklineLabel: 'اتجاه الجاهزية',
+    qrHint: 'امسح الرمز بالجوال للوصول المباشر لهذي العربة',
+    noExpiryLabel: 'لا يحتاج تاريخ انتهاء'
   },
   en: {
-    eyebrow: 'OPERATING THEATRE 7 · EMERGENCY DRUG TRAY',
-    title: 'CRASH CART <span>· OT7</span>',
+    eyebrow: 'Operation Theater',
+    title: 'CRUSH CHART <span>· OT7</span>',
     subtitle: 'Expiry &amp; stock tracking for the crash cart medications and equipment — per the hospital SOP',
     statRedLabel: 'Expired', statAmberLabel: 'Near expiry', statGreenLabel: 'Valid', statTotalLabel: 'Total items',
     listTitle: 'Cart checklist', loading: 'Loading...',
@@ -1028,7 +1134,9 @@ const I18N = {
     legendNA: 'N/A',
     toastSaved: 'Saved successfully',
     toastSaveFail: 'Save failed',
-    sparklineLabel: 'Readiness trend'
+    sparklineLabel: 'Readiness trend',
+    qrHint: 'Scan with your phone for direct access to this cart',
+    noExpiryLabel: 'No expiry date needed'
   }
 };
 
@@ -1106,6 +1214,7 @@ function badgeLabel(flag, na){
   if(flag === 'red') return t('badgeRed');
   if(flag === 'amber') return t('badgeAmber');
   if(flag === 'none') return t('noDateLabel');
+  if(flag === 'noexp') return t('noExpiryLabel');
   return t('badgeGreen');
 }
 
@@ -1113,11 +1222,13 @@ function flagColor(flag){
   if(flag === 'red') return 'var(--red)';
   if(flag === 'amber') return 'var(--amber)';
   if(flag === 'none') return '#C7CEDD';
+  if(flag === 'noexp') return '#C7CEDD';
   return 'var(--green)';
 }
 
 // Earliest (soonest) date among a medication's date entries drives its overall alert level.
 function rowStatus(m){
+  if(m.noExpiry) return { days: null, flag: 'noexp' };
   let minDate = null;
   (m.dates || []).forEach(d => {
     if(!d.date) return;
@@ -1189,7 +1300,45 @@ async function switchCart(cartId){
     btn.disabled = true;
   });
   document.getElementById('loadState').innerHTML = '· ' + t('loading');
+  updateUrlForCart();
   await loadState();
+}
+
+function updateUrlForCart(){
+  try{
+    const url = new URL(window.location.href);
+    url.searchParams.set('cart', currentCart);
+    window.history.replaceState({}, '', url);
+  }catch(e){ /* URL API unavailable — ignore */ }
+}
+
+function cartUrl(cartId){
+  try{
+    const url = new URL(window.location.href);
+    url.searchParams.set('cart', cartId);
+    return url.toString();
+  }catch(e){
+    return window.location.href;
+  }
+}
+
+function openQrModal(){
+  const modal = document.getElementById('qrModal');
+  const box = document.getElementById('qrCodeBox');
+  const url = cartUrl(currentCart);
+  document.getElementById('qrCartName').textContent = currentCart;
+  document.getElementById('qrUrl').textContent = url;
+  box.innerHTML = '';
+  if(typeof QRCode !== 'undefined'){
+    new QRCode(box, { text: url, width: 200, height: 200, colorDark: '#101B33', colorLight: '#ffffff' });
+  } else {
+    box.textContent = 'QR library unavailable';
+  }
+  modal.style.display = 'flex';
+}
+
+function closeQrModal(){
+  document.getElementById('qrModal').style.display = 'none';
 }
 
 // Migrate legacy records (single `expiry`, single `qty`, no `section`) to the current shape.
@@ -1205,7 +1354,8 @@ function normalizeMeds(meds){
       qtyStd: (m.qtyStd === undefined ? (m.qty === undefined ? '' : m.qty) : m.qtyStd),
       qtyActual: (m.qtyActual === undefined ? '' : m.qtyActual),
       dates,
-      na: !!m.na
+      na: !!m.na,
+      noExpiry: !!m.noExpiry
     };
   });
 }
@@ -1224,7 +1374,8 @@ async function loadState(){
     if(parsed){
       state = Object.assign({meds:[], checkedBy:'', lastUpdate:null, lang:'ar', readinessHistory:[]}, parsed);
       state.meds = normalizeMeds(state.meds);
-      lang = state.lang === 'en' ? 'en' : 'ar';
+      // Language is a session-wide UI preference, not per-cart — never let a cart's
+      // saved data override the language the user currently has selected.
     } else {
       seedDefault();
     }
@@ -1234,6 +1385,12 @@ async function loadState(){
   document.getElementById('loadState').innerHTML = '';
   applyI18n();
   render();
+  hidePageLoader();
+}
+
+function hidePageLoader(){
+  const loader = document.getElementById('pageLoader');
+  if(loader) loader.classList.add('loader-hidden');
 }
 
 function seedDefault(){
@@ -1244,7 +1401,8 @@ function seedDefault(){
     qtyStd: it.qtyStd,
     qtyActual: '',
     dates: [{ id: duid(), date: '' }],
-    na: false
+    na: false,
+    noExpiry: !!it.noExpiry
   }));
   state.checkedBy = '';
   state.lastUpdate = null;
@@ -1318,7 +1476,10 @@ function updateStats(){
     const actualVal = (m.qtyActual === '' || m.qtyActual === undefined || m.qtyActual === null) ? null : Number(m.qtyActual);
     const itemShort = stdVal !== null && actualVal !== null && actualVal < stdVal;
     if(itemShort) short++;
-    if(f === 'green' && !itemShort) ready++;
+    const isReady = m.noExpiry
+      ? (actualVal !== null && !itemShort)
+      : (f === 'green' && !itemShort);
+    if(isReady) ready++;
     if(f === 'red') issues.push({ text: `${m.name} — ${t('badgeRed')}`, type: 'red' });
     if(f === 'amber') issues.push({ text: `${m.name} — ${t('badgeAmber')}`, type: 'amber' });
     if(itemShort) issues.push({ text: `${m.name} — ${t('qtyShortLabel')}`, type: 'red' });
@@ -1497,15 +1658,17 @@ function buildRow(m, displayIndex){
   tr.className = m.na ? 'row-na row-enter' : 'row-enter';
   tr.style.borderInlineStart = `5px solid ${m.na ? '#C7CEDD' : flagColor(status.flag)}`;
 
-  const datesHtml = (m.dates || []).map(d => {
-    const f = flagFor(daysLeft(d.date));
-    return `
-      <div class="date-row" data-date-id="${d.id}">
-        <span class="mini-dot" style="background:${flagColor(f)}"></span>
-        <input class="cell date-cell date-input" type="date" value="${d.date || ''}" ${m.na ? 'disabled' : ''}>
-        <button class="mini-del" title="remove date" ${m.na ? 'disabled' : ''}>×</button>
-      </div>`;
-  }).join('');
+  const datesHtml = m.noExpiry
+    ? `<div class="no-expiry-note">${escapeHtml(t('noExpiryLabel'))}</div>`
+    : (m.dates || []).map(d => {
+        const f = flagFor(daysLeft(d.date));
+        return `
+          <div class="date-row" data-date-id="${d.id}">
+            <span class="mini-dot" style="background:${flagColor(f)}"></span>
+            <input class="cell date-cell date-input" type="date" value="${d.date || ''}" ${m.na ? 'disabled' : ''}>
+            <button class="mini-del" title="remove date" ${m.na ? 'disabled' : ''}>×</button>
+          </div>`;
+      }).join('');
 
   const stdVal = (m.qtyStd === '' || m.qtyStd === undefined || m.qtyStd === null) ? null : Number(m.qtyStd);
   const actualVal = (m.qtyActual === '' || m.qtyActual === undefined || m.qtyActual === null) ? null : Number(m.qtyActual);
@@ -1530,10 +1693,10 @@ function buildRow(m, displayIndex){
     <td>
       <div class="dates-cell">
         ${datesHtml}
-        <button class="add-date-btn" type="button" ${m.na ? 'disabled' : ''}>${escapeHtml(t('addDateBtn'))}</button>
+        ${m.noExpiry ? '' : `<button class="add-date-btn" type="button" ${m.na ? 'disabled' : ''}>${escapeHtml(t('addDateBtn'))}</button>`}
       </div>
     </td>
-    <td class="days">${m.na ? '—' : (status.days === null ? '—' : status.days)}</td>
+    <td class="days">${m.na || m.noExpiry ? '—' : (status.days === null ? '—' : status.days)}</td>
     <td class="center"><span class="badge ${m.na ? 'na' : status.flag}"><i></i>${badgeLabel(status.flag, m.na)}</span></td>
     <td class="center"><button class="na-btn ${m.na ? 'active' : ''}" title="N/A" type="button">N/A</button></td>
   `;
@@ -1565,11 +1728,14 @@ function buildRow(m, displayIndex){
     });
   });
 
-  tr.querySelector('.add-date-btn').addEventListener('click', () => {
-    m.dates.push({ id: duid(), date: '' });
-    saveState(true);
-    render();
-  });
+  const addDateBtn = tr.querySelector('.add-date-btn');
+  if(addDateBtn){
+    addDateBtn.addEventListener('click', () => {
+      m.dates.push({ id: duid(), date: '' });
+      saveState(true);
+      render();
+    });
+  }
 
   tr.querySelector('.na-btn').addEventListener('click', () => {
     m.na = !m.na;
@@ -1688,6 +1854,12 @@ document.getElementById('soundToggle').addEventListener('click', () => {
 });
 applySoundIcon();
 
+document.getElementById('qrBtn').addEventListener('click', openQrModal);
+document.getElementById('qrCloseBtn').addEventListener('click', closeQrModal);
+document.getElementById('qrModal').addEventListener('click', (e) => {
+  if(e.target.id === 'qrModal') closeQrModal();
+});
+
 document.getElementById('searchInput').addEventListener('input', (e) => {
   searchQuery = e.target.value.trim();
   render();
@@ -1702,6 +1874,7 @@ function tickClock(){
 tickClock();
 setInterval(tickClock, 1000);
 
+updateUrlForCart();
 loadState();
 </script>
 </body>
