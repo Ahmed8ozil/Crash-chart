@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>CRUSH CHART</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23D8425A'/%3E%3Cpath d='M4 16h5l2-4.5 3.5 9 2.5-6 2 3H28' fill='none' stroke='white' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&family=Space+Mono:wght@400;700&display=swap');
 
@@ -96,6 +97,17 @@
     from{opacity:1;transform:translateY(0) scale(1);}
     to{opacity:0;transform:translateY(14px) scale(.95);}
   }
+  @keyframes confettiFall{
+    0%{transform:translateY(-10vh) rotate(0deg);opacity:1;}
+    100%{transform:translateY(110vh) rotate(540deg);opacity:.2;}
+  }
+  @keyframes heartBeat{
+    0%, 100%{transform:scale(1);}
+    12%{transform:scale(1.12);}
+    24%{transform:scale(1);}
+    36%{transform:scale(1.08);}
+    48%{transform:scale(1);}
+  }
   @media (prefers-reduced-motion: reduce){
     *{animation-duration:.001ms !important;animation-iteration-count:1 !important;transition-duration:.001ms !important;}
   }
@@ -124,6 +136,7 @@
     background:linear-gradient(160deg,#E4485E,#B5283D);
     display:flex;align-items:center;justify-content:center;
     box-shadow:0 6px 16px -6px rgba(216,66,90,.6);
+    animation:heartBeat 3.2s ease-in-out infinite;
   }
   .brand-icon svg{width:28px;height:28px;}
   .brand-text h1{color:#fff;font-size:28px;font-weight:900;margin:0 0 4px;letter-spacing:.01em;animation:none;}
@@ -510,6 +523,7 @@
     max-width:1080px;margin:22px auto 0;padding:0 16px;
     display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;
   }
+
   .save-indicator{font-size:12px;color:var(--muted);display:flex;align-items:center;gap:6px;}
   .save-indicator i{width:6px;height:6px;border-radius:50%;background:var(--green);}
   .save-indicator i.saving{animation:pulseDot .8s ease-in-out infinite;background:var(--steel);}
@@ -663,6 +677,12 @@
   .loader-text{
     font-family:'Space Mono',monospace;font-size:13px;font-weight:700;letter-spacing:.12em;
     color:#B7C2DD;
+  }
+
+  .confetti-layer{position:fixed;inset:0;z-index:2500;pointer-events:none;overflow:hidden;}
+  .confetti-piece{
+    position:absolute;top:0;width:9px;height:14px;border-radius:2px;
+    animation:confettiFall linear forwards;
   }
 </style>
 </head>
@@ -1484,10 +1504,10 @@ function updateStats(){
     if(f === 'amber') issues.push({ text: `${m.name} — ${t('badgeAmber')}`, type: 'amber' });
     if(itemShort) issues.push({ text: `${m.name} — ${t('qtyShortLabel')}`, type: 'red' });
   });
-  document.getElementById('statRed').textContent = red;
-  document.getElementById('statAmber').textContent = amber;
-  document.getElementById('statGreen').textContent = green;
-  document.getElementById('statTotal').textContent = state.meds.length;
+  animateNumber(document.getElementById('statRed'), red);
+  animateNumber(document.getElementById('statAmber'), amber);
+  animateNumber(document.getElementById('statGreen'), green);
+  animateNumber(document.getElementById('statTotal'), state.meds.length);
   renderAlertBanner(red, short);
   const pct = active === 0 ? 100 : Math.round((ready / active) * 100);
   renderGauge(pct);
@@ -1547,6 +1567,53 @@ function renderFilterTabs(red, amber, green, total){
   });
 }
 
+// Animate a number element from its current displayed value to a new one.
+const numberAnimTimers = {};
+function animateNumber(el, newValue, suffix){
+  suffix = suffix || '';
+  if(!el) return;
+  const old = parseInt(el.textContent, 10);
+  const start = isNaN(old) ? newValue : old;
+  if(start === newValue){ el.textContent = newValue + suffix; return; }
+  clearInterval(numberAnimTimers[el.id]);
+  const steps = 16;
+  const stepVal = (newValue - start) / steps;
+  let i = 0;
+  numberAnimTimers[el.id] = setInterval(() => {
+    i++;
+    const val = Math.round(start + stepVal * i);
+    el.textContent = (i >= steps ? newValue : val) + suffix;
+    if(i >= steps) clearInterval(numberAnimTimers[el.id]);
+  }, 22);
+}
+
+let confettiCelebrated = false;
+function maybeCelebrate(pct){
+  if(pct >= 100 && !confettiCelebrated){
+    confettiCelebrated = true;
+    launchConfetti();
+  } else if(pct < 100){
+    confettiCelebrated = false;
+  }
+}
+function launchConfetti(){
+  const colors = ['#5FD3A5', '#7FA6E8', '#F5C05C', '#FF95A3', '#fff'];
+  const container = document.createElement('div');
+  container.className = 'confetti-layer';
+  document.body.appendChild(container);
+  for(let i = 0; i < 60; i++){
+    const piece = document.createElement('span');
+    piece.className = 'confetti-piece';
+    piece.style.left = Math.random() * 100 + 'vw';
+    piece.style.background = colors[Math.floor(Math.random() * colors.length)];
+    piece.style.animationDelay = (Math.random() * 0.4) + 's';
+    piece.style.animationDuration = (2.2 + Math.random() * 1.2) + 's';
+    piece.style.transform = `rotate(${Math.random() * 360}deg)`;
+    container.appendChild(piece);
+  }
+  setTimeout(() => container.remove(), 3800);
+}
+
 function renderGauge(pct){
   lastPct = pct;
   const circumference = 264;
@@ -1556,7 +1623,8 @@ function renderGauge(pct){
   arc.classList.remove('gauge-warn', 'gauge-bad');
   if(pct < 60) arc.classList.add('gauge-bad');
   else if(pct < 90) arc.classList.add('gauge-warn');
-  document.getElementById('gaugePct').textContent = pct + '%';
+  animateNumber(document.getElementById('gaugePct'), pct, '%');
+  maybeCelebrate(pct);
 }
 
 function renderSparkline(){
