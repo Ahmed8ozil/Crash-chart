@@ -1247,8 +1247,21 @@ function flagColor(flag){
 }
 
 // Earliest (soonest) date among a medication's date entries drives its overall alert level.
+function qtyState(m){
+  const stdVal = (m.qtyStd === '' || m.qtyStd === undefined || m.qtyStd === null) ? null : Number(m.qtyStd);
+  const actualVal = (m.qtyActual === '' || m.qtyActual === undefined || m.qtyActual === null) ? null : Number(m.qtyActual);
+  const short = stdVal !== null && actualVal !== null && actualVal < stdVal;
+  return { stdVal, actualVal, short };
+}
+
 function rowStatus(m){
-  if(m.noExpiry) return { days: null, flag: 'noexp' };
+  // Items with no expiry date count as valid (green) once they're recorded as present
+  // in the cart with the full standard quantity; otherwise they stay neutral.
+  if(m.noExpiry){
+    const q = qtyState(m);
+    const present = q.actualVal !== null && q.actualVal > 0 && !q.short;
+    return { days: null, flag: present ? 'green' : 'noexp' };
+  }
   let minDate = null;
   (m.dates || []).forEach(d => {
     if(!d.date) return;
@@ -1783,10 +1796,10 @@ function buildRow(m, displayIndex){
       const entry = m.dates.find(x => x.id === dId);
       if(entry) entry.date = e.target.value;
       saveState(true);
-      // Defer the re-render so the native date picker fully closes on its own first —
-      // rebuilding the input's DOM node while the picker is still active makes some
-      // mobile browsers snap/close it prematurely.
-      setTimeout(render, 0);
+      // Do NOT rebuild the table here: browsers fire 'change' while the user is still
+      // picking/typing, and replacing the input kills focus and closes the picker.
+      // Refresh only this row's indicators + the stats in place.
+      refreshRowInPlace(tr, m);
     });
     row.querySelector('.mini-del').addEventListener('click', () => {
       m.dates = m.dates.filter(x => x.id !== dId);
@@ -1812,6 +1825,43 @@ function buildRow(m, displayIndex){
   });
 
   return tr;
+}
+
+function refreshRowInPlace(tr, m){
+  const status = rowStatus(m);
+  tr.style.borderInlineStart = `5px solid ${m.na ? '#C7CEDD' : flagColor(status.flag)}`;
+  tr.querySelectorAll('.date-row').forEach(row => {
+    const d = (m.dates || []).find(x => x.id === row.getAttribute('data-date-id'));
+    const dot = row.querySelector('.mini-dot');
+    if(d && dot) dot.style.background = flagColor(flagFor(daysLeft(d.date)));
+  });
+  const daysEl = tr.querySelector('td.days');
+  if(daysEl) daysEl.textContent = (m.na || m.noExpiry) ? '—' : (status.days === null ? '—' : status.days);
+  const badge = tr.querySelector('.badge');
+  if(badge){
+    badge.className = `badge ${m.na ? 'na' : status.flag}`;
+    badge.innerHTML = `<i></i>${badgeLabel(status.flag, m.na)}`;
+  }
+  refreshSectionFlags(m.section);
+  updateStats();
+}
+
+function refreshSectionFlags(secId){
+  const knownIds = SECTIONS.map(s => s.id);
+  const sec = knownIds.includes(secId) ? secId : 'general';
+  const header = document.querySelector(`tr[data-section-toggle="${sec}"] .section-flags`);
+  if(!header) return;
+  let secRed = 0, secAmber = 0;
+  state.meds.forEach(m => {
+    const mSec = knownIds.includes(m.section) ? m.section : 'general';
+    if(mSec !== sec || m.na) return;
+    const f = rowStatus(m).flag;
+    if(f === 'red') secRed++; else if(f === 'amber') secAmber++;
+  });
+  header.innerHTML = [
+    secRed > 0 ? `<span class="section-flag section-flag-red">${secRed} ${escapeHtml(t('badgeRed'))}</span>` : '',
+    secAmber > 0 ? `<span class="section-flag section-flag-amber">${secAmber} ${escapeHtml(t('badgeAmber'))}</span>` : ''
+  ].join('');
 }
 
 function itemMatchesFilter(m){
