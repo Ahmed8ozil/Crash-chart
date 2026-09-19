@@ -685,6 +685,7 @@
     animation:confettiFall linear forwards;
   }
 </style>
+<meta name="app-version" content="2026-09-19b">
 </head>
 <body>
 
@@ -1374,6 +1375,8 @@ function closeQrModal(){
   document.getElementById('qrModal').style.display = 'none';
 }
 
+const NO_EXPIRY_NAMES = new Set(DEFAULT_ITEMS.filter(it => it.noExpiry).map(it => it.name.trim()));
+
 // Migrate legacy records (single `expiry`, single `qty`, no `section`) to the current shape.
 function normalizeMeds(meds){
   return (meds || []).map(m => {
@@ -1388,7 +1391,9 @@ function normalizeMeds(meds){
       qtyActual: (m.qtyActual === undefined ? '' : m.qtyActual),
       dates,
       na: !!m.na,
-      noExpiry: !!m.noExpiry
+      // Always re-derive from the current default list, so carts saved before an item
+      // was marked "no expiry" pick up the new setting instead of keeping the old one.
+      noExpiry: NO_EXPIRY_NAMES.has((m.name || '').trim()) || !!m.noExpiry
     };
   });
 }
