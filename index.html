@@ -240,7 +240,19 @@
   .gauge-label{font-size:11px;color:#B7C2DD;letter-spacing:.03em;text-align:center;}
 
   .statbar{display:grid;grid-template-columns:repeat(2, 1fr);gap:10px;flex:1;}
-  @media (min-width:640px){.statbar{grid-template-columns:repeat(4, 1fr);}}
+  @media (min-width:640px){.statbar{grid-template-columns:repeat(5, 1fr);}}
+  @media (max-width:639px){
+    .statbar .stat-total{grid-column:1 / -1;flex-direction:row;align-items:center;min-height:0;padding:12px 14px;gap:12px;}
+    .statbar .stat-total b{order:3;margin-inline-start:auto;}
+  }
+  .stat[data-filter]{cursor:pointer;transition:transform .15s ease, border-color .15s ease, background .15s ease;}
+  .stat[data-filter]:hover{transform:translateY(-2px);}
+  .stat[data-filter]:active{transform:scale(.97);}
+  .stat.stat-active{border-color:rgba(255,255,255,.7);box-shadow:inset 0 1px 0 rgba(255,255,255,.12), 0 0 0 2px rgba(255,255,255,.18), 0 8px 20px -10px rgba(0,0,0,.5);}
+  .stat-missing{background:rgba(178,140,240,.12);border-color:rgba(178,140,240,.3);}
+  .stat-icon-missing{background:rgba(178,140,240,.2);color:#C4A6F5;}
+  .stat-icon-missing.has-critical{animation:missingPulse 1.6s ease-in-out infinite;}
+  @keyframes missingPulse{0%,100%{box-shadow:0 0 0 0 rgba(178,140,240,.55);}50%{box-shadow:0 0 0 9px rgba(178,140,240,0);}}
   .stat{
     background:rgba(255,255,255,.07);
     border:1px solid rgba(255,255,255,.16);
@@ -293,22 +305,42 @@
     display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;
     padding:14px 18px;border-bottom:1px solid var(--line);background:var(--surface-1);
   }
-  .filter-tabs{display:flex;gap:6px;flex-wrap:wrap;}
+  .filter-tabs{
+    display:flex;gap:4px;padding:4px;border-radius:14px;background:var(--surface-2);
+    border:1px solid var(--line);overflow-x:auto;scrollbar-width:none;max-width:100%;
+  }
+  .filter-tabs::-webkit-scrollbar{display:none;}
   .filter-tab{
-    background:transparent;border:1px solid var(--line);color:var(--muted);cursor:pointer;
+    --c:var(--steel);
+    background:transparent;border:none;color:var(--muted);cursor:pointer;white-space:nowrap;flex-shrink:0;
     font-family:'Tajawal',sans-serif;font-size:12.5px;font-weight:700;
-    padding:7px 14px;border-radius:999px;display:inline-flex;align-items:center;gap:6px;
-    transition:all .15s ease;
+    padding:7px 12px;border-radius:10px;display:inline-flex;align-items:center;gap:7px;
+    transition:background .15s ease, color .15s ease, box-shadow .15s ease;
   }
+  .filter-tab .dot{width:8px;height:8px;border-radius:50%;background:var(--c);flex-shrink:0;}
   .filter-tab .cnt{
-    background:rgba(107,118,144,.15);border-radius:999px;padding:1px 7px;font-size:11px;
-    font-family:'Space Mono',monospace;
+    background:color-mix(in srgb, var(--c) 14%, transparent);color:var(--c);
+    border-radius:999px;padding:1px 7px;font-size:11px;font-family:'Space Mono',monospace;min-width:22px;text-align:center;
   }
-  .filter-tab:hover{border-color:var(--steel);color:var(--steel);}
-  .filter-tab.active{background:var(--navy-2);border-color:var(--navy-2);color:#fff;}
-  .filter-tab.has-critical{border-color:var(--red);color:var(--red);animation:criticalPulseLight 1.6s ease-in-out infinite;}
-  .filter-tab.has-critical.active{background:var(--red);border-color:var(--red);color:#fff;}
-  .filter-tab.active .cnt{background:rgba(255,255,255,.2);color:#fff;}
+  .filter-tab.f-all{--c:var(--navy-2);}
+  html[data-theme="dark"] .filter-tab.f-all{--c:#9DBBF0;}
+  .filter-tab.f-expired{--c:var(--red);}
+  .filter-tab.f-near{--c:var(--amber);}
+  .filter-tab.f-valid{--c:var(--green);}
+  .filter-tab.f-missing{--c:#8E5BD0;}
+  .filter-tab:hover{color:var(--ink);background:var(--card);}
+  .filter-tab.active{background:var(--card);color:var(--ink);box-shadow:0 2px 8px -3px var(--shadow-color), inset 0 -2px 0 var(--c);}
+  .filter-tab.active .cnt{background:var(--c);color:#fff;}
+  .filter-tab.is-zero .cnt{opacity:.55;}
+  .filter-tab.has-critical .dot{animation:pulseDot 1.2s ease-in-out infinite;}
+  .filter-sep{width:1px;background:var(--line);margin:6px 2px;flex-shrink:0;}
+  @media (max-width:640px){
+    .filter-row{flex-direction:column;align-items:stretch;padding:12px 14px;}
+    .filter-tabs{width:100%;flex-wrap:wrap;overflow:visible;gap:4px;}
+    .filter-tabs .filter-sep{display:none;}
+    .filter-tab{flex:1 1 auto;justify-content:center;padding:8px 10px;}
+    .search-box{max-width:none !important;}
+  }
   .search-box{
     display:flex;align-items:center;gap:8px;
     border:1px solid var(--line);border-radius:10px;padding:8px 12px;background:var(--input-bg);
@@ -325,7 +357,7 @@
     border:1px solid var(--line);
     border-radius:20px;
     box-shadow:0 14px 34px -16px var(--shadow-color);
-    overflow:hidden;
+    overflow:hidden;overflow:clip;
     margin-top:-40px;
     position:relative;
     animation:fadeInUp .5s ease .05s both;
@@ -541,6 +573,390 @@
     .signoff{flex-direction:column;align-items:stretch;}
   }
 
+
+  /* ===== Audit log drawer ===== */
+  .btn-header.btn-icon{display:inline-flex;align-items:center;gap:7px;}
+  .btn-header.btn-icon svg{width:16px;height:16px;flex-shrink:0;}
+  .log-overlay{position:fixed;inset:0;z-index:1250;background:rgba(10,15,28,.55);animation:fadeIn .2s ease both;}
+  .log-panel{
+    position:fixed;top:0;bottom:0;inset-inline-end:0;z-index:1260;width:min(460px,100%);
+    background:var(--paper);display:flex;flex-direction:column;
+    box-shadow:0 0 60px -10px rgba(0,0,0,.5);animation:logIn .32s cubic-bezier(.2,.9,.3,1) both;
+  }
+  html[dir="rtl"] .log-panel{animation-name:logInRtl;}
+  @keyframes logIn{from{transform:translateX(100%);}to{transform:translateX(0);}}
+  @keyframes logInRtl{from{transform:translateX(-100%);}to{transform:translateX(0);}}
+  .log-head{
+    background:linear-gradient(160deg, var(--navy) 0%, #1B2A4A 60%, #24365A 100%);
+    color:#fff;padding:20px 20px 16px;flex-shrink:0;
+  }
+  .log-head-top{display:flex;align-items:center;gap:12px;}
+  .log-head-icon{width:40px;height:40px;border-radius:12px;background:rgba(127,166,232,.18);color:#9DBBF0;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+  .log-head-icon svg{width:21px;height:21px;}
+  .log-head h2{margin:0;font-size:19px;font-weight:900;}
+  .log-head .log-sub{font-size:12px;color:#AFBBDA;margin-top:2px;}
+  .log-head .log-sub b{font-family:'Space Mono',monospace;color:#7FA6E8;}
+  .log-close{margin-inline-start:auto;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.16);color:#EAF0FF;width:36px;height:36px;border-radius:10px;cursor:pointer;font-size:20px;line-height:1;}
+  .log-close:hover{background:rgba(255,255,255,.16);}
+  .log-kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:16px;}
+  .log-kpi{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:12px;padding:9px 10px;min-width:0;}
+  .log-kpi b{display:block;font-family:'Space Mono',monospace;font-size:18px;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .log-kpi b.log-kpi-name{font-family:'Tajawal',sans-serif;font-size:14px;padding-top:3px;}
+  .log-kpi span{font-size:11px;color:#98A6C8;}
+  .log-tools{padding:14px 16px 10px;display:flex;flex-direction:column;gap:10px;border-bottom:1px solid var(--line);background:var(--card);flex-shrink:0;}
+  .log-chips{display:flex;gap:6px;flex-wrap:wrap;}
+  .log-chip{border:1px solid var(--line);background:var(--surface-1);color:var(--muted);font-family:'Tajawal',sans-serif;font-size:12.5px;font-weight:700;padding:6px 12px;border-radius:999px;cursor:pointer;}
+  .log-chip.active{background:var(--navy-2);border-color:var(--navy-2);color:#fff;}
+  .log-chip .cnt{font-family:'Space Mono',monospace;font-size:11px;opacity:.7;margin-inline-start:4px;}
+  .log-search{border:1px solid var(--line);border-radius:10px;padding:9px 12px;font-family:'Tajawal',sans-serif;font-size:14px;background:var(--input-bg);color:var(--ink);width:100%;}
+  .log-search:focus{outline:none;border-color:var(--steel);}
+  .log-hint{font-size:12px;color:var(--amber);background:var(--amber-bg);border-radius:10px;padding:8px 12px;line-height:1.5;}
+  .log-body{flex:1;overflow-y:auto;padding:4px 16px 30px;-webkit-overflow-scrolling:touch;}
+  .log-day{position:sticky;top:0;z-index:2;background:var(--paper);padding:14px 2px 8px;display:flex;align-items:center;gap:10px;font-size:12.5px;font-weight:800;color:var(--ink);}
+  .log-day::after{content:'';flex:1;height:1px;background:var(--line);}
+  .log-day small{font-family:'Space Mono',monospace;font-size:11px;color:var(--muted);font-weight:400;}
+  .log-list{position:relative;}
+  .log-list::before{content:'';position:absolute;top:8px;bottom:8px;inset-inline-start:17px;width:2px;background:var(--line);border-radius:2px;}
+  .log-entry{position:relative;display:flex;gap:12px;padding:6px 0;animation:fadeInUp .25s ease both;}
+  .log-icon{width:36px;height:36px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;position:relative;z-index:1;border:3px solid var(--paper);}
+  .log-icon svg{width:16px;height:16px;}
+  .log-t-date .log-icon{background:#E3ECF8;color:var(--steel);}
+  .log-t-add .log-icon{background:var(--green-bg);color:var(--green);}
+  .log-t-remove .log-icon{background:var(--red-bg);color:var(--red);}
+  .log-t-qty .log-icon{background:var(--amber-bg);color:var(--amber);}
+  .log-t-na .log-icon{background:var(--neutral-bg);color:var(--neutral-text);}
+  html[data-theme="dark"] .log-t-date .log-icon{background:#1A2C4C;}
+  .log-card{flex:1;min-width:0;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:10px 12px;}
+  .log-top{display:flex;align-items:baseline;gap:8px;}
+  .log-item{font-weight:800;font-size:13.5px;color:var(--ink);flex:1;min-width:0;line-height:1.4;}
+  .log-time{font-family:'Space Mono',monospace;font-size:11px;color:var(--muted);white-space:nowrap;}
+  .log-action{font-size:12px;color:var(--muted);margin-top:2px;}
+  .log-change{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:7px;font-family:'Space Mono',monospace;font-size:12.5px;}
+  .log-from{color:var(--muted);text-decoration:line-through;text-decoration-color:rgba(138,147,168,.6);}
+  .log-arrow{color:var(--muted);}
+  .log-to{font-weight:700;padding:2px 8px;border-radius:7px;background:var(--surface-2);color:var(--ink);}
+  .log-to.st-green{background:var(--green-bg);color:var(--green);}
+  .log-to.st-amber{background:var(--amber-bg);color:var(--amber);}
+  .log-to.st-red{background:var(--red-bg);color:var(--red);}
+  .log-meta{display:flex;align-items:center;gap:7px;margin-top:9px;padding-top:8px;border-top:1px dashed var(--line);font-size:11.5px;color:var(--muted);}
+  .log-avatar{width:20px;height:20px;border-radius:50%;background:var(--navy-2);color:#fff;font-size:10.5px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+  .log-avatar.anon{background:var(--neutral-text);}
+  .log-meta .log-by{font-weight:700;color:var(--ink);}
+  .log-empty{text-align:center;padding:60px 20px;color:var(--muted);}
+  .log-empty svg{width:46px;height:46px;opacity:.45;margin-bottom:10px;}
+  .log-empty b{display:block;color:var(--ink);font-size:15px;margin-bottom:4px;}
+
+  /* ===== Printable report ===== */
+  #printReport{display:none;}
+  @media print{
+    @page{size:A4;margin:11mm 10mm;}
+    html,body{background:#fff !important;padding:0 !important;min-height:0 !important;}
+    body > *:not(#printReport){display:none !important;}
+    #printReport{display:block !important;}
+  }
+  #printReport{font-family:'Tajawal',sans-serif;color:#101B33;font-size:11px;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+  #printReport *{box-sizing:border-box;}
+  .rp-head{display:flex;align-items:center;gap:14px;background:#101B33;color:#fff;border-radius:12px;padding:14px 16px;}
+  .rp-logo{width:44px;height:44px;border-radius:11px;background:#D8425A;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+  .rp-logo svg{width:26px;height:26px;}
+  .rp-title h1{margin:0;font-size:18px;font-weight:900;}
+  .rp-title p{margin:2px 0 0;font-size:10.5px;color:#B7C2DD;}
+  .rp-cart{margin-inline-start:auto;text-align:center;border:1px solid rgba(255,255,255,.25);border-radius:10px;padding:6px 14px;}
+  .rp-cart b{display:block;font-family:'Space Mono',monospace;font-size:20px;color:#9DBBF0;}
+  .rp-cart span{font-size:9px;color:#B7C2DD;}
+  .rp-meta{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin:10px 0;}
+  .rp-meta div{border:1px solid #E3E8F1;border-radius:8px;padding:6px 9px;}
+  .rp-meta span{display:block;font-size:9px;color:#6B7690;font-weight:700;}
+  .rp-meta b{font-size:11px;font-family:'Space Mono','Tajawal',monospace;}
+  .rp-summary{display:flex;gap:8px;align-items:stretch;margin-bottom:12px;}
+  .rp-ready{width:110px;border-radius:10px;padding:8px;text-align:center;color:#fff;display:flex;flex-direction:column;justify-content:center;}
+  .rp-ready b{font-family:'Space Mono',monospace;font-size:26px;line-height:1.1;}
+  .rp-ready span{font-size:10px;opacity:.85;}
+  .rp-counts{flex:1;display:grid;grid-template-columns:repeat(5,1fr);gap:6px;}
+  .rp-count{border-radius:9px;padding:7px;text-align:center;}
+  .rp-count b{display:block;font-family:'Space Mono',monospace;font-size:18px;}
+  .rp-count span{font-size:9.5px;font-weight:700;}
+  .rp-c-green{background:#E7F5EF;color:#2C9A72;} .rp-c-amber{background:#FBF2E1;color:#B87A16;}
+  .rp-c-red{background:#FDECEF;color:#D8425A;} .rp-c-grey{background:#F0F2F6;color:#6B7690;}
+  .rp-h2{font-size:12.5px;font-weight:900;margin:14px 0 6px;display:flex;align-items:center;gap:8px;}
+  .rp-h2::before{content:'';width:4px;height:14px;border-radius:2px;background:#3E6FA8;}
+  .rp-h2.rp-h2-red::before{background:#D8425A;}
+  .rp-ok{background:#E7F5EF;color:#2C9A72;border-radius:9px;padding:9px 12px;font-weight:700;}
+  #printReport table{width:100%;min-width:0;border-collapse:collapse;table-layout:auto;}
+  #printReport th, #printReport td{white-space:normal;position:static;}
+  #printReport th{background:#F0F3F9;color:#6B7690;font-size:9.5px;font-weight:800;text-align:start;padding:5px 6px;border-bottom:1px solid #D7DEEA;}
+  #printReport td{padding:4px 6px;border-bottom:1px solid #EEF1F6;vertical-align:middle;}
+  #printReport tr{page-break-inside:avoid;break-inside:avoid;}
+  #printReport .c{text-align:center;}
+  #printReport .nw{white-space:nowrap;}
+  #printReport .mono{font-family:'Space Mono',monospace;font-size:10px;}
+  .rp-sec td{background:#1B2A4A;color:#fff;font-weight:800;font-size:10.5px;padding:5px 8px;}
+  .rp-na td{color:#9AA3B8;}
+  .rp-pill{display:inline-block;border-radius:999px;padding:1px 8px;font-size:9.5px;font-weight:800;white-space:nowrap;}
+  .rp-short{color:#D8425A;font-weight:800;}
+  .rp-sign{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:22px;page-break-inside:avoid;}
+  .rp-sign div{border-top:1.5px solid #101B33;padding-top:5px;font-size:10px;color:#6B7690;font-weight:700;}
+  .rp-sign b{display:block;color:#101B33;font-size:11px;min-height:14px;}
+  .rp-foot{margin-top:14px;font-size:9px;color:#96A2C0;display:flex;justify-content:space-between;font-family:'Space Mono',monospace;}
+
+
+  /* ===== Header quick actions ===== */
+  .btn-start-check{
+    display:inline-flex;align-items:center;gap:8px;border:none;cursor:pointer;
+    background:linear-gradient(135deg,#5FD3A5,#2C9A72);color:#06261A;
+    font-family:'Tajawal',sans-serif;font-size:13.5px;font-weight:900;
+    padding:10px 16px;border-radius:12px;box-shadow:0 8px 20px -10px rgba(95,211,165,.8);
+    transition:transform .12s ease, box-shadow .15s ease;white-space:nowrap;
+  }
+  .btn-start-check:hover{box-shadow:0 10px 24px -8px rgba(95,211,165,.9);}
+  .btn-start-check:active{transform:scale(.96);}
+  .btn-start-check svg{width:17px;height:17px;}
+  .cart-switcher-row{flex-wrap:wrap;}
+  .cart-switcher-row .cart-switcher{margin-bottom:0;}
+
+  /* ===== Cart map ===== */
+  .map-modal{position:fixed;inset:0;z-index:1300;background:rgba(10,15,28,.7);display:flex;align-items:center;justify-content:center;padding:18px;animation:fadeIn .2s ease both;}
+  .map-sheet{
+    background:var(--paper);border-radius:24px;width:min(940px,100%);max-height:calc(100vh - 36px);overflow:hidden;
+    display:flex;flex-direction:column;box-shadow:0 30px 70px -20px rgba(0,0,0,.6);animation:toastIn .3s cubic-bezier(.34,1.3,.64,1) both;
+  }
+  .map-head{display:flex;align-items:center;gap:12px;padding:16px 20px;background:linear-gradient(160deg,var(--navy),#1B2A4A 60%,#24365A);color:#fff;}
+  .map-head h2{margin:0;font-size:18px;font-weight:900;}
+  .map-head p{margin:2px 0 0;font-size:12px;color:#AFBBDA;}
+  .map-head .log-head-icon{background:rgba(95,211,165,.16);color:#5FD3A5;}
+  .map-grid{display:grid;grid-template-columns:minmax(260px,340px) 1fr;gap:0;overflow:hidden;flex:1;min-height:0;}
+  .map-art-wrap{padding:22px 22px 18px;background:radial-gradient(circle at 50% 30%, var(--surface-3), var(--surface-1) 70%);border-inline-end:1px solid var(--line);overflow-y:auto;}
+  .map-detail{overflow-y:auto;padding:18px 20px 22px;background:var(--card);}
+  @media (max-width:720px){
+    .map-modal{padding:0;align-items:flex-end;}
+    .map-sheet{border-radius:22px 22px 0 0;max-height:94vh;}
+    .map-grid{grid-template-columns:1fr;overflow-y:auto;}
+    .map-art-wrap{border-inline-end:none;border-bottom:1px solid var(--line);overflow:visible;}
+    .map-detail{overflow:visible;}
+  }
+
+  .cart-art{position:relative;margin:0 auto;max-width:300px;}
+  .cart-tray{
+    position:relative;width:100%;border:none;cursor:pointer;text-align:start;font-family:'Tajawal',sans-serif;
+    background:linear-gradient(180deg,#DDE3EE,#C9D1E0);border-radius:14px 14px 6px 6px;padding:12px 14px 14px;
+    box-shadow:inset 0 -4px 0 rgba(0,0,0,.08), 0 3px 0 #AEB8CB;color:#101B33;
+    transition:transform .2s ease, box-shadow .2s ease;
+  }
+  html[data-theme="dark"] .cart-tray{background:linear-gradient(180deg,#34425F,#28344D);color:#E8ECF5;box-shadow:inset 0 -4px 0 rgba(0,0,0,.2),0 3px 0 #1A2338;}
+  .cart-tray::before{content:'';position:absolute;top:-8px;inset-inline:18%;height:10px;border-radius:8px 8px 0 0;background:inherit;opacity:.9;}
+  .cart-tray .tray-items{display:flex;gap:5px;margin-top:8px;align-items:flex-end;height:22px;}
+  .cart-tray .tray-items i{display:block;border-radius:4px 4px 2px 2px;background:rgba(16,27,51,.18);}
+  html[data-theme="dark"] .cart-tray .tray-items i{background:rgba(255,255,255,.14);}
+  .cart-body{
+    margin:6px 8px 0;padding:10px;border-radius:8px;
+    background:linear-gradient(90deg,#B5283D,#D8425A 12%,#D8425A 88%,#B5283D);
+    box-shadow:inset 0 2px 6px rgba(0,0,0,.25);display:flex;flex-direction:column;gap:7px;
+  }
+  .drawer{
+    position:relative;width:100%;border:none;cursor:pointer;font-family:'Tajawal',sans-serif;
+    background:linear-gradient(180deg,#FFFFFF,#EEF1F6);border-radius:7px;padding:8px 12px 10px;
+    display:flex;align-items:center;gap:10px;text-align:start;color:#101B33;
+    box-shadow:0 2px 0 rgba(0,0,0,.18), inset 0 1px 0 #fff;
+    transition:transform .28s cubic-bezier(.3,1.4,.5,1), box-shadow .2s ease;
+  }
+  html[data-theme="dark"] .drawer{background:linear-gradient(180deg,#1E2A44,#172238);color:#E8ECF5;box-shadow:0 2px 0 rgba(0,0,0,.4), inset 0 1px 0 rgba(255,255,255,.06);}
+  .drawer::after{display:none;content:'';position:absolute;top:50%;left:50%;width:34%;height:5px;border-radius:4px;transform:translate(-50%,-50%);background:rgba(16,27,51,.14);pointer-events:none;}
+  html[data-theme="dark"] .drawer::after{background:rgba(255,255,255,.1);}
+  .drawer .d-num{font-family:'Space Mono',monospace;font-weight:700;font-size:13px;width:24px;height:24px;border-radius:7px;display:flex;align-items:center;justify-content:center;background:var(--hc,#8A93A8);color:#fff;flex-shrink:0;position:relative;z-index:1;}
+  .drawer .d-name{font-size:11.5px;font-weight:800;line-height:1.25;position:relative;z-index:1;flex:1;min-width:0;}
+  .drawer .d-name small{display:block;font-weight:500;color:#6B7690;font-size:10.5px;}
+  .drawer .d-pills{display:flex;gap:3px;position:relative;z-index:1;}
+  .d-pill{font-family:'Space Mono',monospace;font-size:10px;font-weight:700;border-radius:6px;padding:1px 5px;color:#fff;}
+  .drawer .d-prog{position:absolute;bottom:3px;inset-inline:10px;height:3px;border-radius:3px;background:rgba(16,27,51,.08);overflow:hidden;}
+  .drawer .d-prog b,.cart-tray .d-prog b{display:block;height:100%;background:var(--hc,#8A93A8);border-radius:3px;transition:width .4s ease;}
+  .cart-tray .d-prog{position:absolute;bottom:5px;inset-inline:14px;height:3px;border-radius:3px;background:rgba(16,27,51,.1);overflow:hidden;}
+  .drawer:hover,.cart-tray:hover{transform:translateY(-1px);}
+  .drawer.selected{transform:translateX(var(--pull,-14px)) scale(1.03);box-shadow:0 10px 22px -8px rgba(0,0,0,.45), 0 0 0 2px var(--hc,#8A93A8);z-index:2;}
+  html[dir="ltr"] .drawer.selected{--pull:14px;}
+  .cart-tray.selected{box-shadow:0 0 0 2px var(--hc,#8A93A8), 0 10px 22px -8px rgba(0,0,0,.4);}
+  .drawer.h-red .d-num,.cart-tray.h-red .d-num{animation:criticalPulseLight 1.6s ease-in-out infinite;}
+  .cart-base{height:12px;margin:0 2px;border-radius:0 0 8px 8px;background:#8E1E30;}
+  .cart-wheels{display:flex;justify-content:space-between;padding:0 18px;margin-top:-2px;}
+  .cart-wheels i{width:22px;height:22px;border-radius:50%;background:#2A3448;border:5px solid #56617A;display:block;}
+  .map-legend{display:flex;flex-wrap:wrap;gap:10px 14px;justify-content:center;margin-top:16px;font-size:11.5px;color:var(--muted);}
+  .map-legend span{display:inline-flex;align-items:center;gap:5px;}
+  .map-legend i{width:9px;height:9px;border-radius:3px;display:inline-block;}
+
+  .md-title{display:flex;align-items:center;gap:10px;margin-bottom:12px;}
+  .md-title .section-icon-badge{flex-shrink:0;}
+  .md-title h3{margin:0;font-size:16px;font-weight:900;color:var(--ink);}
+  .md-title p{margin:1px 0 0;font-size:12px;color:var(--muted);}
+  .md-stats{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-bottom:14px;}
+  .md-stat{border-radius:12px;padding:8px 4px;text-align:center;}
+  .md-stat b{display:block;font-family:'Space Mono',monospace;font-size:17px;}
+  .md-stat span{font-size:10.5px;font-weight:700;}
+  .md-actions{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap;}
+  .md-btn{flex:1;min-width:130px;border:1px solid var(--line);background:var(--surface-1);color:var(--ink);font-family:'Tajawal',sans-serif;font-weight:800;font-size:13px;padding:10px 12px;border-radius:12px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:7px;}
+  .md-btn svg{width:16px;height:16px;}
+  .md-btn.primary{background:linear-gradient(135deg,#5FD3A5,#2C9A72);border:none;color:#06261A;}
+  .md-list{display:flex;flex-direction:column;gap:6px;}
+  .md-item{display:flex;align-items:center;gap:10px;padding:9px 11px;border-radius:12px;border:1px solid var(--line);background:var(--surface-1);animation:fadeInUp .22s ease both;}
+  .md-item i{width:9px;height:9px;border-radius:50%;flex-shrink:0;}
+  .md-item .n{flex:1;min-width:0;font-size:13px;font-weight:700;color:var(--ink);line-height:1.35;}
+  .md-item .n small{display:block;font-weight:500;font-size:11px;color:var(--muted);}
+  .md-item .q{font-family:'Space Mono',monospace;font-size:12px;font-weight:700;padding:2px 8px;border-radius:8px;background:var(--surface-2);color:var(--ink);white-space:nowrap;}
+  .md-item .q.short{background:var(--red-bg);color:var(--red);}
+  .md-item.is-na{opacity:.5;}
+  .md-empty{text-align:center;color:var(--muted);padding:40px 10px;font-size:13px;}
+
+  /* ===== Swipe check mode ===== */
+  .chk{position:fixed;inset:0;z-index:1400;background:linear-gradient(165deg,#0A0F1C 0%,#16223B 55%,#1E2E4E 100%);color:#fff;display:flex;flex-direction:column;animation:fadeIn .2s ease both;overflow:hidden;}
+  .chk-top{display:flex;align-items:center;gap:12px;padding:16px 18px 10px;flex-shrink:0;}
+  .chk-x{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.16);color:#fff;width:38px;height:38px;border-radius:11px;font-size:20px;cursor:pointer;flex-shrink:0;}
+  .chk-prog{flex:1;min-width:0;}
+  .chk-prog-row{display:flex;justify-content:space-between;align-items:baseline;font-size:12px;color:#AFBBDA;margin-bottom:6px;gap:8px;}
+  .chk-prog-row b{font-family:'Space Mono',monospace;color:#fff;font-size:13px;}
+  .chk-prog-row span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .chk-bar{height:6px;border-radius:6px;background:rgba(255,255,255,.1);overflow:hidden;display:flex;}
+  .chk-bar i{display:block;height:100%;transition:width .3s ease;}
+  .chk-stage{flex:1;position:relative;display:flex;align-items:center;justify-content:center;padding:6px 18px;min-height:0;}
+  .chk-card{
+    position:absolute;width:min(420px,calc(100% - 36px));max-height:100%;overflow-y:auto;
+    background:var(--card);color:var(--ink);border-radius:26px;padding:20px 20px 22px;
+    box-shadow:0 30px 60px -20px rgba(0,0,0,.6);touch-action:pan-y;user-select:none;-webkit-user-select:none;
+    cursor:grab;will-change:transform;
+  }
+  .chk-card.dragging{cursor:grabbing;}
+  .chk-card.back{transform:translateY(16px) scale(.94);opacity:.55;pointer-events:none;filter:saturate(.6);}
+  .chk-card.enter{animation:chkEnter .28s cubic-bezier(.3,1.3,.5,1) both;}
+  @keyframes chkEnter{from{transform:translateY(16px) scale(.94);opacity:.6;}to{transform:none;opacity:1;}}
+  .chk-sec{display:inline-flex;align-items:center;gap:6px;font-size:11.5px;font-weight:800;color:var(--steel);background:var(--surface-3);padding:5px 10px;border-radius:999px;}
+  .chk-sec .section-icon-badge{width:18px;height:18px;}
+  .chk-name{font-size:22px;font-weight:900;line-height:1.35;margin:14px 0 16px;color:var(--ink);}
+  .chk-qty{display:flex;gap:8px;margin-bottom:14px;}
+  .chk-qty div{flex:1;border-radius:14px;padding:10px 12px;background:var(--surface-2);}
+  .chk-qty span{display:block;font-size:11px;color:var(--muted);font-weight:700;}
+  .chk-qty b{font-family:'Space Mono',monospace;font-size:24px;}
+  .chk-dates{display:flex;flex-direction:column;gap:7px;}
+  .chk-date{display:flex;align-items:center;gap:8px;border:1px solid var(--line);border-radius:12px;padding:6px 8px 6px 10px;}
+  .chk-date input{flex:1;min-width:0;border:none;background:transparent;color:var(--ink);font-family:'Space Mono',monospace;font-size:14px;padding:4px 0;}
+  .chk-date input:focus{outline:none;}
+  .chk-noexp{font-size:12.5px;color:var(--muted);background:var(--surface-2);border-radius:12px;padding:10px 12px;}
+  .chk-warn{margin-top:10px;font-size:12.5px;font-weight:800;border-radius:12px;padding:9px 12px;background:var(--red-bg);color:var(--red);}
+  .chk-warn.amber{background:var(--amber-bg);color:var(--amber);}
+  .chk-hint{margin-top:14px;text-align:center;font-size:11.5px;color:var(--muted);}
+  .chk-stamp{position:absolute;top:22px;font-size:20px;font-weight:900;padding:5px 14px;border-radius:12px;border:3px solid;opacity:0;pointer-events:none;transform:rotate(-12deg);z-index:3;background:var(--card);}
+  .chk-stamp.ok{left:18px;color:var(--green);border-color:var(--green);}
+  .chk-stamp.no{right:18px;color:var(--red);border-color:var(--red);transform:rotate(12deg);}
+  .chk-actions{direction:ltr;display:flex;align-items:center;justify-content:center;gap:18px;padding:12px 18px calc(22px + env(safe-area-inset-bottom,0px));flex-shrink:0;}
+  .chk-btn{border:none;cursor:pointer;border-radius:50%;display:flex;align-items:center;justify-content:center;transition:transform .12s ease;flex-direction:column;gap:2px;font-family:'Tajawal',sans-serif;}
+  .chk-btn:active{transform:scale(.9);}
+  .chk-btn svg{width:28px;height:28px;}
+  .chk-btn.big{width:72px;height:72px;}
+  .chk-btn.no{background:rgba(255,107,122,.14);color:#FF7A90;border:2px solid rgba(255,107,122,.5);}
+  .chk-btn.ok{background:rgba(95,211,165,.16);color:#5FD3A5;border:2px solid rgba(95,211,165,.55);}
+  .chk-btn.small{width:48px;height:48px;background:rgba(255,255,255,.08);color:#C9D3EA;border:1px solid rgba(255,255,255,.16);}
+  .chk-btn.small svg{width:20px;height:20px;}
+  .chk-btn:disabled{opacity:.3;cursor:default;}
+  .chk-btn-lbl{display:flex;flex-direction:column;align-items:center;gap:6px;font-size:11px;color:#AFBBDA;font-weight:700;}
+
+  .chk-sheet-bg{position:absolute;inset:0;background:rgba(0,0,0,.45);z-index:5;animation:fadeIn .15s ease both;}
+  .chk-sheet{position:absolute;inset-inline:0;bottom:0;z-index:6;background:var(--card);color:var(--ink);border-radius:24px 24px 0 0;padding:18px 18px calc(24px + env(safe-area-inset-bottom,0px));animation:sheetUp .25s cubic-bezier(.3,1.2,.5,1) both;max-width:520px;margin:0 auto;}
+  @keyframes sheetUp{from{transform:translateY(100%);}to{transform:none;}}
+  .chk-sheet h4{margin:0 0 4px;font-size:16px;font-weight:900;}
+  .chk-sheet p{margin:0 0 14px;font-size:12.5px;color:var(--muted);}
+  .chk-nums{display:grid;grid-template-columns:repeat(auto-fill,minmax(54px,1fr));gap:8px;}
+  .chk-nums button{height:52px;border-radius:14px;border:1px solid var(--line);background:var(--surface-1);font-family:'Space Mono',monospace;font-size:18px;font-weight:700;color:var(--ink);cursor:pointer;}
+  .chk-nums button.zero{background:var(--red-bg);color:var(--red);border-color:transparent;}
+  .chk-stepper{display:flex;align-items:center;gap:12px;justify-content:center;}
+  .chk-stepper button{width:52px;height:52px;border-radius:14px;border:1px solid var(--line);background:var(--surface-1);font-size:24px;color:var(--ink);cursor:pointer;}
+  .chk-stepper b{font-family:'Space Mono',monospace;font-size:30px;min-width:70px;text-align:center;}
+  .chk-sheet .md-btn{margin-top:14px;width:100%;}
+
+  .chk-screen{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:24px;gap:14px;overflow-y:auto;}
+  .chk-hero{width:84px;height:84px;border-radius:26px;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#5FD3A5,#2C9A72);color:#06261A;box-shadow:0 16px 36px -12px rgba(95,211,165,.7);}
+  .chk-hero svg{width:44px;height:44px;}
+  .chk-hero.warn{background:linear-gradient(135deg,#FF95A3,#D8425A);color:#fff;box-shadow:0 16px 36px -12px rgba(216,66,90,.7);}
+  .chk-screen h2{margin:4px 0 0;font-size:24px;font-weight:900;}
+  .chk-screen .sub2{color:#AFBBDA;font-size:13.5px;margin:0;max-width:340px;line-height:1.6;}
+  .chk-screen .sub2 b{font-family:'Space Mono',monospace;color:#7FA6E8;}
+  .chk-field{width:min(340px,100%);text-align:start;}
+  .chk-field label{display:block;font-size:12px;color:#AFBBDA;font-weight:700;margin-bottom:6px;}
+  .chk-field select{width:100%;padding:12px 14px;border-radius:12px;border:1px solid rgba(255,255,255,.2);background:rgba(255,255,255,.08);color:#fff;font-family:'Tajawal',sans-serif;font-size:15px;}
+  .chk-field select option{color:#101B33;}
+  .chk-seg{display:flex;gap:4px;padding:4px;border-radius:14px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);width:min(340px,100%);}
+  .chk-seg button{flex:1;border:none;background:transparent;color:#AFBBDA;font-family:'Tajawal',sans-serif;font-weight:800;font-size:13px;padding:9px 6px;border-radius:10px;cursor:pointer;}
+  .chk-seg button.on{background:#fff;color:#101B33;}
+  .chk-seg button b{font-family:'Space Mono',monospace;font-size:11px;opacity:.7;margin-inline-start:4px;}
+  .chk-go{width:min(340px,100%);border:none;border-radius:16px;padding:15px;font-family:'Tajawal',sans-serif;font-size:16px;font-weight:900;cursor:pointer;background:linear-gradient(135deg,#5FD3A5,#2C9A72);color:#06261A;box-shadow:0 12px 28px -12px rgba(95,211,165,.8);}
+  .chk-go:disabled{opacity:.4;cursor:default;box-shadow:none;}
+  .chk-go.ghost{background:rgba(255,255,255,.08);color:#fff;border:1px solid rgba(255,255,255,.18);box-shadow:none;}
+  .chk-tips{display:flex;gap:18px;justify-content:center;font-size:12px;color:#AFBBDA;margin-top:4px;}
+  .chk-tips span{display:inline-flex;align-items:center;gap:6px;}
+  .chk-tips i{width:10px;height:10px;border-radius:50%;display:inline-block;}
+  .chk-sum{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;width:min(360px,100%);}
+  .chk-sum div{border-radius:14px;padding:10px 6px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);}
+  .chk-sum b{display:block;font-family:'Space Mono',monospace;font-size:22px;}
+  .chk-sum span{font-size:11px;color:#AFBBDA;}
+  .chk-issues{width:min(360px,100%);display:flex;flex-direction:column;gap:6px;text-align:start;}
+  .chk-issues div{background:rgba(255,107,122,.1);border:1px solid rgba(255,107,122,.25);border-radius:12px;padding:8px 12px;font-size:12.5px;display:flex;justify-content:space-between;gap:10px;}
+  .chk-issues div.amber{background:rgba(245,192,92,.1);border-color:rgba(245,192,92,.25);}
+  .chk-issues em{font-style:normal;font-weight:800;color:#FF95A3;white-space:nowrap;}
+  .chk-issues div.amber em{color:#F5C05C;}
+
+
+  /* ===== Cart view (main view) ===== */
+  .view-toggle{display:flex;gap:3px;padding:3px;border-radius:12px;background:var(--surface-2);border:1px solid var(--line);}
+  .view-toggle button{border:none;background:transparent;color:var(--muted);font-family:'Tajawal',sans-serif;font-size:13px;font-weight:800;padding:7px 13px;border-radius:9px;cursor:pointer;display:inline-flex;align-items:center;gap:6px;}
+  .view-toggle button svg{width:16px;height:16px;}
+  .view-toggle button.on{background:var(--card);color:var(--ink);box-shadow:0 2px 8px -3px var(--shadow-color);}
+  .cart-side{display:none;}
+  .card.cart-mode .view-split{display:grid;grid-template-columns:310px minmax(0,1fr);align-items:start;}
+  .card.cart-mode .cart-side{
+    display:block;position:sticky;top:12px;padding:20px 18px;
+    border-inline-end:1px solid var(--line);
+    background:radial-gradient(circle at 50% 25%, var(--surface-3), var(--surface-1) 75%);
+  }
+  .card.cart-mode .legend{display:none;}
+  @media (max-width:860px){
+    .card.cart-mode .view-split{grid-template-columns:1fr;}
+    .card.cart-mode .cart-side{position:static;border-inline-end:none;border-bottom:1px solid var(--line);}
+  }
+  .cs-info{margin-top:16px;border-radius:16px;background:var(--card);border:1px solid var(--line);padding:12px 14px;}
+  .cs-info h4{margin:0;font-size:14px;font-weight:900;color:var(--ink);display:flex;align-items:center;gap:8px;}
+  .cs-info h4 i{width:10px;height:10px;border-radius:50%;flex-shrink:0;}
+  .cs-info p{margin:4px 0 10px;font-size:12px;color:var(--muted);}
+  .cs-bar{height:6px;border-radius:6px;background:var(--surface-2);overflow:hidden;display:flex;margin-bottom:10px;}
+  .cs-bar b{display:block;height:100%;}
+  .cs-info .md-btn{width:100%;}
+  .cs-filter-note{font-size:12.5px;color:var(--steel);font-weight:700;line-height:1.5;}
+
+  /* Rows become cards inside cart view */
+  .card.cart-mode .tbl-scroll{overflow:visible;padding:14px 16px 18px;}
+  .card.cart-mode table{min-width:0;display:block;}
+  .card.cart-mode thead{display:none;}
+  .card.cart-mode tbody{display:flex;flex-direction:column;gap:10px;}
+  .card.cart-mode tr.section-row{display:block;cursor:default;background:none;}
+  .card.cart-mode tr.section-row td{display:block;padding:4px 2px 2px;border:none;background:none;}
+  .card.cart-mode tr.section-row .section-chevron{display:none;}
+  .card.cart-mode tbody tr:not(.section-row){
+    display:grid;grid-template-columns:auto minmax(0,1fr) auto auto;
+    grid-template-areas:"idx name name badge" "qty qty dates na";
+    align-items:center;gap:10px 12px;padding:12px 14px;
+    background:var(--card);border:1px solid var(--line);border-radius:16px;
+    box-shadow:0 4px 14px -10px var(--shadow-color);
+  }
+  .card.cart-mode tbody tr:not(.section-row) > td{display:block;padding:0;border:none;background:none;text-align:start;}
+  .card.cart-mode tbody tr:not(.section-row) > td:nth-child(1){grid-area:idx;}
+  .card.cart-mode tbody tr:not(.section-row) > td:nth-child(2){grid-area:name;}
+  .card.cart-mode tbody tr:not(.section-row) > td:nth-child(3){grid-area:qty;}
+  .card.cart-mode tbody tr:not(.section-row) > td:nth-child(4){grid-area:dates;}
+  .card.cart-mode tbody tr:not(.section-row) > td:nth-child(5){display:none;}
+  .card.cart-mode tbody tr:not(.section-row) > td:nth-child(6){grid-area:badge;}
+  .card.cart-mode tbody tr:not(.section-row) > td:nth-child(7){grid-area:na;align-self:center;}
+  .card.cart-mode tbody tr:not(.section-row) > td:nth-child(6){justify-self:end;}
+  .card.cart-mode .item-name{font-size:14px;line-height:1.4;}
+  .card.cart-mode .no-expiry-note{display:none;}
+  @media (max-width:520px){
+    .card.cart-mode tbody tr:not(.section-row){grid-template-columns:auto minmax(0,1fr) auto auto;grid-template-areas:"idx name name na" "qty qty badge badge" "dates dates dates dates";}
+    .card.cart-mode tbody tr:not(.section-row) > td:nth-child(6){justify-self:end;}
+  }
+
   /* Display mode — large, high-contrast, distance-readable status view */
   .display-mode{
     position:fixed;inset:0;z-index:999;background:var(--navy);
@@ -631,19 +1047,49 @@
     animation:fadeIn .2s ease both;
   }
   .qr-card{
-    background:var(--card);border-radius:20px;padding:28px 26px;max-width:320px;width:100%;
+    background:var(--card);border-radius:24px;padding:22px 22px 20px;max-width:380px;width:100%;
     text-align:center;box-shadow:0 20px 50px -12px rgba(0,0,0,.5);position:relative;
-    animation:toastIn .28s cubic-bezier(.34,1.56,.64,1) both;
+    animation:toastIn .28s cubic-bezier(.34,1.56,.64,1) both;max-height:calc(100vh - 40px);overflow-y:auto;
   }
   .qr-close{
     position:absolute;top:12px;inset-inline-end:12px;background:transparent;border:none;
-    font-size:22px;color:var(--muted);cursor:pointer;width:30px;height:30px;border-radius:8px;line-height:1;
+    font-size:22px;color:var(--muted);cursor:pointer;width:32px;height:32px;border-radius:9px;line-height:1;
   }
   .qr-close:hover{background:var(--surface-2);}
-  .qr-cart-name{font-family:'Space Mono',monospace;font-size:20px;font-weight:700;color:var(--ink);margin-bottom:16px;}
-  .qr-code-box{display:flex;align-items:center;justify-content:center;margin-bottom:16px;background:#fff;padding:12px;border-radius:12px;display:inline-flex;}
-  .qr-hint{font-size:12.5px;color:var(--muted);margin-bottom:8px;line-height:1.5;}
-  .qr-url{font-family:'Space Mono',monospace;font-size:10.5px;color:var(--steel);word-break:break-all;}
+  .qr-title{font-size:16px;font-weight:900;color:var(--ink);margin:2px 0 12px;}
+  .qr-carts{display:flex;gap:4px;padding:4px;border-radius:12px;background:var(--surface-2);border:1px solid var(--line);margin-bottom:14px;}
+  .qr-carts button{flex:1;border:none;background:transparent;color:var(--muted);font-family:'Space Mono',monospace;font-weight:700;font-size:13px;padding:7px 4px;border-radius:9px;cursor:pointer;}
+  .qr-carts button.on{background:var(--card);color:var(--ink);box-shadow:0 2px 8px -3px var(--shadow-color);}
+  .qr-label{
+    background:#fff;border-radius:18px;padding:16px 16px 12px;border:1px solid #E3E8F1;
+    display:flex;flex-direction:column;align-items:center;gap:6px;color:#101B33;
+  }
+  .qr-label-top{display:flex;align-items:center;gap:8px;font-weight:900;font-size:13px;}
+  .qr-label-top i{width:22px;height:22px;border-radius:7px;background:#D8425A;display:inline-flex;align-items:center;justify-content:center;}
+  .qr-label-top i svg{width:14px;height:14px;}
+  .qr-code-box{width:100%;max-width:230px;aspect-ratio:1;}
+  .qr-code-box svg{width:100%;height:100%;display:block;}
+  .qr-cart-name{font-family:'Space Mono',monospace;font-size:26px;font-weight:700;letter-spacing:.06em;line-height:1;}
+  .qr-label small{font-size:10.5px;color:#6B7690;}
+  .qr-hint{font-size:12px;color:var(--muted);margin:12px 0 4px;line-height:1.5;}
+  .qr-url{font-family:'Space Mono',monospace;font-size:10.5px;color:var(--steel);word-break:break-all;direction:ltr;}
+  .qr-warn{margin-top:10px;font-size:11.5px;color:var(--amber);background:var(--amber-bg);border-radius:10px;padding:8px 10px;line-height:1.5;}
+  .qr-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:14px;}
+  .qr-actions button{border:1px solid var(--line);background:var(--surface-1);color:var(--ink);font-family:'Tajawal',sans-serif;font-weight:800;font-size:12.5px;padding:10px 8px;border-radius:12px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:6px;}
+  .qr-actions button svg{width:15px;height:15px;}
+  .qr-actions button.primary{background:var(--navy-2);color:#fff;border-color:var(--navy-2);}
+  .qr-actions button.wide{grid-column:1 / -1;}
+  /* printable labels */
+  .ql-sheet{display:grid;grid-template-columns:repeat(2,1fr);gap:10mm;}
+  .ql-sheet.single{grid-template-columns:1fr;justify-items:center;}
+  .ql{border:1.5px dashed #B8C2D6;border-radius:6mm;padding:7mm 6mm 5mm;text-align:center;page-break-inside:avoid;break-inside:avoid;width:100%;max-width:85mm;margin:0 auto;}
+  .ql-top{display:flex;align-items:center;justify-content:center;gap:6px;font-weight:900;font-size:12px;color:#101B33;}
+  .ql-top i{width:18px;height:18px;border-radius:5px;background:#D8425A;display:inline-flex;align-items:center;justify-content:center;}
+  .ql-top i svg{width:12px;height:12px;}
+  .ql-qr{width:58mm;height:58mm;margin:4mm auto 3mm;}
+  .ql-qr svg{width:100%;height:100%;}
+  .ql-name{font-family:'Space Mono',monospace;font-size:26px;font-weight:700;letter-spacing:.08em;color:#101B33;}
+  .ql-hint{font-size:10px;color:#6B7690;margin-top:2mm;}
 
   .page-loader{
     position:fixed;inset:0;z-index:2000;
@@ -716,6 +1162,7 @@
 
     <div class="cart-switcher-row">
       <div class="cart-switcher" id="cartSwitcher"></div>
+      <button class="btn-start-check" id="startCheckBtn" type="button"><svg viewBox="0 0 24 24" fill="none"><rect x="4" y="3.5" width="16" height="17" rx="3" stroke="currentColor" stroke-width="2"/><path d="M8.5 12l2.5 2.5 4.5-5" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-i18n="startCheckBtn">ابدأ الفحص</span></button>
       <button class="qr-btn" id="qrBtn" type="button" title="QR Code">
         <svg viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="7" height="7" rx="1" stroke="currentColor" stroke-width="1.6"/><rect x="14" y="3" width="7" height="7" rx="1" stroke="currentColor" stroke-width="1.6"/><rect x="3" y="14" width="7" height="7" rx="1" stroke="currentColor" stroke-width="1.6"/><path d="M14 14h3v3h-3zM20 14v3M14 20h3M20 20v.01" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
       </button>
@@ -739,6 +1186,8 @@
         <svg id="soundIconOff" viewBox="0 0 24 24" fill="none" style="display:none;"><path d="M4 9v6h4l5 4V5L8 9H4z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M16 9l5 6M21 9l-5 6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
       </button>
       <button class="btn-header" id="displayModeBtn" type="button" data-i18n="displayModeBtn">وضع العرض</button>
+      <button class="btn-header btn-icon" id="auditBtn" type="button"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="8.5" stroke="currentColor" stroke-width="1.7"/><path d="M12 7.5V12l3 2" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/><path d="M3.5 5.5v3.5H7" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-i18n="auditBtn">سجل التعديلات</span></button>
+      <button class="btn-header btn-icon" id="reportBtn" type="button"><svg viewBox="0 0 24 24" fill="none"><path d="M14 3H7a2 2 0 00-2 2v14a2 2 0 002 2h10a2 2 0 002-2V8l-5-5z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M14 3v5h5M9 13h6M9 17h4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg><span data-i18n="reportBtn">تقرير PDF</span></button>
     </div>
 
     <svg class="ecg-line" viewBox="0 0 800 40" preserveAspectRatio="none">
@@ -758,29 +1207,35 @@
         <span class="gauge-label" data-i18n="gaugeLabel">الجاهزية</span>
       </div>
       <div class="statbar">
-        <div class="stat stat-total">
+        <div class="stat stat-total" data-filter="all">
           <div class="stat-icon stat-icon-total">
             <svg viewBox="0 0 24 24" fill="none"><path d="M3 7l9-4 9 4-9 4-9-4z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M3 12l9 4 9-4M3 17l9 4 9-4" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>
           </div>
           <b id="statTotal">0</b><span data-i18n="statTotalLabel">إجمالي الأصناف</span>
         </div>
-        <div class="stat stat-green">
+        <div class="stat stat-green" data-filter="valid">
           <div class="stat-icon stat-icon-green">
             <svg viewBox="0 0 24 24" fill="none"><path d="M4 12.5l5 5L20 6.5" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
           </div>
           <b id="statGreen">0</b><span data-i18n="statGreenLabel">صالح</span>
         </div>
-        <div class="stat stat-amber">
+        <div class="stat stat-amber" data-filter="near">
           <div class="stat-icon stat-icon-amber">
             <svg viewBox="0 0 24 24" fill="none"><path d="M6 2h12M6 22h12M8 2c0 5 8 5 8 10s-8 5-8 10M16 2c0 5-8 5-8 10s8 5 8 10" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
           </div>
           <b id="statAmber">0</b><span data-i18n="statAmberLabel">قريب الانتهاء</span>
         </div>
-        <div class="stat stat-red">
+        <div class="stat stat-red" data-filter="expired">
           <div class="stat-icon stat-icon-red">
             <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9.2" stroke="currentColor" stroke-width="1.7"/><path d="M8.5 8.5l7 7M15.5 8.5l-7 7" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/></svg>
           </div>
           <b id="statRed">0</b><span data-i18n="statRedLabel">منتهي</span>
+        </div>
+        <div class="stat stat-missing" data-filter="missing">
+          <div class="stat-icon stat-icon-missing">
+            <svg viewBox="0 0 24 24" fill="none"><path d="M4 8l8-4 8 4-8 4-8-4z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M4 8v8l8 4 8-4V8" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M10 13.5l4 4M14 13.5l-4 4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
+          </div>
+          <b id="statMissing">0</b><span data-i18n="statMissingLabel">غير موجود / ناقص</span>
         </div>
       </div>
     </div>
@@ -801,6 +1256,10 @@
   <div class="card">
     <div class="toolbar">
       <div class="toolbar-title"><span data-i18n="listTitle">قائمة العربة</span> <span id="loadState">· <span data-i18n="loading">جارٍ التحميل...</span></span></div>
+      <div class="view-toggle" id="viewToggle">
+        <button type="button" data-view="cart"><svg viewBox="0 0 24 24" fill="none"><rect x="5" y="3" width="14" height="15" rx="2" stroke="currentColor" stroke-width="1.7"/><path d="M5 8h14M5 13h14" stroke="currentColor" stroke-width="1.7"/><circle cx="8" cy="20.5" r="1.5" stroke="currentColor" stroke-width="1.5"/><circle cx="16" cy="20.5" r="1.5" stroke="currentColor" stroke-width="1.5"/></svg><span data-i18n="viewCart">العربة</span></button>
+        <button type="button" data-view="table"><svg viewBox="0 0 24 24" fill="none"><rect x="3.5" y="4.5" width="17" height="15" rx="2" stroke="currentColor" stroke-width="1.7"/><path d="M3.5 9.5h17M3.5 14.5h17M9 9.5v10" stroke="currentColor" stroke-width="1.7"/></svg><span data-i18n="viewTable">الجدول</span></button>
+      </div>
     </div>
 
     <div class="filter-row">
@@ -819,6 +1278,8 @@
       <div class="legend-item"><i style="background:var(--green)"></i> <span data-i18n="legendGreen">أكثر من 3 أشهر</span></div>
     </div>
 
+    <div class="view-split" id="viewSplit">
+    <aside class="cart-side" id="cartSide"></aside>
     <div class="tbl-scroll">
       <table>
         <thead>
@@ -834,6 +1295,7 @@
         </thead>
         <tbody id="tbody"></tbody>
       </table>
+    </div>
     </div>
 
     <div class="signoff">
@@ -860,13 +1322,44 @@
 
 <div id="toastContainer" class="toast-container"></div>
 
+<div id="auditOverlay" class="log-overlay" style="display:none;"></div>
+<aside id="auditPanel" class="log-panel" style="display:none;" aria-hidden="true">
+  <div class="log-head">
+    <div class="log-head-top">
+      <div class="log-head-icon"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="8.5" stroke="currentColor" stroke-width="1.7"/><path d="M12 7.5V12l3 2" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/><path d="M3.5 5.5v3.5H7" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      <div>
+        <h2 data-i18n="auditTitle">سجل التعديلات</h2>
+        <div class="log-sub" id="auditSub"></div>
+      </div>
+      <button class="log-close" id="auditClose" type="button">×</button>
+    </div>
+    <div class="log-kpis" id="auditKpis"></div>
+  </div>
+  <div class="log-tools">
+    <div class="log-chips" id="auditChips"></div>
+    <input class="log-search" id="auditSearch" type="text" data-i18n-ph="auditSearchPh" placeholder="ابحث باسم الصنف أو الشخص...">
+    <div class="log-hint" id="auditHint" style="display:none;"></div>
+  </div>
+  <div class="log-body" id="auditBody"></div>
+</aside>
+
+<div id="printReport"></div>
+
 <div id="qrModal" class="qr-modal" style="display:none;">
   <div class="qr-card">
     <button class="qr-close" id="qrCloseBtn" type="button">×</button>
-    <div class="qr-cart-name" id="qrCartName">CC1</div>
-    <div id="qrCodeBox" class="qr-code-box"></div>
+    <div class="qr-title" id="qrTitle">QR</div>
+    <div class="qr-carts" id="qrCarts"></div>
+    <div class="qr-label">
+      <div class="qr-label-top"><i><svg viewBox="0 0 24 24" fill="none"><path d="M2.5 12H7l2-4 3 8 2-5.5 1.5 1.5H21.5" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></i>CRUSH CHART</div>
+      <div id="qrCodeBox" class="qr-code-box"></div>
+      <div class="qr-cart-name" id="qrCartName">CC1</div>
+      <small id="qrLabelHint"></small>
+    </div>
     <div class="qr-hint" data-i18n="qrHint">امسح الرمز بالجوال للوصول المباشر لهذي العربة</div>
     <div class="qr-url" id="qrUrl"></div>
+    <div id="qrWarn"></div>
+    <div class="qr-actions" id="qrActions"></div>
   </div>
 </div>
 
@@ -890,7 +1383,6 @@
   <div class="display-footer" id="displayFooter"></div>
 </div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <script>
 // Multiple physical carts, each with its own saved dataset (same Supabase table, different row id).
 const CARTS = ['CC1', 'CC2', 'OT7', 'GOT'];
@@ -1114,12 +1606,33 @@ const I18N = {
     filterExpired: 'منتهي',
     filterNear: 'أقل من 3 أشهر',
     filterValid: 'أكثر من 3 أشهر',
+    filterMissing: 'غير موجود / ناقص',
+    startCheckBtn: 'ابدأ الفحص',
+    viewCart: 'العربة', viewTable: 'الجدول',
+    statMissingLabel: 'غير موجود / ناقص',
     legendNA: 'N/A',
     toastSaved: 'تم الحفظ بنجاح',
     toastSaveFail: 'تعذّر الحفظ',
     sparklineLabel: 'اتجاه الجاهزية',
     qrHint: 'امسح الرمز بالجوال للوصول المباشر لهذي العربة',
-    noExpiryLabel: 'لا يحتاج تاريخ انتهاء'
+    noExpiryLabel: 'لا يحتاج تاريخ انتهاء',
+    auditBtn: 'سجل التعديلات', auditTitle: 'سجل التعديلات', auditSearchPh: 'ابحث باسم الصنف أو الشخص...',
+    auditSub: 'العربة {cart} · {n} تعديل', auditToday: 'تعديلات اليوم', auditWeek: 'آخر 7 أيام', auditLastBy: 'آخر تعديل',
+    auditAll: 'الكل', auditDates: 'التواريخ', auditQty: 'الكميات', auditNA: 'N/A',
+    auditEmptyTitle: 'لا توجد تعديلات بعد', auditEmptyText: 'أي تغيير في التواريخ أو الكميات راح يظهر هنا مع الوقت والاسم',
+    auditNoMatch: 'لا توجد نتائج مطابقة',
+    auditHintNoName: 'اختاري اسمك من «تم الفحص بواسطة» قبل التعديل عشان تنسجل التعديلات باسمك',
+    auditUnknown: 'غير محدد', auditTodayLbl: 'اليوم', auditYesterday: 'أمس',
+    actDate: 'تعديل تاريخ الانتهاء', actDateAdd: 'إضافة تاريخ انتهاء', actDateRemove: 'حذف تاريخ انتهاء',
+    actQty: 'تعديل الكمية الفعلية', actNAOn: 'تحويل إلى غير مطبق (N/A)', actNAOff: 'إلغاء غير مطبق (N/A)',
+    reportBtn: 'تقرير PDF', rpTitle: 'تقرير فحص عربة الإنعاش', rpSub: 'Crash Cart Inspection Report — حسب دليل المستشفى الرسمي',
+    rpCart: 'العربة', rpGenerated: 'تاريخ التقرير', rpCheckedBy: 'تم الفحص بواسطة', rpLastUpdate: 'آخر تحديث', rpRef: 'رقم التقرير',
+    rpReadiness: 'الجاهزية', rpShort: 'ناقص', rpActionTitle: 'عناصر تحتاج إجراء', rpAllGood: '✓ العربة جاهزة — لا توجد عناصر تحتاج إجراء',
+    rpItem: 'الصنف', rpSection: 'القسم', rpIssue: 'المشكلة', rpDetail: 'التفاصيل', rpChecklist: 'قائمة الجرد الكاملة',
+    rpStd: 'ثابت', rpActual: 'فعلي', rpExpiry: 'تاريخ الانتهاء', rpDays: 'الأيام', rpStatus: 'الحالة',
+    rpRecent: 'آخر التعديلات', rpTime: 'الوقت', rpBy: 'بواسطة', rpChange: 'التغيير',
+    rpSignChecker: 'الفاحص', rpSignCharge: 'رئيسة التمريض / المشرف', rpSignDate: 'التاريخ والتوقيع',
+    rpDaysLeft: '{n} يوم متبقي', rpDaysAgo: 'منتهي منذ {n} يوم', rpQtyDetail: 'الفعلي {a} من {s}', rpNoQty: 'لم تُسجَّل الكمية'
   },
   en: {
     eyebrow: 'Operation Theater',
@@ -1152,12 +1665,33 @@ const I18N = {
     filterExpired: 'Expired',
     filterNear: 'Under 3 Months',
     filterValid: 'Over 3 Months',
+    filterMissing: 'Missing / Short',
+    startCheckBtn: 'Start check',
+    viewCart: 'Cart', viewTable: 'Table',
+    statMissingLabel: 'Missing / Short',
     legendNA: 'N/A',
     toastSaved: 'Saved successfully',
     toastSaveFail: 'Save failed',
     sparklineLabel: 'Readiness trend',
     qrHint: 'Scan with your phone for direct access to this cart',
-    noExpiryLabel: 'No expiry date needed'
+    noExpiryLabel: 'No expiry date needed',
+    auditBtn: 'Audit log', auditTitle: 'Audit log', auditSearchPh: 'Search by item or person...',
+    auditSub: 'Cart {cart} · {n} change(s)', auditToday: 'Today', auditWeek: 'Last 7 days', auditLastBy: 'Last edit by',
+    auditAll: 'All', auditDates: 'Dates', auditQty: 'Quantities', auditNA: 'N/A',
+    auditEmptyTitle: 'No changes yet', auditEmptyText: 'Every change to dates or quantities will show up here with time and name',
+    auditNoMatch: 'No matching entries',
+    auditHintNoName: 'Pick your name under “Checked by” before editing so changes are logged under your name',
+    auditUnknown: 'Unspecified', auditTodayLbl: 'Today', auditYesterday: 'Yesterday',
+    actDate: 'Expiry date changed', actDateAdd: 'Expiry date added', actDateRemove: 'Expiry date removed',
+    actQty: 'Actual quantity changed', actNAOn: 'Marked as N/A', actNAOff: 'N/A removed',
+    reportBtn: 'PDF report', rpTitle: 'Crash Cart Inspection Report', rpSub: 'Expiry & stock check — per the hospital SOP',
+    rpCart: 'Cart', rpGenerated: 'Generated', rpCheckedBy: 'Checked by', rpLastUpdate: 'Last updated', rpRef: 'Report no.',
+    rpReadiness: 'Readiness', rpShort: 'Short', rpActionTitle: 'Items requiring action', rpAllGood: '✓ Cart ready — no items require action',
+    rpItem: 'Item', rpSection: 'Section', rpIssue: 'Issue', rpDetail: 'Detail', rpChecklist: 'Full checklist',
+    rpStd: 'Std', rpActual: 'Actual', rpExpiry: 'Expiry', rpDays: 'Days', rpStatus: 'Status',
+    rpRecent: 'Recent changes', rpTime: 'Time', rpBy: 'By', rpChange: 'Change',
+    rpSignChecker: 'Checked by', rpSignCharge: 'Charge nurse / Supervisor', rpSignDate: 'Date & signature',
+    rpDaysLeft: '{n} days left', rpDaysAgo: 'Expired {n} days ago', rpQtyDetail: 'Actual {a} of {s}', rpNoQty: 'Quantity not recorded'
   }
 };
 
@@ -1346,33 +1880,1390 @@ function updateUrlForCart(){
   }catch(e){ /* URL API unavailable — ignore */ }
 }
 
+/* QRCode for JavaScript — Copyright (c) 2009 Kazuhiko Arase — MIT license (inlined, no CDN) */
+var QRLite = (function(){
+  var defs = {'QRMode':function(module,exports,require){
+module.exports = {
+    MODE_NUMBER :       1 << 0,
+    MODE_ALPHA_NUM :    1 << 1,
+    MODE_8BIT_BYTE :    1 << 2,
+    MODE_KANJI :        1 << 3
+};
+
+},
+'QR8bitByte':function(module,exports,require){
+var QRMode = require('./QRMode');
+
+function QR8bitByte(data) {
+	this.mode = QRMode.MODE_8BIT_BYTE;
+	this.data = data;
+}
+
+QR8bitByte.prototype = {
+
+	getLength : function() {
+		return this.data.length;
+	},
+	
+	write : function(buffer) {
+		for (var i = 0; i < this.data.length; i++) {
+			// not JIS ...
+			buffer.put(this.data.charCodeAt(i), 8);
+		}
+	}
+};
+
+module.exports = QR8bitByte;
+
+},
+'QRMath':function(module,exports,require){
+var QRMath = {
+
+	glog : function(n) {
+	
+		if (n < 1) {
+			throw new Error("glog(" + n + ")");
+		}
+		
+		return QRMath.LOG_TABLE[n];
+	},
+	
+	gexp : function(n) {
+	
+		while (n < 0) {
+			n += 255;
+		}
+	
+		while (n >= 256) {
+			n -= 255;
+		}
+	
+		return QRMath.EXP_TABLE[n];
+	},
+	
+	EXP_TABLE : new Array(256),
+	
+	LOG_TABLE : new Array(256)
+
+};
+	
+for (var i = 0; i < 8; i++) {
+	QRMath.EXP_TABLE[i] = 1 << i;
+}
+for (var i = 8; i < 256; i++) {
+	QRMath.EXP_TABLE[i] = QRMath.EXP_TABLE[i - 4]
+		^ QRMath.EXP_TABLE[i - 5]
+		^ QRMath.EXP_TABLE[i - 6]
+		^ QRMath.EXP_TABLE[i - 8];
+}
+for (var i = 0; i < 255; i++) {
+	QRMath.LOG_TABLE[QRMath.EXP_TABLE[i] ] = i;
+}
+
+module.exports = QRMath;
+
+},
+'QRPolynomial':function(module,exports,require){
+var QRMath = require('./QRMath');
+
+function QRPolynomial(num, shift) {
+	if (num.length === undefined) {
+		throw new Error(num.length + "/" + shift);
+	}
+
+	var offset = 0;
+
+	while (offset < num.length && num[offset] === 0) {
+		offset++;
+	}
+
+	this.num = new Array(num.length - offset + shift);
+	for (var i = 0; i < num.length - offset; i++) {
+		this.num[i] = num[i + offset];
+	}
+}
+
+QRPolynomial.prototype = {
+
+	get : function(index) {
+		return this.num[index];
+	},
+	
+	getLength : function() {
+		return this.num.length;
+	},
+	
+	multiply : function(e) {
+	
+		var num = new Array(this.getLength() + e.getLength() - 1);
+	
+		for (var i = 0; i < this.getLength(); i++) {
+			for (var j = 0; j < e.getLength(); j++) {
+				num[i + j] ^= QRMath.gexp(QRMath.glog(this.get(i) ) + QRMath.glog(e.get(j) ) );
+			}
+		}
+	
+		return new QRPolynomial(num, 0);
+	},
+	
+	mod : function(e) {
+	
+		if (this.getLength() - e.getLength() < 0) {
+			return this;
+		}
+	
+		var ratio = QRMath.glog(this.get(0) ) - QRMath.glog(e.get(0) );
+	
+		var num = new Array(this.getLength() );
+		
+		for (var i = 0; i < this.getLength(); i++) {
+			num[i] = this.get(i);
+		}
+		
+		for (var x = 0; x < e.getLength(); x++) {
+			num[x] ^= QRMath.gexp(QRMath.glog(e.get(x) ) + ratio);
+		}
+	
+		// recursive call
+		return new QRPolynomial(num, 0).mod(e);
+	}
+};
+
+module.exports = QRPolynomial;
+
+},
+'QRErrorCorrectLevel':function(module,exports,require){
+module.exports = {
+	L : 1,
+	M : 0,
+	Q : 3,
+	H : 2
+};
+
+
+},
+'QRRSBlock':function(module,exports,require){
+var QRErrorCorrectLevel = require('./QRErrorCorrectLevel');
+
+function QRRSBlock(totalCount, dataCount) {
+	this.totalCount = totalCount;
+	this.dataCount  = dataCount;
+}
+
+QRRSBlock.RS_BLOCK_TABLE = [
+
+	// L
+	// M
+	// Q
+	// H
+
+	// 1
+	[1, 26, 19],
+	[1, 26, 16],
+	[1, 26, 13],
+	[1, 26, 9],
+	
+	// 2
+	[1, 44, 34],
+	[1, 44, 28],
+	[1, 44, 22],
+	[1, 44, 16],
+
+	// 3
+	[1, 70, 55],
+	[1, 70, 44],
+	[2, 35, 17],
+	[2, 35, 13],
+
+	// 4		
+	[1, 100, 80],
+	[2, 50, 32],
+	[2, 50, 24],
+	[4, 25, 9],
+	
+	// 5
+	[1, 134, 108],
+	[2, 67, 43],
+	[2, 33, 15, 2, 34, 16],
+	[2, 33, 11, 2, 34, 12],
+	
+	// 6
+	[2, 86, 68],
+	[4, 43, 27],
+	[4, 43, 19],
+	[4, 43, 15],
+	
+	// 7		
+	[2, 98, 78],
+	[4, 49, 31],
+	[2, 32, 14, 4, 33, 15],
+	[4, 39, 13, 1, 40, 14],
+	
+	// 8
+	[2, 121, 97],
+	[2, 60, 38, 2, 61, 39],
+	[4, 40, 18, 2, 41, 19],
+	[4, 40, 14, 2, 41, 15],
+	
+	// 9
+	[2, 146, 116],
+	[3, 58, 36, 2, 59, 37],
+	[4, 36, 16, 4, 37, 17],
+	[4, 36, 12, 4, 37, 13],
+	
+	// 10		
+	[2, 86, 68, 2, 87, 69],
+	[4, 69, 43, 1, 70, 44],
+	[6, 43, 19, 2, 44, 20],
+	[6, 43, 15, 2, 44, 16],
+
+	// 11
+	[4, 101, 81],
+	[1, 80, 50, 4, 81, 51],
+	[4, 50, 22, 4, 51, 23],
+	[3, 36, 12, 8, 37, 13],
+
+	// 12
+	[2, 116, 92, 2, 117, 93],
+	[6, 58, 36, 2, 59, 37],
+	[4, 46, 20, 6, 47, 21],
+	[7, 42, 14, 4, 43, 15],
+
+	// 13
+	[4, 133, 107],
+	[8, 59, 37, 1, 60, 38],
+	[8, 44, 20, 4, 45, 21],
+	[12, 33, 11, 4, 34, 12],
+
+	// 14
+	[3, 145, 115, 1, 146, 116],
+	[4, 64, 40, 5, 65, 41],
+	[11, 36, 16, 5, 37, 17],
+	[11, 36, 12, 5, 37, 13],
+
+	// 15
+	[5, 109, 87, 1, 110, 88],
+	[5, 65, 41, 5, 66, 42],
+	[5, 54, 24, 7, 55, 25],
+	[11, 36, 12],
+
+	// 16
+	[5, 122, 98, 1, 123, 99],
+	[7, 73, 45, 3, 74, 46],
+	[15, 43, 19, 2, 44, 20],
+	[3, 45, 15, 13, 46, 16],
+
+	// 17
+	[1, 135, 107, 5, 136, 108],
+	[10, 74, 46, 1, 75, 47],
+	[1, 50, 22, 15, 51, 23],
+	[2, 42, 14, 17, 43, 15],
+
+	// 18
+	[5, 150, 120, 1, 151, 121],
+	[9, 69, 43, 4, 70, 44],
+	[17, 50, 22, 1, 51, 23],
+	[2, 42, 14, 19, 43, 15],
+
+	// 19
+	[3, 141, 113, 4, 142, 114],
+	[3, 70, 44, 11, 71, 45],
+	[17, 47, 21, 4, 48, 22],
+	[9, 39, 13, 16, 40, 14],
+
+	// 20
+	[3, 135, 107, 5, 136, 108],
+	[3, 67, 41, 13, 68, 42],
+	[15, 54, 24, 5, 55, 25],
+	[15, 43, 15, 10, 44, 16],
+
+	// 21
+	[4, 144, 116, 4, 145, 117],
+	[17, 68, 42],
+	[17, 50, 22, 6, 51, 23],
+	[19, 46, 16, 6, 47, 17],
+
+	// 22
+	[2, 139, 111, 7, 140, 112],
+	[17, 74, 46],
+	[7, 54, 24, 16, 55, 25],
+	[34, 37, 13],
+
+	// 23
+	[4, 151, 121, 5, 152, 122],
+	[4, 75, 47, 14, 76, 48],
+	[11, 54, 24, 14, 55, 25],
+	[16, 45, 15, 14, 46, 16],
+
+	// 24
+	[6, 147, 117, 4, 148, 118],
+	[6, 73, 45, 14, 74, 46],
+	[11, 54, 24, 16, 55, 25],
+	[30, 46, 16, 2, 47, 17],
+
+	// 25
+	[8, 132, 106, 4, 133, 107],
+	[8, 75, 47, 13, 76, 48],
+	[7, 54, 24, 22, 55, 25],
+	[22, 45, 15, 13, 46, 16],
+
+	// 26
+	[10, 142, 114, 2, 143, 115],
+	[19, 74, 46, 4, 75, 47],
+	[28, 50, 22, 6, 51, 23],
+	[33, 46, 16, 4, 47, 17],
+
+	// 27
+	[8, 152, 122, 4, 153, 123],
+	[22, 73, 45, 3, 74, 46],
+	[8, 53, 23, 26, 54, 24],
+	[12, 45, 15, 28, 46, 16],
+
+	// 28
+	[3, 147, 117, 10, 148, 118],
+	[3, 73, 45, 23, 74, 46],
+	[4, 54, 24, 31, 55, 25],
+	[11, 45, 15, 31, 46, 16],
+
+	// 29
+	[7, 146, 116, 7, 147, 117],
+	[21, 73, 45, 7, 74, 46],
+	[1, 53, 23, 37, 54, 24],
+	[19, 45, 15, 26, 46, 16],
+
+	// 30
+	[5, 145, 115, 10, 146, 116],
+	[19, 75, 47, 10, 76, 48],
+	[15, 54, 24, 25, 55, 25],
+	[23, 45, 15, 25, 46, 16],
+
+	// 31
+	[13, 145, 115, 3, 146, 116],
+	[2, 74, 46, 29, 75, 47],
+	[42, 54, 24, 1, 55, 25],
+	[23, 45, 15, 28, 46, 16],
+
+	// 32
+	[17, 145, 115],
+	[10, 74, 46, 23, 75, 47],
+	[10, 54, 24, 35, 55, 25],
+	[19, 45, 15, 35, 46, 16],
+
+	// 33
+	[17, 145, 115, 1, 146, 116],
+	[14, 74, 46, 21, 75, 47],
+	[29, 54, 24, 19, 55, 25],
+	[11, 45, 15, 46, 46, 16],
+
+	// 34
+	[13, 145, 115, 6, 146, 116],
+	[14, 74, 46, 23, 75, 47],
+	[44, 54, 24, 7, 55, 25],
+	[59, 46, 16, 1, 47, 17],
+
+	// 35
+	[12, 151, 121, 7, 152, 122],
+	[12, 75, 47, 26, 76, 48],
+	[39, 54, 24, 14, 55, 25],
+	[22, 45, 15, 41, 46, 16],
+
+	// 36
+	[6, 151, 121, 14, 152, 122],
+	[6, 75, 47, 34, 76, 48],
+	[46, 54, 24, 10, 55, 25],
+	[2, 45, 15, 64, 46, 16],
+
+	// 37
+	[17, 152, 122, 4, 153, 123],
+	[29, 74, 46, 14, 75, 47],
+	[49, 54, 24, 10, 55, 25],
+	[24, 45, 15, 46, 46, 16],
+
+	// 38
+	[4, 152, 122, 18, 153, 123],
+	[13, 74, 46, 32, 75, 47],
+	[48, 54, 24, 14, 55, 25],
+	[42, 45, 15, 32, 46, 16],
+
+	// 39
+	[20, 147, 117, 4, 148, 118],
+	[40, 75, 47, 7, 76, 48],
+	[43, 54, 24, 22, 55, 25],
+	[10, 45, 15, 67, 46, 16],
+
+	// 40
+	[19, 148, 118, 6, 149, 119],
+	[18, 75, 47, 31, 76, 48],
+	[34, 54, 24, 34, 55, 25],
+	[20, 45, 15, 61, 46, 16]
+];
+
+QRRSBlock.getRSBlocks = function(typeNumber, errorCorrectLevel) {
+	
+	var rsBlock = QRRSBlock.getRsBlockTable(typeNumber, errorCorrectLevel);
+	
+	if (rsBlock === undefined) {
+		throw new Error("bad rs block @ typeNumber:" + typeNumber + "/errorCorrectLevel:" + errorCorrectLevel);
+	}
+
+	var length = rsBlock.length / 3;
+	
+	var list = [];
+	
+	for (var i = 0; i < length; i++) {
+
+		var count = rsBlock[i * 3 + 0];
+		var totalCount = rsBlock[i * 3 + 1];
+		var dataCount  = rsBlock[i * 3 + 2];
+
+		for (var j = 0; j < count; j++) {
+			list.push(new QRRSBlock(totalCount, dataCount) );	
+		}
+	}
+	
+	return list;
+};
+
+QRRSBlock.getRsBlockTable = function(typeNumber, errorCorrectLevel) {
+
+	switch(errorCorrectLevel) {
+	case QRErrorCorrectLevel.L :
+		return QRRSBlock.RS_BLOCK_TABLE[(typeNumber - 1) * 4 + 0];
+	case QRErrorCorrectLevel.M :
+		return QRRSBlock.RS_BLOCK_TABLE[(typeNumber - 1) * 4 + 1];
+	case QRErrorCorrectLevel.Q :
+		return QRRSBlock.RS_BLOCK_TABLE[(typeNumber - 1) * 4 + 2];
+	case QRErrorCorrectLevel.H :
+		return QRRSBlock.RS_BLOCK_TABLE[(typeNumber - 1) * 4 + 3];
+	default :
+		return undefined;
+	}
+};
+
+module.exports = QRRSBlock;
+
+},
+'QRBitBuffer':function(module,exports,require){
+function QRBitBuffer() {
+	this.buffer = [];
+	this.length = 0;
+}
+
+QRBitBuffer.prototype = {
+
+	get : function(index) {
+		var bufIndex = Math.floor(index / 8);
+		return ( (this.buffer[bufIndex] >>> (7 - index % 8) ) & 1) == 1;
+	},
+	
+	put : function(num, length) {
+		for (var i = 0; i < length; i++) {
+			this.putBit( ( (num >>> (length - i - 1) ) & 1) == 1);
+		}
+	},
+	
+	getLengthInBits : function() {
+		return this.length;
+	},
+	
+	putBit : function(bit) {
+	
+		var bufIndex = Math.floor(this.length / 8);
+		if (this.buffer.length <= bufIndex) {
+			this.buffer.push(0);
+		}
+	
+		if (bit) {
+			this.buffer[bufIndex] |= (0x80 >>> (this.length % 8) );
+		}
+	
+		this.length++;
+	}
+};
+
+module.exports = QRBitBuffer;
+
+},
+'QRMaskPattern':function(module,exports,require){
+module.exports = {
+	PATTERN000 : 0,
+	PATTERN001 : 1,
+	PATTERN010 : 2,
+	PATTERN011 : 3,
+	PATTERN100 : 4,
+	PATTERN101 : 5,
+	PATTERN110 : 6,
+	PATTERN111 : 7
+};
+
+},
+'QRUtil':function(module,exports,require){
+var QRMode = require('./QRMode');
+var QRPolynomial = require('./QRPolynomial');
+var QRMath = require('./QRMath');
+var QRMaskPattern = require('./QRMaskPattern');
+
+var QRUtil = {
+
+    PATTERN_POSITION_TABLE : [
+        [],
+        [6, 18],
+        [6, 22],
+        [6, 26],
+        [6, 30],
+        [6, 34],
+        [6, 22, 38],
+        [6, 24, 42],
+        [6, 26, 46],
+        [6, 28, 50],
+        [6, 30, 54],        
+        [6, 32, 58],
+        [6, 34, 62],
+        [6, 26, 46, 66],
+        [6, 26, 48, 70],
+        [6, 26, 50, 74],
+        [6, 30, 54, 78],
+        [6, 30, 56, 82],
+        [6, 30, 58, 86],
+        [6, 34, 62, 90],
+        [6, 28, 50, 72, 94],
+        [6, 26, 50, 74, 98],
+        [6, 30, 54, 78, 102],
+        [6, 28, 54, 80, 106],
+        [6, 32, 58, 84, 110],
+        [6, 30, 58, 86, 114],
+        [6, 34, 62, 90, 118],
+        [6, 26, 50, 74, 98, 122],
+        [6, 30, 54, 78, 102, 126],
+        [6, 26, 52, 78, 104, 130],
+        [6, 30, 56, 82, 108, 134],
+        [6, 34, 60, 86, 112, 138],
+        [6, 30, 58, 86, 114, 142],
+        [6, 34, 62, 90, 118, 146],
+        [6, 30, 54, 78, 102, 126, 150],
+        [6, 24, 50, 76, 102, 128, 154],
+        [6, 28, 54, 80, 106, 132, 158],
+        [6, 32, 58, 84, 110, 136, 162],
+        [6, 26, 54, 82, 110, 138, 166],
+        [6, 30, 58, 86, 114, 142, 170]
+    ],
+
+    G15 : (1 << 10) | (1 << 8) | (1 << 5) | (1 << 4) | (1 << 2) | (1 << 1) | (1 << 0),
+    G18 : (1 << 12) | (1 << 11) | (1 << 10) | (1 << 9) | (1 << 8) | (1 << 5) | (1 << 2) | (1 << 0),
+    G15_MASK : (1 << 14) | (1 << 12) | (1 << 10)    | (1 << 4) | (1 << 1),
+
+    getBCHTypeInfo : function(data) {
+        var d = data << 10;
+        while (QRUtil.getBCHDigit(d) - QRUtil.getBCHDigit(QRUtil.G15) >= 0) {
+            d ^= (QRUtil.G15 << (QRUtil.getBCHDigit(d) - QRUtil.getBCHDigit(QRUtil.G15) ) );    
+        }
+        return ( (data << 10) | d) ^ QRUtil.G15_MASK;
+    },
+
+    getBCHTypeNumber : function(data) {
+        var d = data << 12;
+        while (QRUtil.getBCHDigit(d) - QRUtil.getBCHDigit(QRUtil.G18) >= 0) {
+            d ^= (QRUtil.G18 << (QRUtil.getBCHDigit(d) - QRUtil.getBCHDigit(QRUtil.G18) ) );    
+        }
+        return (data << 12) | d;
+    },
+
+    getBCHDigit : function(data) {
+
+        var digit = 0;
+
+        while (data !== 0) {
+            digit++;
+            data >>>= 1;
+        }
+
+        return digit;
+    },
+
+    getPatternPosition : function(typeNumber) {
+        return QRUtil.PATTERN_POSITION_TABLE[typeNumber - 1];
+    },
+
+    getMask : function(maskPattern, i, j) {
+        
+        switch (maskPattern) {
+            
+        case QRMaskPattern.PATTERN000 : return (i + j) % 2 === 0;
+        case QRMaskPattern.PATTERN001 : return i % 2 === 0;
+        case QRMaskPattern.PATTERN010 : return j % 3 === 0;
+        case QRMaskPattern.PATTERN011 : return (i + j) % 3 === 0;
+        case QRMaskPattern.PATTERN100 : return (Math.floor(i / 2) + Math.floor(j / 3) ) % 2 === 0;
+        case QRMaskPattern.PATTERN101 : return (i * j) % 2 + (i * j) % 3 === 0;
+        case QRMaskPattern.PATTERN110 : return ( (i * j) % 2 + (i * j) % 3) % 2 === 0;
+        case QRMaskPattern.PATTERN111 : return ( (i * j) % 3 + (i + j) % 2) % 2 === 0;
+
+        default :
+            throw new Error("bad maskPattern:" + maskPattern);
+        }
+    },
+
+    getErrorCorrectPolynomial : function(errorCorrectLength) {
+
+        var a = new QRPolynomial([1], 0);
+
+        for (var i = 0; i < errorCorrectLength; i++) {
+            a = a.multiply(new QRPolynomial([1, QRMath.gexp(i)], 0) );
+        }
+
+        return a;
+    },
+
+    getLengthInBits : function(mode, type) {
+
+        if (1 <= type && type < 10) {
+
+            // 1 - 9
+
+            switch(mode) {
+            case QRMode.MODE_NUMBER     : return 10;
+            case QRMode.MODE_ALPHA_NUM  : return 9;
+            case QRMode.MODE_8BIT_BYTE  : return 8;
+            case QRMode.MODE_KANJI      : return 8;
+            default :
+                throw new Error("mode:" + mode);
+            }
+
+        } else if (type < 27) {
+
+            // 10 - 26
+
+            switch(mode) {
+            case QRMode.MODE_NUMBER     : return 12;
+            case QRMode.MODE_ALPHA_NUM  : return 11;
+            case QRMode.MODE_8BIT_BYTE  : return 16;
+            case QRMode.MODE_KANJI      : return 10;
+            default :
+                throw new Error("mode:" + mode);
+            }
+
+        } else if (type < 41) {
+
+            // 27 - 40
+
+            switch(mode) {
+            case QRMode.MODE_NUMBER     : return 14;
+            case QRMode.MODE_ALPHA_NUM  : return 13;
+            case QRMode.MODE_8BIT_BYTE  : return 16;
+            case QRMode.MODE_KANJI      : return 12;
+            default :
+                throw new Error("mode:" + mode);
+            }
+
+        } else {
+            throw new Error("type:" + type);
+        }
+    },
+
+    getLostPoint : function(qrCode) {
+        
+        var moduleCount = qrCode.getModuleCount();
+        var lostPoint = 0;
+        var row = 0; 
+        var col = 0;
+
+        
+        // LEVEL1
+        
+        for (row = 0; row < moduleCount; row++) {
+
+            for (col = 0; col < moduleCount; col++) {
+
+                var sameCount = 0;
+                var dark = qrCode.isDark(row, col);
+
+                for (var r = -1; r <= 1; r++) {
+
+                    if (row + r < 0 || moduleCount <= row + r) {
+                        continue;
+                    }
+
+                    for (var c = -1; c <= 1; c++) {
+
+                        if (col + c < 0 || moduleCount <= col + c) {
+                            continue;
+                        }
+
+                        if (r === 0 && c === 0) {
+                            continue;
+                        }
+
+                        if (dark === qrCode.isDark(row + r, col + c) ) {
+                            sameCount++;
+                        }
+                    }
+                }
+
+                if (sameCount > 5) {
+                    lostPoint += (3 + sameCount - 5);
+                }
+            }
+        }
+
+        // LEVEL2
+
+        for (row = 0; row < moduleCount - 1; row++) {
+            for (col = 0; col < moduleCount - 1; col++) {
+                var count = 0;
+                if (qrCode.isDark(row,     col    ) ) count++;
+                if (qrCode.isDark(row + 1, col    ) ) count++;
+                if (qrCode.isDark(row,     col + 1) ) count++;
+                if (qrCode.isDark(row + 1, col + 1) ) count++;
+                if (count === 0 || count === 4) {
+                    lostPoint += 3;
+                }
+            }
+        }
+
+        // LEVEL3
+
+        for (row = 0; row < moduleCount; row++) {
+            for (col = 0; col < moduleCount - 6; col++) {
+                if (qrCode.isDark(row, col) && 
+                        !qrCode.isDark(row, col + 1) && 
+                         qrCode.isDark(row, col + 2) && 
+                         qrCode.isDark(row, col + 3) && 
+                         qrCode.isDark(row, col + 4) && 
+                        !qrCode.isDark(row, col + 5) && 
+                         qrCode.isDark(row, col + 6) ) {
+                    lostPoint += 40;
+                }
+            }
+        }
+
+        for (col = 0; col < moduleCount; col++) {
+            for (row = 0; row < moduleCount - 6; row++) {
+                if (qrCode.isDark(row, col) &&
+                        !qrCode.isDark(row + 1, col) &&
+                         qrCode.isDark(row + 2, col) &&
+                         qrCode.isDark(row + 3, col) &&
+                         qrCode.isDark(row + 4, col) &&
+                        !qrCode.isDark(row + 5, col) &&
+                         qrCode.isDark(row + 6, col) ) {
+                    lostPoint += 40;
+                }
+            }
+        }
+
+        // LEVEL4
+        
+        var darkCount = 0;
+
+        for (col = 0; col < moduleCount; col++) {
+            for (row = 0; row < moduleCount; row++) {
+                if (qrCode.isDark(row, col) ) {
+                    darkCount++;
+                }
+            }
+        }
+        
+        var ratio = Math.abs(100 * darkCount / moduleCount / moduleCount - 50) / 5;
+        lostPoint += ratio * 10;
+
+        return lostPoint;       
+    }
+
+};
+
+module.exports = QRUtil;
+
+},
+'index':function(module,exports,require){
+//---------------------------------------------------------------------
+// QRCode for JavaScript
+//
+// Copyright (c) 2009 Kazuhiko Arase
+//
+// URL: http://www.d-project.com/
+//
+// Licensed under the MIT license:
+//   http://www.opensource.org/licenses/mit-license.php
+//
+// The word "QR Code" is registered trademark of 
+// DENSO WAVE INCORPORATED
+//   http://www.denso-wave.com/qrcode/faqpatent-e.html
+//
+//---------------------------------------------------------------------
+// Modified to work in node for this project (and some refactoring)
+//---------------------------------------------------------------------
+
+var QR8bitByte = require('./QR8bitByte');
+var QRUtil = require('./QRUtil');
+var QRPolynomial = require('./QRPolynomial');
+var QRRSBlock = require('./QRRSBlock');
+var QRBitBuffer = require('./QRBitBuffer');
+
+function QRCode(typeNumber, errorCorrectLevel) {
+	this.typeNumber = typeNumber;
+	this.errorCorrectLevel = errorCorrectLevel;
+	this.modules = null;
+	this.moduleCount = 0;
+	this.dataCache = null;
+	this.dataList = [];
+}
+
+QRCode.prototype = {
+	
+	addData : function(data) {
+		var newData = new QR8bitByte(data);
+		this.dataList.push(newData);
+		this.dataCache = null;
+	},
+	
+	isDark : function(row, col) {
+		if (row < 0 || this.moduleCount <= row || col < 0 || this.moduleCount <= col) {
+			throw new Error(row + "," + col);
+		}
+		return this.modules[row][col];
+	},
+
+	getModuleCount : function() {
+		return this.moduleCount;
+	},
+	
+	make : function() {
+		// Calculate automatically typeNumber if provided is < 1
+		if (this.typeNumber < 1 ){
+			var typeNumber = 1;
+			for (typeNumber = 1; typeNumber < 40; typeNumber++) {
+				var rsBlocks = QRRSBlock.getRSBlocks(typeNumber, this.errorCorrectLevel);
+
+				var buffer = new QRBitBuffer();
+				var totalDataCount = 0;
+				for (var i = 0; i < rsBlocks.length; i++) {
+					totalDataCount += rsBlocks[i].dataCount;
+				}
+
+				for (var x = 0; x < this.dataList.length; x++) {
+					var data = this.dataList[x];
+					buffer.put(data.mode, 4);
+					buffer.put(data.getLength(), QRUtil.getLengthInBits(data.mode, typeNumber) );
+					data.write(buffer);
+				}
+				if (buffer.getLengthInBits() <= totalDataCount * 8)
+					break;
+			}
+			this.typeNumber = typeNumber;
+		}
+		this.makeImpl(false, this.getBestMaskPattern() );
+	},
+	
+	makeImpl : function(test, maskPattern) {
+		
+		this.moduleCount = this.typeNumber * 4 + 17;
+		this.modules = new Array(this.moduleCount);
+		
+		for (var row = 0; row < this.moduleCount; row++) {
+			
+			this.modules[row] = new Array(this.moduleCount);
+			
+			for (var col = 0; col < this.moduleCount; col++) {
+				this.modules[row][col] = null;//(col + row) % 3;
+			}
+		}
+	
+		this.setupPositionProbePattern(0, 0);
+		this.setupPositionProbePattern(this.moduleCount - 7, 0);
+		this.setupPositionProbePattern(0, this.moduleCount - 7);
+		this.setupPositionAdjustPattern();
+		this.setupTimingPattern();
+		this.setupTypeInfo(test, maskPattern);
+		
+		if (this.typeNumber >= 7) {
+			this.setupTypeNumber(test);
+		}
+	
+		if (this.dataCache === null) {
+			this.dataCache = QRCode.createData(this.typeNumber, this.errorCorrectLevel, this.dataList);
+		}
+	
+		this.mapData(this.dataCache, maskPattern);
+	},
+
+	setupPositionProbePattern : function(row, col)  {
+		
+		for (var r = -1; r <= 7; r++) {
+			
+			if (row + r <= -1 || this.moduleCount <= row + r) continue;
+			
+			for (var c = -1; c <= 7; c++) {
+				
+				if (col + c <= -1 || this.moduleCount <= col + c) continue;
+				
+				if ( (0 <= r && r <= 6 && (c === 0 || c === 6) ) || 
+                     (0 <= c && c <= 6 && (r === 0 || r === 6) ) || 
+                     (2 <= r && r <= 4 && 2 <= c && c <= 4) ) {
+					this.modules[row + r][col + c] = true;
+				} else {
+					this.modules[row + r][col + c] = false;
+				}
+			}		
+		}		
+	},
+	
+	getBestMaskPattern : function() {
+	
+		var minLostPoint = 0;
+		var pattern = 0;
+	
+		for (var i = 0; i < 8; i++) {
+			
+			this.makeImpl(true, i);
+	
+			var lostPoint = QRUtil.getLostPoint(this);
+	
+			if (i === 0 || minLostPoint >  lostPoint) {
+				minLostPoint = lostPoint;
+				pattern = i;
+			}
+		}
+	
+		return pattern;
+	},
+	
+	createMovieClip : function(target_mc, instance_name, depth) {
+	
+		var qr_mc = target_mc.createEmptyMovieClip(instance_name, depth);
+		var cs = 1;
+	
+		this.make();
+
+		for (var row = 0; row < this.modules.length; row++) {
+			
+			var y = row * cs;
+			
+			for (var col = 0; col < this.modules[row].length; col++) {
+	
+				var x = col * cs;
+				var dark = this.modules[row][col];
+			
+				if (dark) {
+					qr_mc.beginFill(0, 100);
+					qr_mc.moveTo(x, y);
+					qr_mc.lineTo(x + cs, y);
+					qr_mc.lineTo(x + cs, y + cs);
+					qr_mc.lineTo(x, y + cs);
+					qr_mc.endFill();
+				}
+			}
+		}
+		
+		return qr_mc;
+	},
+
+	setupTimingPattern : function() {
+		
+		for (var r = 8; r < this.moduleCount - 8; r++) {
+			if (this.modules[r][6] !== null) {
+				continue;
+			}
+			this.modules[r][6] = (r % 2 === 0);
+		}
+	
+		for (var c = 8; c < this.moduleCount - 8; c++) {
+			if (this.modules[6][c] !== null) {
+				continue;
+			}
+			this.modules[6][c] = (c % 2 === 0);
+		}
+	},
+	
+	setupPositionAdjustPattern : function() {
+	
+		var pos = QRUtil.getPatternPosition(this.typeNumber);
+		
+		for (var i = 0; i < pos.length; i++) {
+		
+			for (var j = 0; j < pos.length; j++) {
+			
+				var row = pos[i];
+				var col = pos[j];
+				
+				if (this.modules[row][col] !== null) {
+					continue;
+				}
+				
+				for (var r = -2; r <= 2; r++) {
+				
+					for (var c = -2; c <= 2; c++) {
+					
+						if (Math.abs(r) === 2 || 
+                            Math.abs(c) === 2 ||
+                            (r === 0 && c === 0) ) {
+							this.modules[row + r][col + c] = true;
+						} else {
+							this.modules[row + r][col + c] = false;
+						}
+					}
+				}
+			}
+		}
+	},
+	
+	setupTypeNumber : function(test) {
+	
+		var bits = QRUtil.getBCHTypeNumber(this.typeNumber);
+        var mod;
+	
+		for (var i = 0; i < 18; i++) {
+			mod = (!test && ( (bits >> i) & 1) === 1);
+			this.modules[Math.floor(i / 3)][i % 3 + this.moduleCount - 8 - 3] = mod;
+		}
+	
+		for (var x = 0; x < 18; x++) {
+			mod = (!test && ( (bits >> x) & 1) === 1);
+			this.modules[x % 3 + this.moduleCount - 8 - 3][Math.floor(x / 3)] = mod;
+		}
+	},
+	
+	setupTypeInfo : function(test, maskPattern) {
+	
+		var data = (this.errorCorrectLevel << 3) | maskPattern;
+		var bits = QRUtil.getBCHTypeInfo(data);
+        var mod;
+	
+		// vertical		
+		for (var v = 0; v < 15; v++) {
+	
+			mod = (!test && ( (bits >> v) & 1) === 1);
+	
+			if (v < 6) {
+				this.modules[v][8] = mod;
+			} else if (v < 8) {
+				this.modules[v + 1][8] = mod;
+			} else {
+				this.modules[this.moduleCount - 15 + v][8] = mod;
+			}
+		}
+	
+		// horizontal
+		for (var h = 0; h < 15; h++) {
+	
+			mod = (!test && ( (bits >> h) & 1) === 1);
+			
+			if (h < 8) {
+				this.modules[8][this.moduleCount - h - 1] = mod;
+			} else if (h < 9) {
+				this.modules[8][15 - h - 1 + 1] = mod;
+			} else {
+				this.modules[8][15 - h - 1] = mod;
+			}
+		}
+	
+		// fixed module
+		this.modules[this.moduleCount - 8][8] = (!test);
+	
+	},
+	
+	mapData : function(data, maskPattern) {
+		
+		var inc = -1;
+		var row = this.moduleCount - 1;
+		var bitIndex = 7;
+		var byteIndex = 0;
+		
+		for (var col = this.moduleCount - 1; col > 0; col -= 2) {
+	
+			if (col === 6) col--;
+	
+			while (true) {
+	
+				for (var c = 0; c < 2; c++) {
+					
+					if (this.modules[row][col - c] === null) {
+						
+						var dark = false;
+	
+						if (byteIndex < data.length) {
+							dark = ( ( (data[byteIndex] >>> bitIndex) & 1) === 1);
+						}
+	
+						var mask = QRUtil.getMask(maskPattern, row, col - c);
+	
+						if (mask) {
+							dark = !dark;
+						}
+						
+						this.modules[row][col - c] = dark;
+						bitIndex--;
+	
+						if (bitIndex === -1) {
+							byteIndex++;
+							bitIndex = 7;
+						}
+					}
+				}
+								
+				row += inc;
+	
+				if (row < 0 || this.moduleCount <= row) {
+					row -= inc;
+					inc = -inc;
+					break;
+				}
+			}
+		}
+		
+	}
+
+};
+
+QRCode.PAD0 = 0xEC;
+QRCode.PAD1 = 0x11;
+
+QRCode.createData = function(typeNumber, errorCorrectLevel, dataList) {
+	
+	var rsBlocks = QRRSBlock.getRSBlocks(typeNumber, errorCorrectLevel);
+	
+	var buffer = new QRBitBuffer();
+	
+	for (var i = 0; i < dataList.length; i++) {
+		var data = dataList[i];
+		buffer.put(data.mode, 4);
+		buffer.put(data.getLength(), QRUtil.getLengthInBits(data.mode, typeNumber) );
+		data.write(buffer);
+	}
+
+	// calc num max data.
+	var totalDataCount = 0;
+	for (var x = 0; x < rsBlocks.length; x++) {
+		totalDataCount += rsBlocks[x].dataCount;
+	}
+
+	if (buffer.getLengthInBits() > totalDataCount * 8) {
+		throw new Error("code length overflow. (" + 
+            buffer.getLengthInBits() + 
+            ">" +  
+            totalDataCount * 8 + 
+            ")");
+	}
+
+	// end code
+	if (buffer.getLengthInBits() + 4 <= totalDataCount * 8) {
+		buffer.put(0, 4);
+	}
+
+	// padding
+	while (buffer.getLengthInBits() % 8 !== 0) {
+		buffer.putBit(false);
+	}
+
+	// padding
+	while (true) {
+		
+		if (buffer.getLengthInBits() >= totalDataCount * 8) {
+			break;
+		}
+		buffer.put(QRCode.PAD0, 8);
+		
+		if (buffer.getLengthInBits() >= totalDataCount * 8) {
+			break;
+		}
+		buffer.put(QRCode.PAD1, 8);
+	}
+
+	return QRCode.createBytes(buffer, rsBlocks);
+};
+
+QRCode.createBytes = function(buffer, rsBlocks) {
+
+	var offset = 0;
+	
+	var maxDcCount = 0;
+	var maxEcCount = 0;
+	
+	var dcdata = new Array(rsBlocks.length);
+	var ecdata = new Array(rsBlocks.length);
+	
+	for (var r = 0; r < rsBlocks.length; r++) {
+
+		var dcCount = rsBlocks[r].dataCount;
+		var ecCount = rsBlocks[r].totalCount - dcCount;
+
+		maxDcCount = Math.max(maxDcCount, dcCount);
+		maxEcCount = Math.max(maxEcCount, ecCount);
+		
+		dcdata[r] = new Array(dcCount);
+		
+		for (var i = 0; i < dcdata[r].length; i++) {
+			dcdata[r][i] = 0xff & buffer.buffer[i + offset];
+		}
+		offset += dcCount;
+		
+		var rsPoly = QRUtil.getErrorCorrectPolynomial(ecCount);
+		var rawPoly = new QRPolynomial(dcdata[r], rsPoly.getLength() - 1);
+
+		var modPoly = rawPoly.mod(rsPoly);
+		ecdata[r] = new Array(rsPoly.getLength() - 1);
+		for (var x = 0; x < ecdata[r].length; x++) {
+            var modIndex = x + modPoly.getLength() - ecdata[r].length;
+			ecdata[r][x] = (modIndex >= 0)? modPoly.get(modIndex) : 0;
+		}
+
+	}
+	
+	var totalCodeCount = 0;
+	for (var y = 0; y < rsBlocks.length; y++) {
+		totalCodeCount += rsBlocks[y].totalCount;
+	}
+
+	var data = new Array(totalCodeCount);
+	var index = 0;
+
+	for (var z = 0; z < maxDcCount; z++) {
+		for (var s = 0; s < rsBlocks.length; s++) {
+			if (z < dcdata[s].length) {
+				data[index++] = dcdata[s][z];
+			}
+		}
+	}
+
+	for (var xx = 0; xx < maxEcCount; xx++) {
+		for (var t = 0; t < rsBlocks.length; t++) {
+			if (xx < ecdata[t].length) {
+				data[index++] = ecdata[t][xx];
+			}
+		}
+	}
+
+	return data;
+
+};
+
+module.exports = QRCode;
+
+}};
+  var cache = {};
+  function req(name){
+    name = name.replace('./','').replace('.js','');
+    if(cache[name]) return cache[name].exports;
+    var module = { exports: {} }; cache[name] = module;
+    defs[name](module, module.exports, req);
+    return module.exports;
+  }
+  var QRCode = req('index');
+  var ECL = req('QRErrorCorrectLevel');
+  return function(text, level){
+    var qr = new QRCode(-1, ECL[level || 'M']);
+    qr.addData(text); qr.make();
+    var n = qr.getModuleCount(), rows = [];
+    for(var r = 0; r < n; r++){ var row = []; for(var c = 0; c < n; c++) row.push(qr.isDark(r, c)); rows.push(row); }
+    return rows;
+  };
+})();
+
+let qrCart = null;
+// Clean link: only the page address + ?cart=, so the code stays short and never carries stray params.
 function cartUrl(cartId){
   try{
     const url = new URL(window.location.href);
-    url.searchParams.set('cart', cartId);
-    return url.toString();
+    return url.origin + url.pathname + '?cart=' + encodeURIComponent(cartId);
   }catch(e){
-    return window.location.href;
+    return window.location.href.split('#')[0].split('?')[0] + '?cart=' + encodeURIComponent(cartId);
   }
 }
-
-function openQrModal(){
-  const modal = document.getElementById('qrModal');
-  const box = document.getElementById('qrCodeBox');
-  const url = cartUrl(currentCart);
-  document.getElementById('qrCartName').textContent = currentCart;
+function qrSvg(text){
+  const m = QRLite(text, 'M');
+  const n = m.length, q = 4, size = n + q * 2;
+  let d = '';
+  for(let y = 0; y < n; y++){
+    for(let x = 0; x < n; x++){
+      if(m[y][x]){
+        let w = 1;
+        while(x + w < n && m[y][x + w]) w++;
+        d += `M${x + q} ${y + q}h${w}v1h-${w}z`;
+        x += w - 1;
+      }
+    }
+  }
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${size} ${size}" shape-rendering="crispEdges"><rect width="${size}" height="${size}" fill="#fff"/><path d="${d}" fill="#101B33"/></svg>`;
+}
+const QR_ICONS = {
+  dl: '<svg viewBox="0 0 24 24" fill="none"><path d="M12 4v11M7.5 10.5L12 15l4.5-4.5M5 19.5h14" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+  print: '<svg viewBox="0 0 24 24" fill="none"><path d="M7 8V3.5h10V8M7 16.5H5a1.5 1.5 0 01-1.5-1.5v-5A1.5 1.5 0 015 8.5h14a1.5 1.5 0 011.5 1.5v5a1.5 1.5 0 01-1.5 1.5h-2" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><rect x="7" y="13.5" width="10" height="7" rx="1" stroke="currentColor" stroke-width="1.8"/></svg>',
+  copy: '<svg viewBox="0 0 24 24" fill="none"><rect x="8" y="8" width="12" height="12" rx="2" stroke="currentColor" stroke-width="1.8"/><path d="M16 8V5.5A1.5 1.5 0 0014.5 4h-9A1.5 1.5 0 004 5.5v9A1.5 1.5 0 005.5 16H8" stroke="currentColor" stroke-width="1.8"/></svg>',
+  share: '<svg viewBox="0 0 24 24" fill="none"><circle cx="18" cy="5.5" r="2.5" stroke="currentColor" stroke-width="1.8"/><circle cx="6" cy="12" r="2.5" stroke="currentColor" stroke-width="1.8"/><circle cx="18" cy="18.5" r="2.5" stroke="currentColor" stroke-width="1.8"/><path d="M8.2 10.8l7.6-4M8.2 13.2l7.6 4" stroke="currentColor" stroke-width="1.8"/></svg>',
+  all: '<svg viewBox="0 0 24 24" fill="none"><rect x="3.5" y="3.5" width="7" height="7" rx="1.5" stroke="currentColor" stroke-width="1.8"/><rect x="13.5" y="3.5" width="7" height="7" rx="1.5" stroke="currentColor" stroke-width="1.8"/><rect x="3.5" y="13.5" width="7" height="7" rx="1.5" stroke="currentColor" stroke-width="1.8"/><rect x="13.5" y="13.5" width="7" height="7" rx="1.5" stroke="currentColor" stroke-width="1.8"/></svg>'
+};
+function renderQr(){
+  const cart = qrCart;
+  const url = cartUrl(cart);
+  document.getElementById('qrTitle').textContent = tx('رمز QR للعربة', 'Cart QR code');
+  document.getElementById('qrCarts').innerHTML = CARTS.map(c => `<button type="button" data-c="${escapeHtml(c)}" class="${c === cart ? 'on' : ''}">${escapeHtml(c)}</button>`).join('');
+  document.querySelectorAll('#qrCarts button').forEach(b => b.addEventListener('click', () => { qrCart = b.getAttribute('data-c'); renderQr(); }));
+  document.getElementById('qrCartName').textContent = cart;
+  document.getElementById('qrLabelHint').textContent = tx('امسح لفتح قائمة العربة', 'Scan to open this cart');
   document.getElementById('qrUrl').textContent = url;
-  box.innerHTML = '';
-  if(typeof QRCode !== 'undefined'){
-    new QRCode(box, { text: url, width: 200, height: 200, colorDark: '#101B33', colorLight: '#ffffff' });
-  } else {
-    box.textContent = 'QR library unavailable';
-  }
-  modal.style.display = 'flex';
+  const box = document.getElementById('qrCodeBox');
+  try { box.innerHTML = qrSvg(url); }
+  catch(e){ box.innerHTML = `<div style="padding:40px 10px;color:#D8425A;font-size:12px">${tx('تعذّر إنشاء الرمز','Could not generate the code')}</div>`; }
+  const local = !/^https?:$/.test(location.protocol);
+  document.getElementById('qrWarn').innerHTML = local
+    ? `<div class="qr-warn">${tx('أنتِ تفتحين الملف من جهازك، فالرمز يوجّه لملف محلي. افتحي الرمز من الموقع بعد الرفع عشان يشتغل على أي جوال.','You opened this file locally, so the code points to a local file. Open it from the hosted site so it works on any phone.')}</div>` : '';
+  const canShare = !!navigator.share;
+  document.getElementById('qrActions').innerHTML = `
+    <button type="button" class="primary" id="qrPrint">${QR_ICONS.print}${tx('طباعة ملصق','Print label')}</button>
+    <button type="button" id="qrDl">${QR_ICONS.dl}${tx('تحميل صورة','Download PNG')}</button>
+    <button type="button" id="qrCopy">${QR_ICONS.copy}${tx('نسخ الرابط','Copy link')}</button>
+    ${canShare ? `<button type="button" id="qrShare">${QR_ICONS.share}${tx('مشاركة','Share')}</button>` : `<button type="button" id="qrAll">${QR_ICONS.all}${tx('ملصقات كل العربات','All cart labels')}</button>`}
+    ${canShare ? `<button type="button" class="wide" id="qrAll">${QR_ICONS.all}${tx('طباعة ملصقات كل العربات','Print labels for all carts')}</button>` : ''}`;
+  document.getElementById('qrPrint').addEventListener('click', () => printQrLabels([cart]));
+  document.getElementById('qrAll').addEventListener('click', () => printQrLabels(CARTS));
+  document.getElementById('qrDl').addEventListener('click', () => downloadQrPng(cart));
+  document.getElementById('qrCopy').addEventListener('click', async () => {
+    try { await navigator.clipboard.writeText(url); showToast(tx('تم نسخ الرابط','Link copied'), 'success'); }
+    catch(e){ window.prompt(tx('انسخي الرابط:','Copy the link:'), url); }
+  });
+  const sh = document.getElementById('qrShare');
+  if(sh) sh.addEventListener('click', () => navigator.share({ title: `CRUSH CHART · ${cart}`, url }).catch(() => {}));
 }
-
+function openQrModal(){
+  qrCart = currentCart;
+  renderQr();
+  document.getElementById('qrModal').style.display = 'flex';
+}
 function closeQrModal(){
   document.getElementById('qrModal').style.display = 'none';
+}
+function downloadQrPng(cart){
+  const m = QRLite(cartUrl(cart), 'M');
+  const n = m.length, scale = 12, pad = 48, qrPx = n * scale;
+  const W = qrPx + pad * 2, H = W + 110;
+  const cv = document.createElement('canvas'); cv.width = W; cv.height = H;
+  const ctx = cv.getContext('2d');
+  ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, W, H);
+  ctx.fillStyle = '#101B33';
+  for(let y = 0; y < n; y++) for(let x = 0; x < n; x++) if(m[y][x]) ctx.fillRect(pad + x * scale, pad + y * scale, scale, scale);
+  ctx.textAlign = 'center';
+  ctx.font = 'bold 56px "Space Mono", monospace';
+  ctx.fillText(cart, W / 2, W + 40);
+  ctx.fillStyle = '#6B7690';
+  ctx.font = '22px Tajawal, sans-serif';
+  ctx.fillText('CRUSH CHART', W / 2, W + 82);
+  const a = document.createElement('a');
+  a.download = `crash-cart-${cart}-qr.png`;
+  a.href = cv.toDataURL('image/png');
+  document.body.appendChild(a); a.click(); a.remove();
+}
+let printingLabels = false;
+function printQrLabels(carts){
+  const logo = '<svg viewBox="0 0 24 24" fill="none"><path d="M2.5 12H7l2-4 3 8 2-5.5 1.5 1.5H21.5" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+  document.getElementById('printReport').innerHTML = `<div class="ql-sheet ${carts.length === 1 ? 'single' : ''}">${carts.map(c => `
+    <div class="ql">
+      <div class="ql-top"><i>${logo}</i>CRUSH CHART</div>
+      <div class="ql-qr">${qrSvg(cartUrl(c))}</div>
+      <div class="ql-name">${escapeHtml(c)}</div>
+      <div class="ql-hint">${tx('امسح الرمز لفتح قائمة جرد هذي العربة','Scan to open this cart checklist')}</div>
+    </div>`).join('')}</div>`;
+  printingLabels = true;
+  setTimeout(() => {
+    window.print();
+    setTimeout(() => { printingLabels = false; }, 800);
+  }, 120);
 }
 
 const NO_EXPIRY_NAMES = new Set(DEFAULT_ITEMS.filter(it => it.noExpiry).map(it => it.name.trim()));
@@ -1410,7 +3301,7 @@ async function loadState(){
   try{
     const parsed = await supabaseLoad();
     if(parsed){
-      state = Object.assign({meds:[], checkedBy:'', lastUpdate:null, lang:'ar', readinessHistory:[]}, parsed);
+      state = Object.assign({meds:[], checkedBy:'', lastUpdate:null, lang:'ar', readinessHistory:[], auditLog:[]}, parsed);
       state.meds = normalizeMeds(state.meds);
       // Language is a session-wide UI preference, not per-cart — never let a cart's
       // saved data override the language the user currently has selected.
@@ -1444,6 +3335,8 @@ function seedDefault(){
   }));
   state.checkedBy = '';
   state.lastUpdate = null;
+  state.auditLog = [];
+  state.readinessHistory = [];
   state.lang = lang;
 }
 
@@ -1526,13 +3419,18 @@ function updateStats(){
   animateNumber(document.getElementById('statAmber'), amber);
   animateNumber(document.getElementById('statGreen'), green);
   animateNumber(document.getElementById('statTotal'), state.meds.length);
+  const missingCount = state.meds.filter(isMissing).length;
+  animateNumber(document.getElementById('statMissing'), missingCount);
+  document.querySelector('.stat-icon-missing').classList.toggle('has-critical', missingCount > 0);
+  document.querySelectorAll('.statbar .stat[data-filter]').forEach(el =>
+    el.classList.toggle('stat-active', activeFilter !== 'all' && el.getAttribute('data-filter') === activeFilter));
   renderAlertBanner(red, short);
   const pct = active === 0 ? 100 : Math.round((ready / active) * 100);
   renderGauge(pct);
   renderSparkline();
   updateDisplayMode(red, amber, green, pct, issues);
   renderSegmentBar(green, amber, red, na);
-  renderFilterTabs(red, amber, green, state.meds.length);
+  renderFilterTabs(red, amber, green, state.meds.length, state.meds.filter(isMissing).length);
 
   document.querySelector('.stat-icon-red').classList.toggle('has-critical', red > 0);
 
@@ -1566,17 +3464,29 @@ function renderSegmentBar(green, amber, red, na){
   `;
 }
 
-function renderFilterTabs(red, amber, green, total){
+// An item is "missing" when its actual quantity was recorded and is below the standard (0 = not in the cart at all).
+function isMissing(m){
+  if(m.na) return false;
+  const q = qtyState(m);
+  return q.stdVal !== null && q.actualVal !== null && q.actualVal < q.stdVal;
+}
+
+function renderFilterTabs(red, amber, green, total, missing){
   const el = document.getElementById('filterTabs');
   const tabs = [
     { key: 'all', label: t('filterAll'), count: total },
+    { sep: true },
     { key: 'expired', label: t('filterExpired'), count: red },
     { key: 'near', label: t('filterNear'), count: amber },
-    { key: 'valid', label: t('filterValid'), count: green }
+    { key: 'valid', label: t('filterValid'), count: green },
+    { sep: true },
+    { key: 'missing', label: t('filterMissing'), count: missing || 0 }
   ];
-  el.innerHTML = tabs.map(tb =>
-    `<button class="filter-tab ${activeFilter === tb.key ? 'active' : ''} ${tb.key === 'expired' && tb.count > 0 ? 'has-critical' : ''}" data-filter="${tb.key}" type="button">${escapeHtml(tb.label)} <span class="cnt">${tb.count}</span></button>`
+  const prevScroll = el.scrollLeft;
+  el.innerHTML = tabs.map(tb => tb.sep ? '<span class="filter-sep"></span>' :
+    `<button class="filter-tab f-${tb.key} ${activeFilter === tb.key ? 'active' : ''} ${tb.count === 0 ? 'is-zero' : ''} ${(tb.key === 'expired' || tb.key === 'missing') && tb.count > 0 ? 'has-critical' : ''}" data-filter="${tb.key}" type="button">${tb.key === 'all' ? '' : '<span class="dot"></span>'}${escapeHtml(tb.label)}<span class="cnt">${tb.count}</span></button>`
   ).join('');
+  el.scrollLeft = prevScroll;
   el.querySelectorAll('.filter-tab').forEach(btn => {
     btn.addEventListener('click', () => {
       activeFilter = btn.getAttribute('data-filter');
@@ -1704,7 +3614,7 @@ function openDisplayMode(){
     try{
       const parsed = await supabaseLoad();
       if(parsed){
-        state = Object.assign({meds:[], checkedBy:'', lastUpdate:null, lang:'ar', readinessHistory:[]}, parsed);
+        state = Object.assign({meds:[], checkedBy:'', lastUpdate:null, lang:'ar', readinessHistory:[], auditLog:[]}, parsed);
         state.meds = normalizeMeds(state.meds);
         render();
       }
@@ -1790,7 +3700,9 @@ function buildRow(m, displayIndex){
 
   const qtyActualInput = tr.querySelector('.qty-actual-input');
   qtyActualInput.addEventListener('input', (e) => {
+    const prevQty = m.qtyActual;
     m.qtyActual = e.target.value === '' ? '' : Number(e.target.value);
+    logEvent(m, 'qty', prevQty, m.qtyActual);
     saveState(true);
   });
   qtyActualInput.addEventListener('change', () => render());
@@ -1799,7 +3711,11 @@ function buildRow(m, displayIndex){
     const dId = row.getAttribute('data-date-id');
     row.querySelector('.date-input').addEventListener('change', (e) => {
       const entry = m.dates.find(x => x.id === dId);
-      if(entry) entry.date = e.target.value;
+      if(entry){
+        const prevDate = entry.date || '';
+        entry.date = e.target.value;
+        logEvent(m, 'date', prevDate, entry.date || '', dId);
+      }
       saveState(true);
       // Do NOT rebuild the table here: browsers fire 'change' while the user is still
       // picking/typing, and replacing the input kills focus and closes the picker.
@@ -1807,6 +3723,8 @@ function buildRow(m, displayIndex){
       refreshRowInPlace(tr, m);
     });
     row.querySelector('.mini-del').addEventListener('click', () => {
+      const removed = m.dates.find(x => x.id === dId);
+      if(removed && removed.date) logEvent(m, 'date', removed.date, '', dId);
       m.dates = m.dates.filter(x => x.id !== dId);
       if(m.dates.length === 0) m.dates.push({ id: duid(), date: '' });
       saveState(true);
@@ -1825,6 +3743,7 @@ function buildRow(m, displayIndex){
 
   tr.querySelector('.na-btn').addEventListener('click', () => {
     m.na = !m.na;
+    logEvent(m, 'na', !m.na, m.na);
     saveState(true);
     render();
   });
@@ -1849,6 +3768,7 @@ function refreshRowInPlace(tr, m){
   }
   refreshSectionFlags(m.section);
   updateStats();
+  renderCartSide();
 }
 
 function refreshSectionFlags(secId){
@@ -1876,6 +3796,7 @@ function itemMatchesFilter(m){
   if(activeFilter === 'expired') return f === 'red';
   if(activeFilter === 'near') return f === 'amber';
   if(activeFilter === 'valid') return f === 'green';
+  if(activeFilter === 'missing') return isMissing(m);
   return true;
 }
 
@@ -1889,7 +3810,12 @@ function render(){
   tbody.innerHTML = '';
 
   const isFiltering = activeFilter !== 'all' || searchQuery !== '';
-  const visibleMeds = state.meds.filter(m => itemMatchesFilter(m) && itemMatchesSearch(m));
+  const cartMode = viewMode === 'cart';
+  if(cartMode && !cartSel) cartSel = attentionSection();
+  document.querySelector('.card').classList.toggle('cart-mode', cartMode);
+  document.querySelectorAll('#viewToggle button').forEach(b => b.classList.toggle('on', b.getAttribute('data-view') === viewMode));
+  const visibleMeds = state.meds.filter(m => itemMatchesFilter(m) && itemMatchesSearch(m)
+    && (!cartMode || isFiltering || secOf(m) === cartSel));
 
   // Group items by section, preserving the SECTIONS order; unknown sections fall back to 'general'.
   const knownIds = SECTIONS.map(s => s.id);
@@ -1912,7 +3838,7 @@ function render(){
       if(f === 'red') secRed++; else if(f === 'amber') secAmber++;
     });
 
-    const collapsed = isFiltering ? false : collapsedSections.has(secId);
+    const collapsed = (isFiltering || cartMode) ? false : collapsedSections.has(secId);
     const headerRow = document.createElement('tr');
     headerRow.className = 'section-row';
     headerRow.setAttribute('data-section-toggle', secId);
@@ -1931,6 +3857,7 @@ function render(){
         </div>
       </td>`;
     headerRow.addEventListener('click', () => {
+      if(viewMode === 'cart') return;
       if(collapsedSections.has(secId)) collapsedSections.delete(secId);
       else collapsedSections.add(secId);
       render();
@@ -1946,11 +3873,13 @@ function render(){
   });
 
   updateStats();
+  renderCartSide();
 }
 
 document.getElementById('checkedBy').addEventListener('change', (e) => {
   state.checkedBy = e.target.value;
   saveState(true);
+  if(auditOpen) renderAudit();
   document.getElementById('lastUpdateDisplay').textContent = lastUpdateText();
 });
 
@@ -1996,6 +3925,907 @@ function tickClock(){
 }
 tickClock();
 setInterval(tickClock, 1000);
+
+
+/* ================= Audit log ================= */
+const AUDIT_MAX = 400;
+const AUDIT_MERGE_MS = 2 * 60 * 1000;
+let auditOpen = false;
+let auditFilter = 'all';
+let auditQuery = '';
+
+const AUDIT_ICONS = {
+  date: '<svg viewBox="0 0 24 24" fill="none"><rect x="3.5" y="5" width="17" height="15" rx="2.5" stroke="currentColor" stroke-width="1.8"/><path d="M3.5 10h17M8 3v4M16 3v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>',
+  add: '<svg viewBox="0 0 24 24" fill="none"><rect x="3.5" y="5" width="17" height="15" rx="2.5" stroke="currentColor" stroke-width="1.8"/><path d="M12 11.5v5M9.5 14h5M8 3v4M16 3v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>',
+  remove: '<svg viewBox="0 0 24 24" fill="none"><path d="M5 7h14M10 7V4.5h4V7M7 7l1 13h8l1-13" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+  qty: '<svg viewBox="0 0 24 24" fill="none"><path d="M4 8l8-4 8 4-8 4-8-4z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M4 8v8l8 4 8-4V8M12 12v8" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>',
+  na: '<svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="8.5" stroke="currentColor" stroke-width="1.8"/><path d="M6 18L18 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>'
+};
+
+function logEvent(m, type, from, to, dateId){
+  if(!Array.isArray(state.auditLog)) state.auditLog = [];
+  const norm = v => (v === undefined || v === null) ? '' : v;
+  from = norm(from); to = norm(to);
+  if(from === to) return;
+  const by = (state.checkedBy || '').trim();
+  const now = Date.now();
+  const log = state.auditLog;
+  const last = log[log.length - 1];
+  // Merge rapid successive edits of the same field (typing a date/qty fires many events)
+  if(last && last.itemId === m.id && last.type === type && (last.dateId || '') === (dateId || '')
+     && last.by === by && (now - new Date(last.ts).getTime()) < AUDIT_MERGE_MS){
+    last.to = to;
+    last.ts = new Date(now).toISOString();
+    if(last.from === last.to) log.pop();
+  } else {
+    log.push({ id: 'a_' + Math.random().toString(36).slice(2, 9), ts: new Date(now).toISOString(), by,
+      itemId: m.id, item: m.name, section: m.section, type, from, to, dateId: dateId || '' });
+    if(log.length > AUDIT_MAX) state.auditLog = log.slice(log.length - AUDIT_MAX);
+  }
+  if(auditOpen) renderAudit();
+}
+
+function auditKind(e){
+  if(e.type === 'date') return e.from === '' ? 'add' : (e.to === '' ? 'remove' : 'date');
+  return e.type;
+}
+function auditActionLabel(e){
+  const k = auditKind(e);
+  if(k === 'add') return t('actDateAdd');
+  if(k === 'remove') return t('actDateRemove');
+  if(k === 'date') return t('actDate');
+  if(k === 'qty') return t('actQty');
+  return e.to ? t('actNAOn') : t('actNAOff');
+}
+function fmtDay(dateStr){
+  if(!dateStr) return '—';
+  const [y, mo, d] = String(dateStr).split('-');
+  return (y && mo && d) ? `${d}/${mo}/${y}` : String(dateStr);
+}
+function fmtTime(iso){
+  const locale = lang === 'ar' ? 'ar-EG' : 'en-GB';
+  return new Date(iso).toLocaleTimeString(locale, { hour:'2-digit', minute:'2-digit' });
+}
+function dayKey(iso){
+  const d = new Date(iso);
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+}
+function dayHeading(key){
+  const today = dayKey(new Date().toISOString());
+  const y = new Date(); y.setDate(y.getDate() - 1);
+  const locale = lang === 'ar' ? 'ar-EG' : 'en-GB';
+  const full = new Date(key + 'T00:00:00').toLocaleDateString(locale, { weekday:'long', day:'numeric', month:'long', year:'numeric' });
+  if(key === today) return { title: t('auditTodayLbl'), sub: full };
+  if(key === dayKey(y.toISOString())) return { title: t('auditYesterday'), sub: full };
+  return { title: full, sub: '' };
+}
+function auditChangeHtml(e){
+  const arrow = lang === 'ar' ? '←' : '→';
+  const k = auditKind(e);
+  if(k === 'na') return '';
+  if(k === 'qty'){
+    const m = state.meds.find(x => x.id === e.itemId);
+    const std = m ? Number(m.qtyStd) : NaN;
+    const cls = (e.to === '' || isNaN(std)) ? '' : (Number(e.to) < std ? 'st-red' : 'st-green');
+    return `<div class="log-change"><span class="log-from">${escapeHtml(String(e.from === '' ? '—' : e.from))}</span><span class="log-arrow">${arrow}</span><span class="log-to ${cls}">${escapeHtml(String(e.to === '' ? '—' : e.to))}${isNaN(std) ? '' : ' / ' + std}</span></div>`;
+  }
+  const f = e.to ? flagFor(daysLeft(e.to)) : '';
+  const cls = f === 'red' ? 'st-red' : f === 'amber' ? 'st-amber' : f === 'green' ? 'st-green' : '';
+  if(k === 'add') return `<div class="log-change"><span class="log-to ${cls}">${fmtDay(e.to)}</span></div>`;
+  if(k === 'remove') return `<div class="log-change"><span class="log-from">${fmtDay(e.from)}</span></div>`;
+  return `<div class="log-change"><span class="log-from">${fmtDay(e.from)}</span><span class="log-arrow">${arrow}</span><span class="log-to ${cls}">${fmtDay(e.to)}</span></div>`;
+}
+function auditMatches(e){
+  const k = auditKind(e);
+  if(auditFilter === 'dates' && !['date','add','remove'].includes(k)) return false;
+  if(auditFilter === 'qty' && k !== 'qty') return false;
+  if(auditFilter === 'na' && k !== 'na') return false;
+  if(auditQuery){
+    const q = auditQuery.toLowerCase();
+    if(!(e.item || '').toLowerCase().includes(q) && !(e.by || '').toLowerCase().includes(q)) return false;
+  }
+  return true;
+}
+
+function renderAudit(){
+  const log = Array.isArray(state.auditLog) ? state.auditLog : [];
+  document.getElementById('auditSub').innerHTML = escapeHtml(t('auditSub')).replace('{cart}', `<b>${escapeHtml(currentCart)}</b>`).replace('{n}', log.length);
+
+  const todayK = dayKey(new Date().toISOString());
+  const weekAgo = Date.now() - 7 * 864e5;
+  const todayCount = log.filter(e => dayKey(e.ts) === todayK).length;
+  const weekCount = log.filter(e => new Date(e.ts).getTime() >= weekAgo).length;
+  const last = log[log.length - 1];
+  const lastBy = last ? (last.by || t('auditUnknown')) : '—';
+  document.getElementById('auditKpis').innerHTML = `
+    <div class="log-kpi"><b>${todayCount}</b><span>${escapeHtml(t('auditToday'))}</span></div>
+    <div class="log-kpi"><b>${weekCount}</b><span>${escapeHtml(t('auditWeek'))}</span></div>
+    <div class="log-kpi"><b class="log-kpi-name" title="${escapeHtml(lastBy)}">${escapeHtml(lastBy)}</b><span>${escapeHtml(t('auditLastBy'))}</span></div>`;
+
+  const counts = { all: log.length, dates: 0, qty: 0, na: 0 };
+  log.forEach(e => { const k = auditKind(e); if(k === 'qty') counts.qty++; else if(k === 'na') counts.na++; else counts.dates++; });
+  const chips = [['all','auditAll'],['dates','auditDates'],['qty','auditQty'],['na','auditNA']];
+  const chipsEl = document.getElementById('auditChips');
+  chipsEl.innerHTML = chips.map(([k, lbl]) =>
+    `<button type="button" class="log-chip ${auditFilter === k ? 'active' : ''}" data-f="${k}">${escapeHtml(t(lbl))}<span class="cnt">${counts[k]}</span></button>`).join('');
+  chipsEl.querySelectorAll('.log-chip').forEach(b => b.addEventListener('click', () => { auditFilter = b.getAttribute('data-f'); renderAudit(); }));
+
+  const hint = document.getElementById('auditHint');
+  if(!(state.checkedBy || '').trim()){ hint.style.display = 'block'; hint.textContent = t('auditHintNoName'); }
+  else hint.style.display = 'none';
+
+  const body = document.getElementById('auditBody');
+  const emptyIcon = '<svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="8.5" stroke="currentColor" stroke-width="1.5"/><path d="M12 7.5V12l3 2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>';
+  if(log.length === 0){
+    body.innerHTML = `<div class="log-empty">${emptyIcon}<b>${escapeHtml(t('auditEmptyTitle'))}</b>${escapeHtml(t('auditEmptyText'))}</div>`;
+    return;
+  }
+  const items = log.filter(auditMatches).slice().reverse();
+  if(items.length === 0){
+    body.innerHTML = `<div class="log-empty">${emptyIcon}<b>${escapeHtml(t('auditNoMatch'))}</b></div>`;
+    return;
+  }
+  const groups = [];
+  items.forEach(e => {
+    const k = dayKey(e.ts);
+    if(!groups.length || groups[groups.length - 1].key !== k) groups.push({ key: k, entries: [] });
+    groups[groups.length - 1].entries.push(e);
+  });
+  body.innerHTML = groups.map(g => {
+    const h = dayHeading(g.key);
+    return `<div class="log-day">${escapeHtml(h.title)} ${h.sub ? `<small>${escapeHtml(h.sub)}</small>` : ''}</div>
+      <div class="log-list">${g.entries.map(e => {
+        const k = auditKind(e);
+        const by = e.by || t('auditUnknown');
+        const initial = e.by ? e.by.trim().charAt(0).toUpperCase() : '?';
+        return `<div class="log-entry log-t-${k}">
+          <div class="log-icon">${AUDIT_ICONS[k] || AUDIT_ICONS.date}</div>
+          <div class="log-card">
+            <div class="log-top"><span class="log-item">${escapeHtml(e.item)}</span><span class="log-time">${fmtTime(e.ts)}</span></div>
+            <div class="log-action">${escapeHtml(auditActionLabel(e))}</div>
+            ${auditChangeHtml(e)}
+            <div class="log-meta"><span class="log-avatar ${e.by ? '' : 'anon'}">${escapeHtml(initial)}</span><span class="log-by">${escapeHtml(by)}</span><span>· ${escapeHtml(sectionLabel(e.section))}</span></div>
+          </div>
+        </div>`;
+      }).join('')}</div>`;
+  }).join('');
+}
+
+function openAudit(){
+  auditOpen = true;
+  renderAudit();
+  document.getElementById('auditOverlay').style.display = 'block';
+  const p = document.getElementById('auditPanel');
+  p.style.display = 'flex';
+  p.setAttribute('aria-hidden', 'false');
+  document.body.style.overflow = 'hidden';
+}
+function closeAudit(){
+  auditOpen = false;
+  document.getElementById('auditOverlay').style.display = 'none';
+  const p = document.getElementById('auditPanel');
+  p.style.display = 'none';
+  p.setAttribute('aria-hidden', 'true');
+  document.body.style.overflow = '';
+}
+document.getElementById('auditBtn').addEventListener('click', openAudit);
+document.getElementById('auditClose').addEventListener('click', closeAudit);
+document.getElementById('auditOverlay').addEventListener('click', closeAudit);
+document.getElementById('auditSearch').addEventListener('input', (e) => { auditQuery = e.target.value.trim(); renderAudit(); });
+document.addEventListener('keydown', (e) => { if(e.key === 'Escape' && auditOpen) closeAudit(); });
+
+/* ================= PDF report (print → Save as PDF) ================= */
+const RP_PILL = {
+  red: 'background:#FDECEF;color:#D8425A;', amber: 'background:#FBF2E1;color:#B87A16;',
+  green: 'background:#E7F5EF;color:#2C9A72;', none: 'background:#F0F2F6;color:#6B7690;',
+  noexp: 'background:#F0F2F6;color:#6B7690;', na: 'background:#F0F2F6;color:#9AA3B8;'
+};
+
+function buildReport(){
+  const now = new Date();
+  const locale = lang === 'ar' ? 'ar-EG' : 'en-GB';
+  let green = 0, amber = 0, red = 0, short = 0, na = 0, ready = 0, active = 0;
+  const actions = [];
+  state.meds.forEach(m => {
+    if(m.na){ na++; return; }
+    active++;
+    const st = rowStatus(m);
+    const q = qtyState(m);
+    if(st.flag === 'green') green++; else if(st.flag === 'amber') amber++; else if(st.flag === 'red') red++;
+    if(q.short) short++;
+    const isReady = m.noExpiry ? (q.actualVal !== null && !q.short) : (st.flag === 'green' && !q.short);
+    if(isReady) ready++;
+    if(st.flag === 'red') actions.push({ m, flag: 'red', issue: t('badgeRed'), detail: t('rpDaysAgo').replace('{n}', Math.abs(st.days)) });
+    else if(st.flag === 'amber') actions.push({ m, flag: 'amber', issue: t('badgeAmber'), detail: t('rpDaysLeft').replace('{n}', st.days) });
+    if(q.short) actions.push({ m, flag: 'red', issue: t('rpShort'), detail: t('rpQtyDetail').replace('{a}', q.actualVal).replace('{s}', q.stdVal) });
+  });
+  const pct = active === 0 ? 100 : Math.round((ready / active) * 100);
+  const readyColor = pct < 60 ? '#D8425A' : (pct < 90 ? '#DE9A2E' : '#2C9A72');
+  const ref = `${currentCart}-${now.getFullYear()}${String(now.getMonth()+1).padStart(2,'0')}${String(now.getDate()).padStart(2,'0')}-${String(now.getHours()).padStart(2,'0')}${String(now.getMinutes()).padStart(2,'0')}`;
+  const genStr = now.toLocaleString(locale, { day:'2-digit', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit' });
+  const checker = (state.checkedBy || '').trim();
+
+  const actionsHtml = actions.length === 0
+    ? `<div class="rp-ok">${escapeHtml(t('rpAllGood'))}</div>`
+    : `<table><thead><tr><th>#</th><th>${t('rpItem')}</th><th>${t('rpSection')}</th><th class="c">${t('rpIssue')}</th><th>${t('rpDetail')}</th></tr></thead><tbody>
+        ${actions.map((a, i) => `<tr><td class="mono">${i+1}</td><td><b>${escapeHtml(a.m.name)}</b></td><td class="nw">${escapeHtml(sectionLabel(a.m.section))}</td>
+          <td class="c"><span class="rp-pill" style="${RP_PILL[a.flag]}">${escapeHtml(a.issue)}</span></td><td>${escapeHtml(a.detail)}</td></tr>`).join('')}
+      </tbody></table>`;
+
+  const knownIds = SECTIONS.map(s => s.id);
+  let n = 0;
+  const rows = knownIds.map(secId => {
+    const items = state.meds.filter(m => (knownIds.includes(m.section) ? m.section : 'general') === secId);
+    if(!items.length) return '';
+    return `<tr class="rp-sec"><td colspan="7">${escapeHtml(sectionLabel(secId))}</td></tr>` + items.map(m => {
+      n++;
+      const st = rowStatus(m);
+      const q = qtyState(m);
+      const dates = m.noExpiry ? '—'
+        : ((m.dates || []).filter(d => d.date).map(d => fmtDay(d.date)).join('<br>') || '—');
+      const pillKey = m.na ? 'na' : st.flag;
+      return `<tr class="${m.na ? 'rp-na' : ''}">
+        <td class="mono">${n}</td>
+        <td>${escapeHtml(m.name)}</td>
+        <td class="c mono">${q.stdVal === null ? '—' : q.stdVal}</td>
+        <td class="c mono ${q.short && !m.na ? 'rp-short' : ''}">${q.actualVal === null ? '—' : q.actualVal}</td>
+        <td class="mono">${dates}</td>
+        <td class="c mono" dir="ltr">${m.na || m.noExpiry || st.days === null ? '—' : st.days}</td>
+        <td class="c"><span class="rp-pill" style="${RP_PILL[pillKey]}">${escapeHtml(badgeLabel(st.flag, m.na))}</span>${q.short && !m.na ? ` <span class="rp-pill" style="${RP_PILL.red}">${escapeHtml(t('rpShort'))}</span>` : ''}</td>
+      </tr>`;
+    }).join('');
+  }).join('');
+
+  const recent = (state.auditLog || []).slice(-12).reverse();
+  const recentHtml = recent.length === 0 ? '' : `
+    <div class="rp-h2">${t('rpRecent')}</div>
+    <table><thead><tr><th>${t('rpTime')}</th><th>${t('rpBy')}</th><th>${t('rpItem')}</th><th>${t('rpChange')}</th></tr></thead><tbody>
+      ${recent.map(e => {
+        const k = auditKind(e);
+        const arrow = lang === 'ar' ? '←' : '→';
+        const val = k === 'na' ? '' : k === 'qty' ? `${e.from === '' ? '—' : e.from} ${arrow} ${e.to === '' ? '—' : e.to}`
+          : k === 'add' ? fmtDay(e.to) : k === 'remove' ? fmtDay(e.from) : `${fmtDay(e.from)} ${arrow} ${fmtDay(e.to)}`;
+        return `<tr><td class="mono nw">${escapeHtml(new Date(e.ts).toLocaleString(locale, { day:'2-digit', month:'2-digit', hour:'2-digit', minute:'2-digit' }))}</td>
+          <td>${escapeHtml(e.by || t('auditUnknown'))}</td><td>${escapeHtml(e.item)}</td>
+          <td>${escapeHtml(auditActionLabel(e))}${val ? ` <span class="mono">(${escapeHtml(val)})</span>` : ''}</td></tr>`;
+      }).join('')}
+    </tbody></table>`;
+
+  document.getElementById('printReport').innerHTML = `
+    <div class="rp-head">
+      <div class="rp-logo"><svg viewBox="0 0 24 24" fill="none"><path d="M2.5 12H7l2-4 3 8 2-5.5 1.5 1.5H21.5" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      <div class="rp-title"><h1>${escapeHtml(t('rpTitle'))}</h1><p>${escapeHtml(t('rpSub'))}</p></div>
+      <div class="rp-cart"><b>${escapeHtml(currentCart)}</b><span>${escapeHtml(t('rpCart'))}</span></div>
+    </div>
+    <div class="rp-meta">
+      <div><span>${t('rpGenerated')}</span><b>${escapeHtml(genStr)}</b></div>
+      <div><span>${t('rpCheckedBy')}</span><b>${escapeHtml(checker || '—')}</b></div>
+      <div><span>${t('rpLastUpdate')}</span><b>${escapeHtml(state.lastUpdate ? fmtDate(state.lastUpdate) : '—')}</b></div>
+      <div><span>${t('rpRef')}</span><b>${escapeHtml(ref)}</b></div>
+    </div>
+    <div class="rp-summary">
+      <div class="rp-ready" style="background:${readyColor}"><b>${pct}%</b><span>${t('rpReadiness')}</span></div>
+      <div class="rp-counts">
+        <div class="rp-count rp-c-green"><b>${green}</b><span>${t('badgeGreen')}</span></div>
+        <div class="rp-count rp-c-amber"><b>${amber}</b><span>${t('badgeAmber')}</span></div>
+        <div class="rp-count rp-c-red"><b>${red}</b><span>${t('badgeRed')}</span></div>
+        <div class="rp-count rp-c-red"><b>${short}</b><span>${t('rpShort')}</span></div>
+        <div class="rp-count rp-c-grey"><b>${na}</b><span>N/A</span></div>
+      </div>
+    </div>
+    <div class="rp-h2 rp-h2-red">${t('rpActionTitle')}</div>
+    ${actionsHtml}
+    <div class="rp-h2">${t('rpChecklist')}</div>
+    <table>
+      <thead><tr><th>#</th><th>${t('rpItem')}</th><th class="c">${t('rpStd')}</th><th class="c">${t('rpActual')}</th><th>${t('rpExpiry')}</th><th class="c">${t('rpDays')}</th><th class="c">${t('rpStatus')}</th></tr></thead>
+      <tbody>${rows}</tbody>
+    </table>
+    ${recentHtml}
+    <div class="rp-sign">
+      <div>${t('rpSignChecker')}<b>${escapeHtml(checker)}</b></div>
+      <div>${t('rpSignCharge')}<b></b></div>
+      <div>${t('rpSignDate')}<b></b></div>
+    </div>
+    <div class="rp-foot"><span>CRUSH CHART · ${escapeHtml(ref)}</span><span>${escapeHtml(genStr)}</span></div>`;
+}
+
+function printReport(){
+  buildReport();
+  const prevTitle = document.title;
+  document.title = `Crash-Cart-Report-${currentCart}-${dayKey(new Date().toISOString())}`;
+  setTimeout(() => {
+    window.print();
+    setTimeout(() => { document.title = prevTitle; }, 500);
+  }, 150);
+}
+document.getElementById('reportBtn').addEventListener('click', printReport);
+window.addEventListener('beforeprint', () => { if(!printingLabels) buildReport(); });
+
+
+/* ================= Shared helpers for map & check mode ================= */
+function tx(ar, en){ return lang === 'ar' ? ar : en; }
+function secOf(m){ const ids = SECTIONS.map(s => s.id); return ids.includes(m.section) ? m.section : 'general'; }
+function itemsInOrder(secId){
+  const out = [];
+  SECTIONS.forEach(sec => {
+    if(secId && sec.id !== secId) return;
+    state.meds.forEach(m => { if(secOf(m) === sec.id) out.push(m); });
+  });
+  return out;
+}
+function sectionHealth(secId){
+  const h = { total:0, na:0, red:0, amber:0, green:0, missing:0, unchecked:0, active:0 };
+  state.meds.forEach(m => {
+    if(secOf(m) !== secId) return;
+    h.total++;
+    if(m.na){ h.na++; return; }
+    h.active++;
+    const f = rowStatus(m).flag;
+    if(f === 'red') h.red++; else if(f === 'amber') h.amber++; else if(f === 'green') h.green++;
+    if(isMissing(m)) h.missing++;
+    if(m.qtyActual === '' || m.qtyActual === undefined || m.qtyActual === null) h.unchecked++;
+  });
+  h.flag = (h.red || h.missing) ? 'red' : h.amber ? 'amber' : (h.active && !h.unchecked) ? 'green' : 'none';
+  h.checkedPct = h.active ? Math.round(((h.active - h.unchecked) / h.active) * 100) : 100;
+  return h;
+}
+const HC = { red:'#D8425A', amber:'#DE9A2E', green:'#2C9A72', none:'#8A93A8' };
+function earliestDate(m){
+  const ds = (m.dates || []).map(d => d.date).filter(Boolean).sort();
+  return ds[0] || '';
+}
+
+/* ================= Cart map ================= */
+let mapSelected = null;
+function drawerShortName(secId){
+  const full = sectionLabel(secId);
+  const parts = full.split('—');
+  return (parts[1] || parts[0]).trim();
+}
+function openMap(){
+  let modal = document.getElementById('mapModal');
+  if(!modal){
+    modal = document.createElement('div');
+    modal.id = 'mapModal';
+    modal.className = 'map-modal';
+    document.body.appendChild(modal);
+    modal.addEventListener('click', e => { if(e.target === modal) closeMap(); });
+  }
+  if(!mapSelected){
+    // Pre-select the drawer that needs the most attention
+    const ranked = SECTIONS.map(s => ({ id: s.id, h: sectionHealth(s.id) })).filter(x => x.h.total > 0)
+      .sort((a, b) => (b.h.red + b.h.missing) * 100 + b.h.amber - ((a.h.red + a.h.missing) * 100 + a.h.amber));
+    mapSelected = ranked.length ? ranked[0].id : 'top';
+  }
+  modal.style.display = 'flex';
+  document.body.style.overflow = 'hidden';
+  renderMap();
+}
+function closeMap(){
+  const modal = document.getElementById('mapModal');
+  if(modal) modal.style.display = 'none';
+  document.body.style.overflow = '';
+}
+function renderMap(){
+  const modal = document.getElementById('mapModal');
+  if(!modal) return;
+  const pills = h => [
+    h.red ? `<span class="d-pill" style="background:${HC.red}">${h.red}</span>` : '',
+    h.missing ? `<span class="d-pill" style="background:#8E5BD0">${h.missing}</span>` : '',
+    h.amber ? `<span class="d-pill" style="background:${HC.amber}">${h.amber}</span>` : ''
+  ].join('');
+  const topH = sectionHealth('top');
+  const drawers = SECTIONS.filter(s => s.id !== 'top' && (s.id !== 'general' || sectionHealth('general').total > 0));
+  const heights = { d1: 40, d2: 40, d3: 50, d4: 44, d5: 50, d6: 60, general: 40 };
+  const drawerHtml = drawers.map((sec, i) => {
+    const h = sectionHealth(sec.id);
+    const num = sec.id.startsWith('d') ? sec.id.slice(1) : '+';
+    return `<button type="button" class="drawer h-${h.flag} ${mapSelected === sec.id ? 'selected' : ''}" data-sec="${sec.id}" style="--hc:${HC[h.flag]};min-height:${heights[sec.id] || 44}px">
+      <span class="d-num">${num}</span>
+      <span class="d-name">${escapeHtml(drawerShortName(sec.id))}<small>${h.total} ${tx('صنف','items')}</small></span>
+      <span class="d-pills">${pills(h)}</span>
+      <span class="d-prog"><b style="width:${h.checkedPct}%"></b></span>
+    </button>`;
+  }).join('');
+  const trayBlocks = [18, 12, 22, 9, 15, 11].map(hh => `<i style="height:${hh}px;width:${hh > 16 ? 26 : 16}px"></i>`).join('');
+
+  modal.innerHTML = `
+    <div class="map-sheet" role="dialog">
+      <div class="map-head">
+        <div class="log-head-icon">${'<svg viewBox="0 0 24 24" fill="none"><rect x="5" y="3" width="14" height="15" rx="2" stroke="currentColor" stroke-width="1.6"/><path d="M5 8h14M5 13h14M10.5 5.5h3M10.5 10.5h3M10.5 15.5h3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><circle cx="8" cy="20.5" r="1.5" stroke="currentColor" stroke-width="1.4"/><circle cx="16" cy="20.5" r="1.5" stroke="currentColor" stroke-width="1.4"/></svg>'}</div>
+        <div><h2>${tx('خريطة العربة','Cart map')} · <span style="font-family:'Space Mono',monospace;color:#7FA6E8">${escapeHtml(currentCart)}</span></h2>
+        <p>${tx('اضغطي على أي درج لعرض محتواه وحالته','Tap any drawer to see its contents and status')}</p></div>
+        <button class="log-close" id="mapClose" type="button">×</button>
+      </div>
+      <div class="map-grid">
+        <div class="map-art-wrap">
+          <div class="cart-art">
+            <button type="button" class="cart-tray h-${topH.flag} ${mapSelected === 'top' ? 'selected' : ''}" data-sec="top" style="--hc:${HC[topH.flag]}">
+              <div style="display:flex;align-items:center;gap:8px;position:relative;z-index:1">
+                <span class="d-num" style="font-family:'Space Mono',monospace;font-weight:700;font-size:12px;width:24px;height:24px;border-radius:7px;display:flex;align-items:center;justify-content:center;background:var(--hc);color:#fff">▲</span>
+                <span style="font-size:12px;font-weight:800;flex:1">${escapeHtml(sectionLabel('top'))}</span>
+                <span class="d-pills" style="display:flex;gap:3px">${pills(topH)}</span>
+              </div>
+              <div class="tray-items">${trayBlocks}</div>
+              <span class="d-prog"><b style="width:${topH.checkedPct}%"></b></span>
+            </button>
+            <div class="cart-body">${drawerHtml}</div>
+            <div class="cart-base"></div>
+            <div class="cart-wheels"><i></i><i></i></div>
+          </div>
+          <div class="map-legend">
+            <span><i style="background:${HC.green}"></i>${tx('جاهز','Ready')}</span>
+            <span><i style="background:${HC.amber}"></i>${tx('قريب الانتهاء','Near expiry')}</span>
+            <span><i style="background:${HC.red}"></i>${tx('منتهي / ناقص','Expired / short')}</span>
+            <span><i style="background:${HC.none}"></i>${tx('لم يكتمل فحصه','Not fully checked')}</span>
+          </div>
+        </div>
+        <div class="map-detail" id="mapDetail"></div>
+      </div>
+    </div>`;
+  modal.querySelector('#mapClose').addEventListener('click', closeMap);
+  modal.querySelectorAll('[data-sec]').forEach(b => b.addEventListener('click', () => {
+    mapSelected = b.getAttribute('data-sec');
+    modal.querySelectorAll('[data-sec]').forEach(x => x.classList.toggle('selected', x === b));
+    renderMapDetail();
+    if(window.innerWidth <= 720) document.getElementById('mapDetail').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }));
+  renderMapDetail();
+}
+function renderMapDetail(){
+  const el = document.getElementById('mapDetail');
+  if(!el) return;
+  const secId = mapSelected;
+  const h = sectionHealth(secId);
+  const items = itemsInOrder(secId);
+  const stat = (n, lbl, bg, fg) => `<div class="md-stat" style="background:${bg};color:${fg}"><b>${n}</b><span>${lbl}</span></div>`;
+  const list = items.length === 0 ? `<div class="md-empty">${tx('لا توجد عناصر في هذا القسم','No items in this section')}</div>` :
+    items.map((m, i) => {
+      const st = rowStatus(m); const q = qtyState(m);
+      const color = m.na ? HC.none : (st.flag === 'red' || q.short) ? HC.red : st.flag === 'amber' ? HC.amber : st.flag === 'green' ? HC.green : HC.none;
+      const d = m.noExpiry ? tx('لا يحتاج تاريخ','No expiry') : (earliestDate(m) ? fmtDay(earliestDate(m)) : tx('بدون تاريخ','No date'));
+      return `<div class="md-item ${m.na ? 'is-na' : ''}" style="animation-delay:${Math.min(i, 12) * 18}ms">
+        <i style="background:${color}"></i>
+        <span class="n">${escapeHtml(m.name)}<small>${m.na ? 'N/A' : escapeHtml(d)}</small></span>
+        <span class="q ${q.short && !m.na ? 'short' : ''}">${q.actualVal === null ? '—' : q.actualVal}/${q.stdVal === null ? '—' : q.stdVal}</span>
+      </div>`;
+    }).join('');
+  el.innerHTML = `
+    <div class="md-title"><span class="section-icon-badge">${sectionIconSvg(secId)}</span>
+      <div><h3>${escapeHtml(sectionLabel(secId))}</h3><p>${h.total} ${tx('صنف','items')} · ${tx('تم فحص','checked')} ${h.checkedPct}%</p></div></div>
+    <div class="md-stats">
+      ${stat(h.green, tx('صالح','Valid'), 'var(--green-bg)', 'var(--green)')}
+      ${stat(h.amber, tx('قريب','Near'), 'var(--amber-bg)', 'var(--amber)')}
+      ${stat(h.red, tx('منتهي','Expired'), 'var(--red-bg)', 'var(--red)')}
+      ${stat(h.missing, tx('ناقص','Short'), 'rgba(142,91,208,.12)', '#8E5BD0')}
+      ${stat(h.unchecked, tx('لم يُفحص','Unchecked'), 'var(--neutral-bg)', 'var(--neutral-text)')}
+    </div>
+    <div class="md-actions">
+      <button type="button" class="md-btn primary" id="mdCheck"><svg viewBox="0 0 24 24" fill="none"><rect x="4" y="3.5" width="16" height="17" rx="3" stroke="currentColor" stroke-width="2"/><path d="M8.5 12l2.5 2.5 4.5-5" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>${tx('افحصي هذا الدرج','Check this drawer')}</button>
+      <button type="button" class="md-btn" id="mdTable">${tx('عرض في الجدول','Show in table')}</button>
+    </div>
+    <div class="md-list">${list}</div>`;
+  el.querySelector('#mdCheck').addEventListener('click', () => { closeMap(); openCheck(secId); });
+  el.querySelector('#mdTable').addEventListener('click', () => {
+    closeMap();
+    activeFilter = 'all'; searchQuery = '';
+    const si = document.getElementById('searchInput'); if(si) si.value = '';
+    collapsedSections.delete(secId);
+    render();
+    const row = document.querySelector(`tr[data-section-toggle="${secId}"]`);
+    if(row) row.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+}
+
+/* ================= Swipe check mode ================= */
+const chk = { open:false, scope:null, onlyUnchecked:false, queue:[], idx:0, results:{}, undo:[], busy:false };
+const CHK_ICONS = {
+  ok: '<svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+  no: '<svg viewBox="0 0 24 24" fill="none"><path d="M7 7l10 10M17 7L7 17" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/></svg>',
+  undo: '<svg viewBox="0 0 24 24" fill="none"><path d="M9 7L4.5 11.5 9 16" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M5 11.5h9a5 5 0 010 10h-2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>',
+  skip: '<svg viewBox="0 0 24 24" fill="none"><path d="M6 6l7 6-7 6M14 6v12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>'
+};
+function chkRoot(){
+  let el = document.getElementById('chkRoot');
+  if(!el){ el = document.createElement('div'); el.id = 'chkRoot'; el.className = 'chk'; document.body.appendChild(el); }
+  return el;
+}
+function openCheck(scope){
+  chk.open = true; chk.scope = scope || null; chk.onlyUnchecked = false;
+  chkRoot().style.display = 'flex';
+  document.body.style.overflow = 'hidden';
+  renderCheckStart();
+}
+function closeCheck(){
+  chk.open = false;
+  const el = document.getElementById('chkRoot');
+  if(el){ el.style.display = 'none'; el.innerHTML = ''; }
+  document.body.style.overflow = '';
+  render();
+}
+function chkPool(){
+  return itemsInOrder(chk.scope).filter(m => !m.na);
+}
+function isUnchecked(m){ return m.qtyActual === '' || m.qtyActual === undefined || m.qtyActual === null; }
+function renderCheckStart(){
+  const root = chkRoot();
+  const pool = chkPool();
+  const unchecked = pool.filter(isUnchecked).length;
+  const scopeName = chk.scope ? sectionLabel(chk.scope) : tx('العربة كاملة','Whole cart');
+  root.innerHTML = `
+    <div class="chk-top"><button class="chk-x" id="chkX" type="button">×</button></div>
+    <div class="chk-screen">
+      <div class="chk-hero">${CHK_ICONS.ok}</div>
+      <h2>${tx('وضع الفحص','Check mode')}</h2>
+      <p class="sub2">${escapeHtml(scopeName)} · <b>${escapeHtml(currentCart)}</b><br>${tx('كل عنصر يطلع ككرت — اسحبي يمين إذا موجود وكامل، ويسار إذا ناقص','Each item appears as a card — swipe right if present and complete, left if short')}</p>
+      <div class="chk-tips"><span><i style="background:#5FD3A5"></i>${tx('يمين: موجود','Right: present')}</span><span><i style="background:#FF7A90"></i>${tx('يسار: ناقص','Left: short')}</span></div>
+      <div class="chk-seg" id="chkSeg">
+        <button type="button" data-u="0" class="${!chk.onlyUnchecked ? 'on' : ''}">${tx('كل العناصر','All items')}<b>${pool.length}</b></button>
+        <button type="button" data-u="1" class="${chk.onlyUnchecked ? 'on' : ''}" ${unchecked === 0 ? 'disabled' : ''}>${tx('غير المفحوص','Unchecked')}<b>${unchecked}</b></button>
+      </div>
+      <div class="chk-field">
+        <label>${escapeHtml(t('checkedByLabel'))}</label>
+        <select id="chkName"><option value="">${escapeHtml(t('checkedBySelectPh'))}</option>${CHECKER_NAMES.map(n => `<option ${state.checkedBy === n ? 'selected' : ''}>${escapeHtml(n)}</option>`).join('')}</select>
+      </div>
+      <button class="chk-go" id="chkGo" type="button" ${state.checkedBy ? '' : 'disabled'}>${tx('ابدأ','Start')}</button>
+    </div>`;
+  root.querySelector('#chkX').addEventListener('click', closeCheck);
+  root.querySelectorAll('#chkSeg button').forEach(b => b.addEventListener('click', () => { chk.onlyUnchecked = b.getAttribute('data-u') === '1'; renderCheckStart(); }));
+  root.querySelector('#chkName').addEventListener('change', e => {
+    state.checkedBy = e.target.value;
+    populateCheckedBySelect();
+    saveState(false);
+    root.querySelector('#chkGo').disabled = !state.checkedBy;
+  });
+  root.querySelector('#chkGo').addEventListener('click', () => {
+    chk.queue = chk.onlyUnchecked ? pool.filter(isUnchecked) : pool;
+    if(chk.queue.length === 0) return;
+    chk.idx = 0; chk.results = {}; chk.undo = [];
+    renderCheckCard();
+  });
+}
+function chkDateRows(m){
+  if(m.noExpiry) return `<div class="chk-noexp">${escapeHtml(t('noExpiryLabel'))}</div>`;
+  const ds = (m.dates && m.dates.length) ? m.dates : [];
+  return `<div class="chk-dates">${ds.map(d => {
+    const f = d.date ? flagFor(daysLeft(d.date)) : 'none';
+    return `<label class="chk-date"><input type="date" data-did="${d.id}" value="${escapeHtml(d.date || '')}" max="2099-12-31">
+      <span class="badge ${f}" data-badge="${d.id}"><i></i>${escapeHtml(d.date ? badgeLabel(f, false) : t('noDateLabel'))}</span></label>`;
+  }).join('')}</div>`;
+}
+function chkWarn(m){
+  const f = rowStatus(m).flag;
+  if(f === 'red') return `<div class="chk-warn">⚠ ${tx('منتهي الصلاحية — يحتاج استبدال','Expired — needs replacement')}</div>`;
+  if(f === 'amber') return `<div class="chk-warn amber">⏳ ${tx('قريب الانتهاء خلال 3 أشهر','Expires within 3 months')}</div>`;
+  return '';
+}
+function renderCheckCard(){
+  const root = chkRoot();
+  if(chk.idx >= chk.queue.length){ renderCheckDone(); return; }
+  const m = chk.queue[chk.idx];
+  const next = chk.queue[chk.idx + 1];
+  const done = chk.idx, total = chk.queue.length;
+  const okN = Object.values(chk.results).filter(r => r === 'ok').length;
+  const noN = Object.values(chk.results).filter(r => r === 'short').length;
+  const q = qtyState(m);
+  root.innerHTML = `
+    <div class="chk-top">
+      <button class="chk-x" id="chkX" type="button">×</button>
+      <div class="chk-prog">
+        <div class="chk-prog-row"><span>${escapeHtml(sectionLabel(secOf(m)))}</span><b>${done + 1} / ${total}</b></div>
+        <div class="chk-bar"><i style="width:${okN / total * 100}%;background:#5FD3A5"></i><i style="width:${noN / total * 100}%;background:#FF7A90"></i><i style="width:${(done - okN - noN) / total * 100}%;background:#8A93A8"></i></div>
+      </div>
+    </div>
+    <div class="chk-stage" id="chkStage">
+      ${next ? `<div class="chk-card back"><span class="chk-sec">${escapeHtml(drawerShortName(secOf(next)))}</span><div class="chk-name">${escapeHtml(next.name)}</div></div>` : ''}
+      <div class="chk-card enter" id="chkCard">
+        <div class="chk-stamp ok" id="stampOk">${tx('موجود','PRESENT')}</div>
+        <div class="chk-stamp no" id="stampNo">${tx('ناقص','SHORT')}</div>
+        <span class="chk-sec"><span class="section-icon-badge">${sectionIconSvg(secOf(m))}</span>${escapeHtml(drawerShortName(secOf(m)))}</span>
+        <div class="chk-name">${escapeHtml(m.name)}</div>
+        <div class="chk-qty">
+          <div><span>${tx('الكمية الثابتة','Standard qty')}</span><b>${q.stdVal === null ? '—' : q.stdVal}</b></div>
+          <div><span>${tx('آخر تسجيل','Last recorded')}</span><b style="color:${q.short ? 'var(--red)' : 'inherit'}">${q.actualVal === null ? '—' : q.actualVal}</b></div>
+        </div>
+        ${chkDateRows(m)}
+        <div id="chkWarn">${chkWarn(m)}</div>
+        ${chk.idx === 0 ? `<div class="chk-hint">${tx('اسحبي الكرت يمين أو يسار، أو استخدمي الأزرار تحت','Swipe the card, or use the buttons below')}</div>` : ''}
+      </div>
+    </div>
+    <div class="chk-actions">
+      <div class="chk-btn-lbl"><button class="chk-btn small" id="chkUndo" type="button" ${chk.undo.length ? '' : 'disabled'}>${CHK_ICONS.undo}</button>${tx('رجوع','Undo')}</div>
+      <div class="chk-btn-lbl"><button class="chk-btn big no" id="chkNo" type="button">${CHK_ICONS.no}</button>${tx('ناقص','Short')}</div>
+      <div class="chk-btn-lbl"><button class="chk-btn big ok" id="chkOk" type="button">${CHK_ICONS.ok}</button>${tx('موجود','Present')}</div>
+      <div class="chk-btn-lbl"><button class="chk-btn small" id="chkSkip" type="button">${CHK_ICONS.skip}</button>${tx('تخطي','Skip')}</div>
+    </div>`;
+  root.querySelector('#chkX').addEventListener('click', () => (chk.idx > 0 ? renderCheckDone() : closeCheck()));
+  root.querySelector('#chkOk').addEventListener('click', () => chkCommit('ok'));
+  root.querySelector('#chkNo').addEventListener('click', () => chkCommit('short'));
+  root.querySelector('#chkSkip').addEventListener('click', () => chkFly(0, () => { chk.results[m.id] = 'skip'; chk.undo.push({ m, prev: m.qtyActual, skip: true }); chk.idx++; renderCheckCard(); }));
+  root.querySelector('#chkUndo').addEventListener('click', chkUndo);
+  root.querySelectorAll('.chk-date input').forEach(inp => inp.addEventListener('change', e => {
+    const entry = (m.dates || []).find(d => d.id === inp.getAttribute('data-did'));
+    if(!entry) return;
+    const prev = entry.date || '';
+    entry.date = e.target.value;
+    logEvent(m, 'date', prev, entry.date || '', entry.id);
+    saveState(true);
+    const f = entry.date ? flagFor(daysLeft(entry.date)) : 'none';
+    const badge = root.querySelector(`[data-badge="${entry.id}"]`);
+    if(badge){ badge.className = `badge ${f}`; badge.innerHTML = `<i></i>${escapeHtml(entry.date ? badgeLabel(f, false) : t('noDateLabel'))}`; }
+    root.querySelector('#chkWarn').innerHTML = chkWarn(m);
+  }));
+  bindSwipe(root.querySelector('#chkCard'));
+}
+function bindSwipe(card){
+  let sx = 0, sy = 0, dx = 0, active = false, decided = false;
+  const okS = card.querySelector('#stampOk'), noS = card.querySelector('#stampNo');
+  card.addEventListener('pointerdown', e => {
+    if(e.target.closest('input,button,select,label') || chk.busy) return;
+    active = true; decided = false; sx = e.clientX; sy = e.clientY; dx = 0;
+  });
+  card.addEventListener('pointermove', e => {
+    if(!active) return;
+    const mx = e.clientX - sx, my = e.clientY - sy;
+    if(!decided){
+      if(Math.abs(mx) < 8 && Math.abs(my) < 8) return;
+      if(Math.abs(my) > Math.abs(mx)){ active = false; return; } // vertical scroll wins
+      decided = true;
+      card.setPointerCapture(e.pointerId);
+      card.classList.add('dragging');
+      card.classList.remove('enter');
+      card.style.transition = 'none';
+    }
+    dx = mx;
+    card.style.transform = `translateX(${dx}px) rotate(${dx / 20}deg)`;
+    okS.style.opacity = Math.max(0, Math.min(1, dx / 90));
+    noS.style.opacity = Math.max(0, Math.min(1, -dx / 90));
+  });
+  const end = () => {
+    if(!active) return;
+    active = false;
+    card.classList.remove('dragging');
+    if(!decided) return;
+    if(dx > 100) chkCommit('ok');
+    else if(dx < -100) chkCommit('short');
+    else {
+      card.style.transition = 'transform .3s cubic-bezier(.3,1.4,.5,1)';
+      card.style.transform = '';
+      okS.style.opacity = 0; noS.style.opacity = 0;
+    }
+  };
+  card.addEventListener('pointerup', end);
+  card.addEventListener('pointercancel', end);
+}
+function chkFly(dir, after){
+  const card = document.getElementById('chkCard');
+  if(!card){ after(); return; }
+  chk.busy = true;
+  card.classList.remove('enter');
+  card.style.transition = 'transform .28s ease-in, opacity .28s ease-in';
+  const x = dir === 0 ? 0 : dir * window.innerWidth;
+  card.style.transform = dir === 0 ? 'translateY(-40px) scale(.9)' : `translateX(${x}px) rotate(${dir * 18}deg)`;
+  card.style.opacity = '0';
+  setTimeout(() => { chk.busy = false; after(); }, 240);
+}
+function chkRecord(m, value, result){
+  const prev = m.qtyActual;
+  m.qtyActual = value;
+  logEvent(m, 'qty', prev, value);
+  chk.undo.push({ m, prev });
+  chk.results[m.id] = result;
+  saveState(true);
+}
+function chkCommit(kind){
+  if(chk.busy) return;
+  const m = chk.queue[chk.idx];
+  const q = qtyState(m);
+  const std = q.stdVal === null ? 1 : q.stdVal;
+  if(kind === 'ok'){
+    const s = document.getElementById('stampOk'); if(s) s.style.opacity = 1;
+    chkFly(1, () => { chkRecord(m, std, 'ok'); chk.idx++; renderCheckCard(); });
+    return;
+  }
+  if(std <= 1){
+    const s = document.getElementById('stampNo'); if(s) s.style.opacity = 1;
+    chkFly(-1, () => { chkRecord(m, 0, 'short'); chk.idx++; renderCheckCard(); });
+    return;
+  }
+  // Ask how many are actually there
+  const card = document.getElementById('chkCard');
+  if(card){ card.style.transition = 'transform .3s ease'; card.style.transform = ''; }
+  const root = chkRoot();
+  const bg = document.createElement('div'); bg.className = 'chk-sheet-bg';
+  const sheet = document.createElement('div'); sheet.className = 'chk-sheet';
+  let val = 0;
+  const numsHtml = std <= 12
+    ? `<div class="chk-nums">${Array.from({ length: std }, (_, i) => `<button type="button" data-v="${i}" class="${i === 0 ? 'zero' : ''}">${i}</button>`).join('')}</div>`
+    : `<div class="chk-stepper"><button type="button" data-step="-1">−</button><b id="chkStepVal">0</b><button type="button" data-step="1">+</button></div>
+       <button type="button" class="md-btn primary" id="chkStepOk">${tx('تأكيد','Confirm')}</button>`;
+  sheet.innerHTML = `<h4>${tx('كم الموجود فعلياً؟','How many are actually there?')}</h4>
+    <p>${escapeHtml(m.name)} · ${tx('المطلوب','required')} ${std} — ${tx('اختاري 0 إذا غير موجود','pick 0 if missing')}</p>${numsHtml}
+    <button type="button" class="md-btn" id="chkSheetCancel">${tx('إلغاء','Cancel')}</button>`;
+  root.appendChild(bg); root.appendChild(sheet);
+  const closeSheet = () => { bg.remove(); sheet.remove(); };
+  const pick = v => { closeSheet(); chkFly(-1, () => { chkRecord(m, v, 'short'); chk.idx++; renderCheckCard(); }); };
+  bg.addEventListener('click', closeSheet);
+  sheet.querySelector('#chkSheetCancel').addEventListener('click', closeSheet);
+  sheet.querySelectorAll('[data-v]').forEach(b => b.addEventListener('click', () => pick(Number(b.getAttribute('data-v')))));
+  sheet.querySelectorAll('[data-step]').forEach(b => b.addEventListener('click', () => {
+    val = Math.max(0, Math.min(std - 1, val + Number(b.getAttribute('data-step'))));
+    sheet.querySelector('#chkStepVal').textContent = val;
+  }));
+  const okBtn = sheet.querySelector('#chkStepOk'); if(okBtn) okBtn.addEventListener('click', () => pick(val));
+}
+function chkUndo(){
+  if(chk.busy || !chk.undo.length) return;
+  const last = chk.undo.pop();
+  if(!last.skip){
+    const cur = last.m.qtyActual;
+    last.m.qtyActual = last.prev;
+    logEvent(last.m, 'qty', cur, last.prev);
+    saveState(true);
+  }
+  delete chk.results[last.m.id];
+  chk.idx = Math.max(0, chk.queue.indexOf(last.m));
+  renderCheckCard();
+}
+function renderCheckDone(){
+  const root = chkRoot();
+  const checked = chk.queue.filter(m => chk.results[m.id] && chk.results[m.id] !== 'skip');
+  const okN = checked.filter(m => chk.results[m.id] === 'ok').length;
+  const shortItems = checked.filter(m => chk.results[m.id] === 'short');
+  const expired = chk.queue.filter(m => rowStatus(m).flag === 'red');
+  const near = chk.queue.filter(m => rowStatus(m).flag === 'amber');
+  const clean = shortItems.length === 0 && expired.length === 0;
+  const issues = [
+    ...expired.map(m => `<div><span>${escapeHtml(m.name)}</span><em>${tx('منتهي','Expired')}</em></div>`),
+    ...shortItems.map(m => `<div><span>${escapeHtml(m.name)}</span><em>${m.qtyActual}/${qtyState(m).stdVal}</em></div>`),
+    ...near.map(m => `<div class="amber"><span>${escapeHtml(m.name)}</span><em>${tx('قريب','Near')}</em></div>`)
+  ].join('');
+  root.innerHTML = `
+    <div class="chk-top"><button class="chk-x" id="chkX" type="button">×</button></div>
+    <div class="chk-screen">
+      <div class="chk-hero ${clean ? '' : 'warn'}">${clean ? CHK_ICONS.ok : '<svg viewBox="0 0 24 24" fill="none"><path d="M12 8v5M12 16.5v.5" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/><path d="M10.3 3.8L2.6 17.5A2 2 0 004.3 20.5h15.4a2 2 0 001.7-3L13.7 3.8a2 2 0 00-3.4 0z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>'}</div>
+      <h2>${clean ? tx('الفحص مكتمل — كل شي تمام','Check complete — all good') : tx('انتهى الفحص','Check finished')}</h2>
+      <p class="sub2">${checked.length} ${tx('عنصر تم فحصه بواسطة','items checked by')} ${escapeHtml(state.checkedBy || '—')}</p>
+      <div class="chk-sum">
+        <div><b style="color:#5FD3A5">${okN}</b><span>${tx('موجود وكامل','Present')}</span></div>
+        <div><b style="color:#FF7A90">${shortItems.length}</b><span>${tx('ناقص','Short')}</span></div>
+        <div><b style="color:#FF95A3">${expired.length}</b><span>${tx('منتهي','Expired')}</span></div>
+      </div>
+      ${issues ? `<div class="chk-issues">${issues}</div>` : ''}
+      <button class="chk-go" id="chkReport" type="button">${tx('تقرير PDF','PDF report')}</button>
+      <button class="chk-go ghost" id="chkClose" type="button">${tx('إغلاق','Close')}</button>
+    </div>`;
+  root.querySelector('#chkX').addEventListener('click', closeCheck);
+  root.querySelector('#chkClose').addEventListener('click', closeCheck);
+  root.querySelector('#chkReport').addEventListener('click', () => { closeCheck(); printReport(); });
+  if(clean && checked.length > 0 && typeof launchConfetti === 'function') launchConfetti();
+}
+document.getElementById('startCheckBtn').addEventListener('click', () => openCheck(null));
+document.addEventListener('keydown', e => {
+  if(!chk.open || !document.getElementById('chkCard') || e.target.closest('input,select')) return;
+  if(document.querySelector('.chk-sheet')) return;
+  if(e.key === 'ArrowRight') chkCommit('ok');
+  else if(e.key === 'ArrowLeft') chkCommit('short');
+  else if(e.key === 'Backspace') chkUndo();
+  else if(e.key === 'Escape') renderCheckDone();
+});
+document.addEventListener('keydown', e => {
+  const mm = document.getElementById('mapModal');
+  if(e.key === 'Escape' && mm && mm.style.display !== 'none') closeMap();
+});
+
+
+/* ================= Cart as the main view ================= */
+var viewMode = 'cart';
+try { const v = localStorage.getItem('crashcart-view'); if(v === 'table' || v === 'cart') viewMode = v; } catch(e){}
+var cartSel = null;
+function attentionSection(){
+  const ranked = SECTIONS.map(s => ({ id: s.id, h: sectionHealth(s.id) })).filter(x => x.h.total > 0)
+    .map(x => ({ id: x.id, score: (x.h.red + x.h.missing) * 100 + x.h.amber * 10 + (x.h.unchecked ? 1 : 0) }))
+    .sort((a, b) => b.score - a.score);
+  return ranked.length && ranked[0].score > 0 ? ranked[0].id : 'top';
+}
+function setViewMode(v){
+  viewMode = v;
+  try { localStorage.setItem('crashcart-view', v); } catch(e){}
+  render();
+}
+document.querySelectorAll('#viewToggle button').forEach(b => b.addEventListener('click', () => setViewMode(b.getAttribute('data-view'))));
+
+function cartArtHtml(sel){
+  const pills = h => [
+    h.red ? `<span class="d-pill" style="background:${HC.red}">${h.red}</span>` : '',
+    h.missing ? `<span class="d-pill" style="background:#8E5BD0">${h.missing}</span>` : '',
+    h.amber ? `<span class="d-pill" style="background:${HC.amber}">${h.amber}</span>` : ''
+  ].join('');
+  const topH = sectionHealth('top');
+  const drawers = SECTIONS.filter(s => s.id !== 'top' && (s.id !== 'general' || sectionHealth('general').total > 0));
+  const heights = { d1: 40, d2: 40, d3: 50, d4: 44, d5: 50, d6: 60, general: 40 };
+  const trayBlocks = [18, 12, 22, 9, 15, 11].map(hh => `<i style="height:${hh}px;width:${hh > 16 ? 26 : 16}px"></i>`).join('');
+  return `<div class="cart-art">
+    <button type="button" class="cart-tray h-${topH.flag} ${sel === 'top' ? 'selected' : ''}" data-sec="top" style="--hc:${HC[topH.flag]}">
+      <div style="display:flex;align-items:center;gap:8px;position:relative;z-index:1">
+        <span class="d-num" style="font-family:'Space Mono',monospace;font-weight:700;font-size:12px;width:24px;height:24px;border-radius:7px;display:flex;align-items:center;justify-content:center;background:var(--hc);color:#fff">▲</span>
+        <span style="font-size:12px;font-weight:800;flex:1">${escapeHtml(sectionLabel('top'))}</span>
+        <span class="d-pills" style="display:flex;gap:3px">${pills(topH)}</span>
+      </div>
+      <div class="tray-items">${trayBlocks}</div>
+      <span class="d-prog"><b style="width:${topH.checkedPct}%"></b></span>
+    </button>
+    <div class="cart-body">${drawers.map(sec => {
+      const h = sectionHealth(sec.id);
+      const num = sec.id.startsWith('d') ? sec.id.slice(1) : '+';
+      return `<button type="button" class="drawer h-${h.flag} ${sel === sec.id ? 'selected' : ''}" data-sec="${sec.id}" style="--hc:${HC[h.flag]};min-height:${heights[sec.id] || 44}px">
+        <span class="d-num">${num}</span>
+        <span class="d-name">${escapeHtml(drawerShortName(sec.id))}<small>${h.total} ${tx('صنف','items')}</small></span>
+        <span class="d-pills">${pills(h)}</span>
+        <span class="d-prog"><b style="width:${h.checkedPct}%"></b></span>
+      </button>`;
+    }).join('')}</div>
+    <div class="cart-base"></div>
+    <div class="cart-wheels"><i></i><i></i></div>
+  </div>
+  <div class="map-legend">
+    <span><i style="background:${HC.green}"></i>${tx('جاهز','Ready')}</span>
+    <span><i style="background:${HC.amber}"></i>${tx('قريب الانتهاء','Near expiry')}</span>
+    <span><i style="background:${HC.red}"></i>${tx('منتهي / ناقص','Expired / short')}</span>
+    <span><i style="background:${HC.none}"></i>${tx('لم يكتمل فحصه','Not fully checked')}</span>
+  </div>`;
+}
+
+function renderCartSide(){
+  const side = document.getElementById('cartSide');
+  if(!side) return;
+  if(viewMode !== 'cart'){ side.innerHTML = ''; return; }
+  const isFiltering = activeFilter !== 'all' || searchQuery !== '';
+  const sel = isFiltering ? null : cartSel;
+  let info;
+  if(isFiltering){
+    info = `<div class="cs-info"><div class="cs-filter-note">${tx('تعرضين نتائج الفلتر/البحث من كل الأدراج','Showing filter/search results from all drawers')}</div>
+      <button type="button" class="md-btn" id="csBack" style="margin-top:10px">${tx('رجوع لعرض الدرج','Back to drawer view')}</button></div>`;
+  } else {
+    const h = sectionHealth(sel);
+    const act = Math.max(h.active, 1);
+    info = `<div class="cs-info">
+      <h4><i style="background:${HC[h.flag]}"></i>${escapeHtml(sectionLabel(sel))}</h4>
+      <p>${h.total} ${tx('صنف','items')} · ${tx('تم فحص','checked')} ${h.checkedPct}%</p>
+      <div class="cs-bar"><b style="width:${h.green / act * 100}%;background:${HC.green}"></b><b style="width:${h.amber / act * 100}%;background:${HC.amber}"></b><b style="width:${h.red / act * 100}%;background:${HC.red}"></b></div>
+      <button type="button" class="md-btn primary" id="csCheck">${tx('افحصي هذا الدرج','Check this drawer')}</button>
+    </div>`;
+  }
+  side.innerHTML = cartArtHtml(sel) + info;
+  side.querySelectorAll('[data-sec]').forEach(b => b.addEventListener('click', () => {
+    cartSel = b.getAttribute('data-sec');
+    activeFilter = 'all'; searchQuery = '';
+    const si = document.getElementById('searchInput'); if(si) si.value = '';
+    render();
+    if(window.innerWidth <= 860){
+      const tbl = document.querySelector('.card.cart-mode .tbl-scroll');
+      if(tbl) tbl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  }));
+  const back = side.querySelector('#csBack');
+  if(back) back.addEventListener('click', () => {
+    activeFilter = 'all'; searchQuery = '';
+    const si = document.getElementById('searchInput'); if(si) si.value = '';
+    render();
+  });
+  const chkBtn = side.querySelector('#csCheck');
+  if(chkBtn) chkBtn.addEventListener('click', () => openCheck(sel));
+}
+
+document.querySelectorAll('.statbar .stat[data-filter]').forEach(el => {
+  el.addEventListener('click', () => {
+    const f = el.getAttribute('data-filter');
+    activeFilter = (activeFilter === f && f !== 'all') ? 'all' : f;
+    render();
+    const card = document.querySelector('.card');
+    if(card && activeFilter !== 'all') card.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+});
 
 updateUrlForCart();
 loadState();
