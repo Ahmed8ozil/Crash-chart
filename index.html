@@ -2,7 +2,14 @@
 <html lang="ar" dir="rtl" id="htmlRoot">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#101B33">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="CRUSH CHART">
 <title>CRUSH CHART</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23D8425A'/%3E%3Cpath d='M4 16h5l2-4.5 3.5 9 2.5-6 2 3H28' fill='none' stroke='white' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
 <style>
@@ -125,6 +132,7 @@
 
   /* header */
   .page-header{
+    padding-top:env(safe-area-inset-top, 0px);
     background:linear-gradient(160deg, var(--navy) 0%, #1B2A4A 55%, #24365A 100%);
     padding-bottom:56px;
   }
@@ -957,6 +965,29 @@
     .card.cart-mode tbody tr:not(.section-row) > td:nth-child(6){justify-self:end;}
   }
 
+
+  /* ===== App (PWA) ===== */
+  .net-pill{display:none;align-items:center;gap:7px;font-size:12px;font-weight:800;padding:7px 12px;border-radius:999px;white-space:nowrap;}
+  .net-pill i{width:8px;height:8px;border-radius:50%;}
+  .net-pill.offline{display:inline-flex;background:rgba(245,192,92,.16);color:#F5C05C;border:1px solid rgba(245,192,92,.35);}
+  .net-pill.offline i{background:#F5C05C;animation:pulseDot 1.4s ease-in-out infinite;}
+  .net-pill.syncing{display:inline-flex;background:rgba(127,166,232,.16);color:#9DBBF0;border:1px solid rgba(127,166,232,.35);}
+  .net-pill.syncing i{background:#9DBBF0;animation:pulseDot .8s ease-in-out infinite;}
+  .btn-install{display:none;}
+  .btn-install.show{display:inline-flex;}
+  .install-sheet{position:fixed;inset:0;z-index:1500;background:rgba(10,15,28,.6);display:flex;align-items:flex-end;justify-content:center;animation:fadeIn .2s ease both;}
+  .install-card{background:var(--card);color:var(--ink);width:min(460px,100%);border-radius:24px 24px 0 0;padding:22px 22px calc(26px + env(safe-area-inset-bottom,0px));animation:sheetUp .28s cubic-bezier(.3,1.2,.5,1) both;}
+  .install-card .ic-top{display:flex;align-items:center;gap:12px;margin-bottom:14px;}
+  .install-card .ic-top img{width:52px;height:52px;border-radius:14px;}
+  .install-card h3{margin:0;font-size:17px;font-weight:900;}
+  .install-card .ic-top p{margin:2px 0 0;font-size:12px;color:var(--muted);}
+  .install-steps{display:flex;flex-direction:column;gap:10px;margin:6px 0 16px;}
+  .install-steps div{display:flex;align-items:center;gap:12px;font-size:14px;line-height:1.5;}
+  .install-steps b{width:26px;height:26px;border-radius:50%;background:var(--navy-2);color:#fff;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;}
+  .install-steps svg{width:20px;height:20px;vertical-align:middle;color:var(--steel);}
+  .install-card .md-btn{width:100%;}
+  @media (display-mode: standalone){ .btn-install{display:none !important;} }
+
   /* Display mode — large, high-contrast, distance-readable status view */
   .display-mode{
     position:fixed;inset:0;z-index:999;background:var(--navy);
@@ -1186,6 +1217,8 @@
         <svg id="soundIconOff" viewBox="0 0 24 24" fill="none" style="display:none;"><path d="M4 9v6h4l5 4V5L8 9H4z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M16 9l5 6M21 9l-5 6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
       </button>
       <button class="btn-header" id="displayModeBtn" type="button" data-i18n="displayModeBtn">وضع العرض</button>
+      <span class="net-pill" id="netPill"><i></i><span id="netText"></span></span>
+      <button class="btn-header btn-icon btn-install" id="installBtn" type="button"><svg viewBox="0 0 24 24" fill="none"><rect x="6" y="2.5" width="12" height="19" rx="2.5" stroke="currentColor" stroke-width="1.8"/><path d="M12 7v7M9 11.5l3 3 3-3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-i18n="installBtn">تثبيت التطبيق</span></button>
       <button class="btn-header btn-icon" id="auditBtn" type="button"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="8.5" stroke="currentColor" stroke-width="1.7"/><path d="M12 7.5V12l3 2" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/><path d="M3.5 5.5v3.5H7" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-i18n="auditBtn">سجل التعديلات</span></button>
       <button class="btn-header btn-icon" id="reportBtn" type="button"><svg viewBox="0 0 24 24" fill="none"><path d="M14 3H7a2 2 0 00-2 2v14a2 2 0 002 2h10a2 2 0 002-2V8l-5-5z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M14 3v5h5M9 13h6M9 17h4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg><span data-i18n="reportBtn">تقرير PDF</span></button>
     </div>
@@ -1390,7 +1423,9 @@ function initialCartFromUrl(){
   try{
     const params = new URLSearchParams(window.location.search);
     const fromUrl = params.get('cart');
-    return (fromUrl && CARTS.includes(fromUrl)) ? fromUrl : CARTS[0];
+    if(fromUrl && CARTS.includes(fromUrl)) return fromUrl;
+    let last = null; try { last = localStorage.getItem('crashcart-last-cart'); } catch(e){}
+    return (last && CARTS.includes(last)) ? last : CARTS[0];
   }catch(e){
     return CARTS[0];
   }
@@ -1407,23 +1442,62 @@ const SUPABASE_HEADERS = {
   'Content-Type': 'application/json'
 };
 
-async function supabaseLoad(){
-  const res = await fetch(
-    `${SUPABASE_URL}/rest/v1/crash_cart_data?id=eq.${storageKey()}&select=data`,
-    { headers: SUPABASE_HEADERS }
-  );
-  if(!res.ok) throw new Error('HTTP ' + res.status);
+function cartKey(cart){ return `crash-cart-${cart}-data`; }
+// Returns { data, updatedAt } or null when the cart has no row yet.
+let hasVersionColumn = true;
+async function httpError(res){
+  let msg = '';
+  try { const j = await res.json(); msg = j && (j.message || j.hint || j.error) || ''; } catch(e){}
+  return new Error('HTTP ' + res.status + (msg ? ' — ' + msg : ''));
+}
+async function supabaseLoadRow(cart){
+  const key = cartKey(cart || currentCart);
+  const cols = hasVersionColumn ? 'data,updated_at' : 'data';
+  const res = await fetch(`${SUPABASE_URL}/rest/v1/crash_cart_data?id=eq.${key}&select=${cols}`, { headers: SUPABASE_HEADERS });
+  if(!res.ok){
+    if(res.status === 400 && hasVersionColumn){ hasVersionColumn = false; return supabaseLoadRow(cart); }
+    throw await httpError(res);
+  }
   const rows = await res.json();
-  return (rows && rows.length > 0) ? rows[0].data : null;
+  return (rows && rows.length > 0) ? { data: rows[0].data, updatedAt: hasVersionColumn ? rows[0].updated_at : undefined } : null;
+}
+async function supabaseLoad(cart){
+  const row = await supabaseLoadRow(cart);
+  return row ? row.data : null;
+}
+// Atomic save: only writes if the row is still exactly the version we merged with.
+// If another device saved in between, returns false so the caller re-reads and merges again.
+async function supabaseSaveIfUnchanged(payload, cart, row){
+  const key = cartKey(cart);
+  const now = new Date().toISOString();
+  if(!hasVersionColumn){ await supabaseSave(payload, cart); return true; }
+  const headers = Object.assign({}, SUPABASE_HEADERS, { 'Prefer': 'return=representation' });
+  if(!row){
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/crash_cart_data`, {
+      method: 'POST', headers,
+      body: JSON.stringify([{ id: key, data: payload, updated_at: now }])
+    });
+    if(res.status === 409) return false;            // another device created it first
+    if(!res.ok) throw await httpError(res);
+    return true;
+  }
+  const verFilter = row.updatedAt == null ? 'updated_at=is.null' : 'updated_at=eq.' + encodeURIComponent(row.updatedAt);
+  const res = await fetch(`${SUPABASE_URL}/rest/v1/crash_cart_data?id=eq.${key}&${verFilter}`, {
+    method: 'PATCH', headers,
+    body: JSON.stringify({ data: payload, updated_at: now })
+  });
+  if(!res.ok) throw await httpError(res);
+  const rows = await res.json();
+  return Array.isArray(rows) && rows.length > 0;
 }
 
-async function supabaseSave(payload){
+async function supabaseSave(payload, cart){
   const res = await fetch(`${SUPABASE_URL}/rest/v1/crash_cart_data`, {
     method: 'POST',
     headers: Object.assign({}, SUPABASE_HEADERS, { 'Prefer': 'resolution=merge-duplicates' }),
-    body: JSON.stringify([{ id: storageKey(), data: payload, updated_at: new Date().toISOString() }])
+    body: JSON.stringify([{ id: cartKey(cart || currentCart), data: payload, updated_at: new Date().toISOString() }])
   });
-  if(!res.ok) throw new Error('HTTP ' + res.status);
+  if(!res.ok) throw await httpError(res);
   return true;
 }
 
@@ -1608,6 +1682,7 @@ const I18N = {
     filterValid: 'أكثر من 3 أشهر',
     filterMissing: 'غير موجود / ناقص',
     startCheckBtn: 'ابدأ الفحص',
+    installBtn: 'تثبيت التطبيق',
     viewCart: 'العربة', viewTable: 'الجدول',
     statMissingLabel: 'غير موجود / ناقص',
     legendNA: 'N/A',
@@ -1667,6 +1742,7 @@ const I18N = {
     filterValid: 'Over 3 Months',
     filterMissing: 'Missing / Short',
     startCheckBtn: 'Start check',
+    installBtn: 'Install app',
     viewCart: 'Cart', viewTable: 'Table',
     statMissingLabel: 'Missing / Short',
     legendNA: 'N/A',
@@ -1860,6 +1936,7 @@ function renderCartSwitcher(){
 
 async function switchCart(cartId){
   if(cartId === currentCart) return;
+  await flushPendingSave();
   currentCart = cartId;
   alertSoundPlayedThisLoad = false;
   document.getElementById('cartLabel').textContent = '· ' + currentCart;
@@ -1873,6 +1950,7 @@ async function switchCart(cartId){
 }
 
 function updateUrlForCart(){
+  try { localStorage.setItem('crashcart-last-cart', currentCart); } catch(e){}
   try{
     const url = new URL(window.location.href);
     url.searchParams.set('cart', currentCart);
@@ -3298,8 +3376,12 @@ function populateCheckedBySelect(){
 }
 
 async function loadState(){
+  hasBaseline = false;
   try{
-    const parsed = await supabaseLoad();
+    const parsed = await supabaseLoad(currentCart);
+    hasBaseline = true;
+    baseState = parsed ? clone(parsed) : null;
+    setNetState('online');
     if(parsed){
       state = Object.assign({meds:[], checkedBy:'', lastUpdate:null, lang:'ar', readinessHistory:[], auditLog:[]}, parsed);
       state.meds = normalizeMeds(state.meds);
@@ -3307,9 +3389,20 @@ async function loadState(){
       // saved data override the language the user currently has selected.
     } else {
       seedDefault();
+      baseState = clone(state);   // untouched default list = the common starting point
     }
   }catch(e){
+    // No connection: nothing is stored on the device any more, so show the empty list
+    // but block saving (hasBaseline=false) until the real data loads. Retries automatically.
     seedDefault();
+    baseState = null;
+    setNetState('offline');
+    const why = (e && e.message) ? e.message : String(e);
+    showToast(tx('تعذّر تحميل البيانات: ', 'Could not load data: ') + why, 'error');
+    setTimeout(() => {
+      const ind = document.getElementById('saveText');
+      if(ind && !hasBaseline) ind.textContent = tx('البيانات لم تُحمّل (', 'Data not loaded (') + why + tx(') — لن يُحفظ أي تعديل', ') — edits will not be saved');
+    }, 0);
   }
   document.getElementById('loadState').innerHTML = '';
   applyI18n();
@@ -3323,13 +3416,15 @@ function hidePageLoader(){
 }
 
 function seedDefault(){
-  state.meds = DEFAULT_ITEMS.map(it => ({
-    id: uid(),
+  // Fixed ids for the default list, so two devices that start the same empty cart
+  // refer to the same items and their edits merge instead of duplicating rows.
+  state.meds = DEFAULT_ITEMS.map((it, i) => ({
+    id: 'm_s' + i,
     section: it.section,
     name: it.name,
     qtyStd: it.qtyStd,
     qtyActual: '',
-    dates: [{ id: duid(), date: '' }],
+    dates: [{ id: 'd_s' + i, date: '' }],
     na: false,
     noExpiry: !!it.noExpiry
   }));
@@ -3382,17 +3477,52 @@ function saveState(touch){
   indicator.textContent = t('saving');
   dot.classList.add('saving');
   clearTimeout(saveTimer);
-  saveTimer = setTimeout(async () => {
+  if(!hasBaseline){
+    // The page never loaded the real data (network error on open), so what's on screen
+    // is an empty default list. Saving it would wipe the dates stored on the server.
+    indicator.textContent = tx('لم يتم تحميل البيانات من الخادم — التعديل لم يُحفظ. أعيدي فتح الصفحة', 'Data not loaded from server — not saved. Please reload the page');
+    dot.classList.remove('saving');
+    if(touch) showToast(tx('لم يُحفظ: أعيدي تحميل الصفحة أولاً', 'Not saved: reload the page first'), 'error');
+    return;
+  }
+  const saveCart = currentCart;
+  saveTimer = setTimeout(() => {
+    saveTimer = null;
+    runSave(saveCart, touch, indicator, dot);
+  }, 350);
+}
+
+function runSave(saveCart, touch, indicator, dot){
+  indicator = indicator || document.getElementById('saveText');
+  dot = dot || document.querySelector('.save-indicator i');
+  return enqueueSync(async () => {
+    if(saveCart !== currentCart) return;
+    const offlineMsg = tx('غير متصل — لم يُحفظ. سيُحفظ تلقائياً عند رجوع الاتصال إذا بقيت الصفحة مفتوحة', 'Offline — not saved. Will save when back online if this page stays open');
+    if(!navigator.onLine){
+      indicator.textContent = offlineMsg;
+      dot.classList.remove('saving');
+      setNetState('offline');
+      if(touch) showToast(t('toastSaveFail'), 'error');
+      return;
+    }
     try{
-      await supabaseSave(state);
+      await mergeAndSave(saveCart);
+      setNetState('online');
       indicator.textContent = t('savedAuto');
       if(touch) showToast(t('toastSaved'), 'success');
     }catch(e){
+      if(!navigator.onLine || e instanceof TypeError){
+        indicator.textContent = offlineMsg;
+        setNetState('offline');
+        dot.classList.remove('saving');
+        if(touch) showToast(t('toastSaveFail'), 'error');
+        return;
+      }
       indicator.textContent = t('saveFail') + ': ' + (e && e.message ? e.message : String(e));
       if(touch) showToast(t('toastSaveFail'), 'error');
     }
     dot.classList.remove('saving');
-  }, 350);
+  });
 }
 
 function updateStats(){
@@ -3610,16 +3740,7 @@ let displayRefreshTimer = null;
 function openDisplayMode(){
   document.getElementById('displayMode').style.display = 'flex';
   clearInterval(displayRefreshTimer);
-  displayRefreshTimer = setInterval(async () => {
-    try{
-      const parsed = await supabaseLoad();
-      if(parsed){
-        state = Object.assign({meds:[], checkedBy:'', lastUpdate:null, lang:'ar', readinessHistory:[], auditLog:[]}, parsed);
-        state.meds = normalizeMeds(state.meds);
-        render();
-      }
-    }catch(e){ /* silent — keep showing last known state */ }
-  }, 25000);
+  displayRefreshTimer = setInterval(() => { pullFromServer(); }, 25000);
 }
 
 function closeDisplayMode(){
@@ -3887,7 +4008,6 @@ document.getElementById('langToggle').addEventListener('click', () => {
   lang = lang === 'ar' ? 'en' : 'ar';
   applyI18n();
   render();
-  saveState(false);
 });
 
 document.getElementById('displayModeBtn').addEventListener('click', openDisplayMode);
@@ -4816,6 +4936,226 @@ function renderCartSide(){
   const chkBtn = side.querySelector('#csCheck');
   if(chkBtn) chkBtn.addEventListener('click', () => openCheck(sel));
 }
+
+
+/* ================= App: online-only data, install ================= */
+var hasBaseline = false;
+// Remove any offline copies left on this device by older versions of the site.
+try {
+  Object.keys(localStorage).filter(k => k.indexOf('crashcart-cache-') === 0).forEach(k => localStorage.removeItem(k));
+} catch(e){}
+function setNetState(st){
+  const pill = document.getElementById('netPill');
+  const txt = document.getElementById('netText');
+  if(!pill) return;
+  pill.className = 'net-pill' + (st === 'offline' ? ' offline' : st === 'syncing' ? ' syncing' : '');
+  txt.textContent = st === 'offline'
+    ? (navigator.onLine ? tx('تعذّر الاتصال بالخادم', 'Server unreachable') : tx('لا يوجد إنترنت', 'No internet'))
+    : st === 'syncing' ? tx('جارٍ المزامنة...', 'Syncing...') : '';
+}
+/* ================= Safe sync: never overwrite other devices' edits =================
+   Every save first re-reads the server copy and does a 3-way merge
+   (base = last copy this device got from the server, local = this device,
+   server = latest). Only the fields THIS device changed are written over the
+   server copy; everything another device changed is kept and pulled in. */
+var baseState = null;
+let syncChain = Promise.resolve();
+let renderAfterFocus = false;
+function clone(o){ return o == null ? o : JSON.parse(JSON.stringify(o)); }
+function same(a, b){ return JSON.stringify(a) === JSON.stringify(b); }
+function enqueueSync(fn){
+  const p = syncChain.then(fn);
+  syncChain = p.catch(() => {});
+  return p;
+}
+async function flushPendingSave(){
+  if(saveTimer){
+    clearTimeout(saveTimer);
+    saveTimer = null;
+    runSave(currentCart, false);
+  }
+  await syncChain;
+}
+// Merge `server` changes into the live `local` array IN PLACE (row handlers keep
+// references to these objects, so we mutate rather than replace them).
+function mergeList(local, base, server, mergeItem){
+  const byId = arr => new Map((arr || []).map(x => [x.id, x]));
+  const B = byId(base), S = byId(server), L = byId(local);
+  let changed = false;
+  for(let i = local.length - 1; i >= 0; i--){
+    const l = local[i], b = B.get(l.id), s = S.get(l.id);
+    if(b && !s){
+      if(same(l, b)){ local.splice(i, 1); changed = true; }   // deleted on another device
+    } else if(s){
+      if(mergeItem(l, b, s)) changed = true;
+    }
+  }
+  (server || []).forEach(s => {
+    if(!L.has(s.id) && !B.has(s.id)){ local.push(clone(s)); changed = true; } // added on another device
+  });
+  return changed;
+}
+function mergeFields(l, b, s, fields){
+  let changed = false;
+  fields.forEach(f => {
+    if(b && same(l[f], b[f]) && !same(s[f], b[f])){ l[f] = clone(s[f]); changed = true; }
+  });
+  return changed;
+}
+function mergeMed(l, b, s){
+  let changed = mergeFields(l, b, s, ['name','section','qtyStd','qtyActual','na','noExpiry']);
+  if(!Array.isArray(l.dates)) l.dates = [];
+  if(mergeList(l.dates, b ? b.dates : [], s.dates, (ld, bd, sd) => mergeFields(ld, bd, sd, ['date']))) changed = true;
+  if(l.dates.length === 0){ l.dates.push({ id: duid(), date: '' }); }
+  return changed;
+}
+function unionById(a, b, keyFn, max){
+  const m = new Map();
+  (a || []).concat(b || []).forEach(x => { if(x) m.set(keyFn(x), x); });
+  const out = [...m.values()].sort((x, y) => new Date(x.ts) - new Date(y.ts));
+  return max ? out.slice(-max) : out;
+}
+// Pull `server` into the live state. Returns true if anything visible changed.
+function mergeServerIntoState(server){
+  if(!server) return false;
+  server = Object.assign({meds:[], checkedBy:'', lastUpdate:null, readinessHistory:[], auditLog:[]}, server);
+  server.meds = normalizeMeds(server.meds);
+  const base = baseState ? Object.assign({meds:[]}, baseState) : { meds: [] };
+  base.meds = normalizeMeds(base.meds);
+  if(!baseState){
+    // First save ever for this cart but someone else already created the row: their data wins
+    // for items we haven't touched (compare against the default list's empty values).
+    base.meds = clone(state.meds);
+  }
+  let changed = mergeList(state.meds, base.meds, server.meds, mergeMed);
+  if(same(state.checkedBy, base.checkedBy) && !same(server.checkedBy, base.checkedBy)){ state.checkedBy = server.checkedBy; changed = true; }
+  const beforeLog = (state.auditLog || []).length;
+  state.auditLog = unionById(state.auditLog, server.auditLog, x => x.id || x.ts, AUDIT_MAX);
+  state.readinessHistory = unionById(state.readinessHistory, server.readinessHistory, x => x.ts, 20);
+  if(state.auditLog.length !== beforeLog) changed = true;
+  if(server.lastUpdate && (!state.lastUpdate || new Date(server.lastUpdate) > new Date(state.lastUpdate))){
+    state.lastUpdate = server.lastUpdate; changed = true;
+  }
+  return changed;
+}
+function renderSafely(){
+  const a = document.activeElement;
+  if(a && a.matches && a.matches('input, select, textarea') && a.closest('table, .chk-root, #chkRoot')){
+    renderAfterFocus = true;   // don't rebuild the table while someone is typing/picking a date
+  } else {
+    render();
+  }
+}
+document.addEventListener('focusout', () => {
+  if(!renderAfterFocus) return;
+  setTimeout(() => {
+    const a = document.activeElement;
+    if(a && a.matches && a.matches('input, select, textarea')) return;
+    renderAfterFocus = false;
+    render();
+  }, 50);
+});
+async function mergeAndSave(cart){
+  if(cart !== currentCart || !hasBaseline) return;
+  for(let attempt = 0; attempt < 8; attempt++){
+    const row = await supabaseLoadRow(cart);
+    if(cart !== currentCart) return;
+    let changed = false;
+    if(row && row.data){
+      changed = mergeServerIntoState(row.data);
+      // From now on our own edits are measured against this server copy.
+      baseState = clone(row.data);
+    }
+    state.lang = lang;
+    const payload = clone(state);
+    const ok = await supabaseSaveIfUnchanged(payload, cart, row);
+    if(cart !== currentCart) return;
+    if(changed) renderSafely();
+    if(ok){ baseState = payload; return; }
+    // Another device saved at the same moment — wait a little, re-read and merge again.
+    await new Promise(r => setTimeout(r, 150 + Math.random() * 350));
+  }
+  throw new Error(tx('تعارض متكرر مع جهاز آخر', 'Repeated conflict with another device'));
+}
+// Refresh a page that stayed open: bring in other devices' edits without losing ours.
+function pullFromServer(){
+  if(!navigator.onLine) return Promise.resolve();
+  if(!hasBaseline){ return loadState().catch(() => {}); }
+  if(saveTimer) return Promise.resolve();          // a save is about to run and will merge anyway
+  const cart = currentCart;
+  return enqueueSync(async () => {
+    if(cart !== currentCart || saveTimer) return;
+    const hasLocalEdits = !baseState || !same(state.meds, normalizeMeds(clone(baseState.meds))) || state.checkedBy !== baseState.checkedBy;
+    if(hasLocalEdits){
+      // Edits that failed to save earlier (e.g. connection dropped) — save them now.
+      await mergeAndSave(cart);
+      const ind = document.getElementById('saveText');
+      if(ind) ind.textContent = t('savedAuto');
+      setNetState('online');
+      return;
+    }
+    const row = await supabaseLoadRow(cart);
+    if(cart !== currentCart || !row || saveTimer) return;
+    const changed = mergeServerIntoState(row.data);
+    baseState = clone(row.data);
+    setNetState('online');
+    if(changed) renderSafely();
+  }).catch(() => {});
+}
+document.addEventListener('visibilitychange', () => { if(document.visibilityState === 'visible') pullFromServer(); });
+window.addEventListener('focus', () => pullFromServer());
+setInterval(() => { if(document.visibilityState === 'visible') pullFromServer(); }, 60000);
+window.addEventListener('online', () => { setNetState('online'); pullFromServer(); });
+window.addEventListener('offline', () => setNetState('offline'));
+
+if('serviceWorker' in navigator){
+  navigator.serviceWorker.getRegistrations().then(regs => regs.forEach(r => r.unregister())).catch(() => {});
+}
+if(window.caches && caches.keys){
+  caches.keys().then(keys => keys.forEach(k => caches.delete(k))).catch(() => {});
+}
+
+// Install button: Android/desktop Chrome gives a real prompt; iPhone needs Share → Add to Home Screen.
+let deferredInstall = null;
+const isStandalone = () => window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+const installBtn = document.getElementById('installBtn');
+if(!isStandalone() && isIOS && /^https?:$/.test(location.protocol)) installBtn.classList.add('show');
+window.addEventListener('beforeinstallprompt', e => {
+  e.preventDefault();
+  deferredInstall = e;
+  if(!isStandalone()) installBtn.classList.add('show');
+});
+window.addEventListener('appinstalled', () => {
+  installBtn.classList.remove('show');
+  deferredInstall = null;
+  showToast(tx('تم تثبيت التطبيق 🎉', 'App installed 🎉'), 'success');
+});
+installBtn.addEventListener('click', async () => {
+  if(deferredInstall){
+    deferredInstall.prompt();
+    await deferredInstall.userChoice.catch(() => {});
+    deferredInstall = null;
+    return;
+  }
+  const shareIcon = '<svg viewBox="0 0 24 24" fill="none"><path d="M12 3v12M8 7l4-4 4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M8 10H6.5A1.5 1.5 0 005 11.5v8A1.5 1.5 0 006.5 21h11a1.5 1.5 0 001.5-1.5v-8a1.5 1.5 0 00-1.5-1.5H16" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>';
+  const plusIcon = '<svg viewBox="0 0 24 24" fill="none"><rect x="4" y="4" width="16" height="16" rx="4" stroke="currentColor" stroke-width="1.8"/><path d="M12 8.5v7M8.5 12h7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>';
+  const sheet = document.createElement('div');
+  sheet.className = 'install-sheet';
+  sheet.innerHTML = `<div class="install-card">
+    <div class="ic-top"><img src="apple-touch-icon.png" alt=""><div><h3>${tx('ثبّتي CRUSH CHART على جوالك','Install CRUSH CHART')}</h3><p>${tx('يفتح مثل التطبيق ويشتغل حتى بدون نت','Opens like an app and works offline')}</p></div></div>
+    <div class="install-steps">
+      <div><b>1</b><span>${tx('اضغطي زر المشاركة','Tap the Share button')} ${shareIcon} ${tx('في Safari تحت','at the bottom of Safari')}</span></div>
+      <div><b>2</b><span>${tx('اختاري «إضافة إلى الشاشة الرئيسية»','Choose “Add to Home Screen”')} ${plusIcon}</span></div>
+      <div><b>3</b><span>${tx('اضغطي «إضافة» — وخلاص!','Tap “Add” — done!')}</span></div>
+    </div>
+    <button type="button" class="md-btn primary">${tx('فهمت','Got it')}</button>
+  </div>`;
+  document.body.appendChild(sheet);
+  const close = () => sheet.remove();
+  sheet.addEventListener('click', e => { if(e.target === sheet) close(); });
+  sheet.querySelector('.md-btn').addEventListener('click', close);
+});
 
 document.querySelectorAll('.statbar .stat[data-filter]').forEach(el => {
   el.addEventListener('click', () => {
