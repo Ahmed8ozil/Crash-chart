@@ -314,21 +314,19 @@
     padding:14px 18px;border-bottom:1px solid var(--line);background:var(--surface-1);
   }
   .filter-tabs{
-    display:flex;gap:4px;padding:4px;border-radius:14px;background:var(--surface-2);
-    border:1px solid var(--line);overflow-x:auto;scrollbar-width:none;max-width:100%;
+    display:flex;flex-wrap:wrap;gap:8px;max-width:100%;
   }
-  .filter-tabs::-webkit-scrollbar{display:none;}
   .filter-tab{
     --c:var(--steel);
-    background:transparent;border:none;color:var(--muted);cursor:pointer;white-space:nowrap;flex-shrink:0;
-    font-family:'Tajawal',sans-serif;font-size:12.5px;font-weight:700;
-    padding:7px 12px;border-radius:10px;display:inline-flex;align-items:center;gap:7px;
-    transition:background .15s ease, color .15s ease, box-shadow .15s ease;
+    background:var(--card);border:1px solid var(--line);color:var(--muted);cursor:pointer;white-space:nowrap;
+    font-family:'Tajawal',sans-serif;font-size:13px;font-weight:700;
+    padding:7px 8px 7px 13px;border-radius:999px;display:inline-flex;align-items:center;gap:7px;
+    transition:background .15s ease, color .15s ease, border-color .15s ease;
   }
   .filter-tab .dot{width:8px;height:8px;border-radius:50%;background:var(--c);flex-shrink:0;}
   .filter-tab .cnt{
     background:color-mix(in srgb, var(--c) 14%, transparent);color:var(--c);
-    border-radius:999px;padding:1px 7px;font-size:11px;font-family:'Space Mono',monospace;min-width:22px;text-align:center;
+    border-radius:999px;padding:1px 7px;font-size:11px;font-family:'Space Mono',monospace;min-width:24px;text-align:center;
   }
   .filter-tab.f-all{--c:var(--navy-2);}
   html[data-theme="dark"] .filter-tab.f-all{--c:#9DBBF0;}
@@ -336,17 +334,16 @@
   .filter-tab.f-near{--c:var(--amber);}
   .filter-tab.f-valid{--c:var(--green);}
   .filter-tab.f-missing{--c:#8E5BD0;}
-  .filter-tab:hover{color:var(--ink);background:var(--card);}
-  .filter-tab.active{background:var(--card);color:var(--ink);box-shadow:0 2px 8px -3px var(--shadow-color), inset 0 -2px 0 var(--c);}
+  .filter-tab:hover{color:var(--ink);border-color:color-mix(in srgb, var(--c) 40%, var(--line));}
+  .filter-tab.active{background:color-mix(in srgb, var(--c) 12%, var(--card));border-color:color-mix(in srgb, var(--c) 55%, transparent);color:var(--ink);}
   .filter-tab.active .cnt{background:var(--c);color:#fff;}
   .filter-tab.is-zero .cnt{opacity:.55;}
   .filter-tab.has-critical .dot{animation:pulseDot 1.2s ease-in-out infinite;}
-  .filter-sep{width:1px;background:var(--line);margin:6px 2px;flex-shrink:0;}
+  .filter-sep{display:none;}
   @media (max-width:640px){
     .filter-row{flex-direction:column;align-items:stretch;padding:12px 14px;}
-    .filter-tabs{width:100%;flex-wrap:wrap;overflow:visible;gap:4px;}
-    .filter-tabs .filter-sep{display:none;}
-    .filter-tab{flex:1 1 auto;justify-content:center;padding:8px 10px;}
+    .filter-tabs{gap:6px;}
+    .filter-tab{font-size:12.5px;padding:6px 7px 6px 11px;}
     .search-box{max-width:none !important;}
   }
   .search-box{
@@ -356,7 +353,7 @@
   }
   .search-box svg{width:16px;height:16px;color:var(--muted);flex-shrink:0;}
   .search-box input{
-    border:none;outline:none;font-family:'Tajawal',sans-serif;font-size:13px;width:100%;color:var(--ink);
+    border:none;outline:none;font-family:'Tajawal',sans-serif;font-size:13px;width:100%;color:var(--ink);background:transparent;
   }
 
   /* card */
@@ -512,6 +509,19 @@
   .dates-cell{display:flex;flex-direction:column;gap:8px;padding:2px 0;}
   .date-row{display:flex;align-items:center;gap:10px;}
   .mini-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
+  .size-tag{flex-shrink:0;min-width:50px;text-align:center;font-size:12px;font-weight:800;padding:6px 8px;border-radius:9px;background:rgba(61,108,176,.12);color:#3D6CB0;border:1px solid rgba(61,108,176,.25);direction:ltr;}
+  .size-tag.is-btn{cursor:pointer;font-family:inherit;display:inline-flex;align-items:center;justify-content:center;gap:4px;}
+  .size-tag.is-btn i{font-style:normal;font-size:10px;opacity:.6;}
+  .size-tag.is-btn.open{background:#3D6CB0;color:#fff;border-color:#3D6CB0;}
+  .size-tag.extra{opacity:.75;border-style:dashed;background:transparent;}
+  .size-tag.is-na{text-decoration:line-through;opacity:.6;background:rgba(138,147,168,.12);color:#8A93A8;border-color:rgba(138,147,168,.3);}
+  .size-na-row{display:flex;align-items:center;gap:10px;min-height:38px;}
+  .size-na-pill{font-size:12px;font-weight:700;color:#8A93A8;}
+  .size-menu{display:flex;flex-wrap:wrap;gap:8px;padding-inline-start:17px;margin-top:-2px;}
+  .size-menu .add-date-btn{align-self:auto;}
+  .size-na-toggle.on{border-style:solid;color:#3D6CB0;border-color:rgba(61,108,176,.35);}
+  .size-tag.loose{background:rgba(222,154,46,.14);color:#B7771A;border-color:rgba(222,154,46,.35);min-width:auto;}
+  .days-size{display:inline-block;font-size:11px;font-weight:800;padding:1px 6px;border-radius:6px;background:rgba(61,108,176,.12);color:#3D6CB0;direction:ltr;}
   .date-row .date-input{flex:1;min-width:0;min-height:38px;padding-top:9px;padding-bottom:9px;}
   .mini-del{
     background:transparent;border:none;cursor:pointer;color:#C7CEDD;font-size:18px;
@@ -656,7 +666,22 @@
 
   /* ===== Printable report ===== */
   #printReport{display:none;}
+  /* Print mode: while printing, the app is hidden ON SCREEN too, so every browser prints only the report/labels. */
+  html.print-mode body > *:not(#printReport):not(#printBar){display:none !important;}
+  html.print-mode #printReport{display:block !important;}
+  html.print-mode body{background:#fff !important;padding:12px !important;}
+  #printBar{display:none;}
+  html.print-mode #printBar{display:flex;position:sticky;top:0;z-index:50;gap:8px;justify-content:center;padding:10px;margin:-12px -12px 12px;background:#101B33;}
+  #printBar button{font-family:'Tajawal',sans-serif;font-weight:800;font-size:14px;padding:10px 18px;border-radius:12px;border:none;cursor:pointer;}
+  #printBar .pb-print{background:linear-gradient(135deg,#5FD3A5,#2C9A72);color:#06261A;}
+  #printBar .pb-back{background:#fff;color:#101B33;}
+  @media screen{
+    html.print-mode{overflow-x:hidden;}
+    html.print-mode #printReport{max-width:100%;overflow-x:auto;}
+    html.print-mode .ql-sheet{grid-template-columns:1fr;}
+  }
   @media print{
+    #printBar{display:none !important;}
     @page{size:A4;margin:11mm 10mm;}
     html,body{background:#fff !important;padding:0 !important;min-height:0 !important;}
     body > *:not(#printReport){display:none !important;}
@@ -986,6 +1011,29 @@
   .install-steps b{width:26px;height:26px;border-radius:50%;background:var(--navy-2);color:#fff;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;}
   .install-steps svg{width:20px;height:20px;vertical-align:middle;color:var(--steel);}
   .install-card .md-btn{width:100%;}
+  .lock-btn.is-open{background:rgba(95,211,165,.14);border-color:rgba(95,211,165,.45);color:#5FD3A5;}
+  html.edit-locked .tbl-scroll .date-input, html.edit-locked .tbl-scroll .qty-actual-input{cursor:pointer;}
+  .pin-card{text-align:center;display:flex;flex-direction:column;gap:10px;align-items:stretch;}
+  .pin-card h3{margin:0;font-size:18px;}
+  .pin-card p{margin:0;font-size:13px;color:var(--muted);line-height:1.7;}
+  .pin-card p b{color:var(--ink);}
+  .pin-ic{width:52px;height:52px;margin:0 auto;border-radius:16px;display:grid;place-items:center;background:rgba(61,108,176,.14);color:#3D6CB0;}
+  .pin-ic svg{width:28px;height:28px;}
+  .pin-input{font-family:'Space Mono',monospace;font-size:28px;letter-spacing:14px;text-align:center;padding:12px;border-radius:14px;border:1px solid var(--line);background:var(--surface-1);color:var(--ink);direction:ltr;}
+  .pin-err{min-height:18px;font-size:12px;font-weight:800;color:#D8425A;}
+  .pin-card.shake{animation:pinShake .35s ease;}
+  @keyframes pinShake{0%,100%{transform:translateX(0)}25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
+  .bk-card{display:flex;flex-direction:column;gap:10px;max-height:85vh;overflow:auto;}
+  .bk-head{display:flex;align-items:center;justify-content:space-between;}
+  .bk-head h3{margin:0;font-size:18px;}
+  .bk-x{background:transparent;border:none;color:var(--muted);font-size:26px;cursor:pointer;line-height:1;}
+  .bk-file{cursor:pointer;}
+  .bk-sub{margin-top:8px;font-size:13px;font-weight:800;color:var(--muted);}
+  .bk-list{display:flex;flex-direction:column;gap:6px;}
+  .bk-row{display:flex;align-items:center;justify-content:space-between;gap:10px;border:1px solid var(--line);border-radius:12px;padding:6px 6px 6px 12px;font-family:'Space Mono',monospace;font-size:13px;}
+  .bk-row .md-btn{flex:0 0 auto;min-width:0;width:auto;padding:7px 14px;font-size:12px;}
+  .bk-empty{font-size:12px;color:var(--muted);padding:6px 2px;}
+  .bk-note{margin:4px 0 0;font-size:11px;color:var(--muted);line-height:1.6;}
   @media (display-mode: standalone){ .btn-install{display:none !important;} }
 
   /* Display mode — large, high-contrast, distance-readable status view */
@@ -1220,6 +1268,8 @@
       <span class="net-pill" id="netPill"><i></i><span id="netText"></span></span>
       <button class="btn-header btn-icon btn-install" id="installBtn" type="button"><svg viewBox="0 0 24 24" fill="none"><rect x="6" y="2.5" width="12" height="19" rx="2.5" stroke="currentColor" stroke-width="1.8"/><path d="M12 7v7M9 11.5l3 3 3-3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-i18n="installBtn">تثبيت التطبيق</span></button>
       <button class="btn-header btn-icon" id="auditBtn" type="button"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="8.5" stroke="currentColor" stroke-width="1.7"/><path d="M12 7.5V12l3 2" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/><path d="M3.5 5.5v3.5H7" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-i18n="auditBtn">سجل التعديلات</span></button>
+      <button class="btn-header btn-icon lock-btn" id="lockBtn" type="button"></button>
+      <button class="btn-header btn-icon" id="backupBtn" type="button"><svg viewBox="0 0 24 24" fill="none"><path d="M12 3v11M7.5 9.5L12 14l4.5-4.5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 15v3a3 3 0 003 3h10a3 3 0 003-3v-3" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg><span id="backupBtnText" data-i18n="backupBtn">نسخة احتياطية</span></button>
       <button class="btn-header btn-icon" id="reportBtn" type="button"><svg viewBox="0 0 24 24" fill="none"><path d="M14 3H7a2 2 0 00-2 2v14a2 2 0 002 2h10a2 2 0 002-2V8l-5-5z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M14 3v5h5M9 13h6M9 17h4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg><span data-i18n="reportBtn">تقرير PDF</span></button>
     </div>
 
@@ -1376,6 +1426,7 @@
   <div class="log-body" id="auditBody"></div>
 </aside>
 
+<div id="printBar"><button type="button" class="pb-print" id="pbPrint">طباعة</button><button type="button" class="pb-back" id="pbBack">رجوع</button></div>
 <div id="printReport"></div>
 
 <div id="qrModal" class="qr-modal" style="display:none;">
@@ -1501,12 +1552,17 @@ async function supabaseSave(payload, cart){
   return true;
 }
 
-// Names available in the "Checked by" dropdown. Add more names here as needed.
-const CHECKER_NAMES = [
-  'Ahmed Almamari',
-  'Amira Almamari',
-  'Nada Albalushi'
-];
+// ===== Responsible nurse + edit PIN for each cart (change them here) =====
+const CART_OWNERS = {
+  CC1: 'Amira Almamari',
+  CC2: 'Samira Almoqbail',
+  OT7: 'Ahmed Almamari',
+  GOT: 'Aisha Almoqbali'
+};
+const EDIT_PIN = '3600';   // one PIN for editing all carts
+const LOCK_AFTER_MIN = 30;   // re-lock after this many minutes without edits
+function cartOwner(c){ return CART_OWNERS[c || currentCart] || ''; }
+const CHECKER_NAMES = Object.values(CART_OWNERS);
 
 // Section (drawer) order and bilingual labels — matches Suhar Hospital SOP Of Crush Trolley (6-drawer version).
 const SECTIONS = [
@@ -1648,6 +1704,42 @@ const DEFAULT_ITEMS = [
   { section:'d6', name:'Sharp disposal Bin', qtyStd:1, noExpiry:true },
 ];
 
+// Items that come in several sizes: the item stays ONE row, but each size gets its own
+// expiry date inside that row (a small size label next to each date).
+const SIZE_SPLITS = {
+  'Side bag with 3-Lead ECG incl. electrodes, adult & paediatric (each)': { base: 'ECG electrodes (side bag)', sizes: ['Adult', 'Paed'] },
+  'Suction catheter sizes 6, 8, 10, 12, 14 (each)': { base: 'Suction catheter', sizes: ['6 Fr', '8 Fr', '10 Fr', '12 Fr', '14 Fr'] },
+  'IV Cannula sizes 16, 18, 20, 22, 24 (each)': { base: 'IV Cannula', sizes: ['16G', '18G', '20G', '22G', '24G'] },
+  'Syringes 1, 2, 5, 10, 20ml (each)': { base: 'Syringe', sizes: ['1ml', '2ml', '5ml', '10ml', '20ml'] },
+  'Needles sizes 19, 20, 23, 25 (each)': { base: 'Needle', sizes: ['19G', '20G', '23G', '25G'] },
+  'Assorted Butterflies sizes 21, 23, 25, 27 (each)': { base: 'Butterfly', sizes: ['21G', '23G', '25G', '27G'] },
+  'Oropharyngeal Airway sizes 000, 00, 1, 2, 3, 4 (each)': { base: 'Oropharyngeal Airway', sizes: ['000', '00', '1', '2', '3', '4'] },
+  'Nasopharyngeal Airway sizes 4, 6, 7, 8 (each)': { base: 'Nasopharyngeal Airway', sizes: ['4', '6', '7', '8'] },
+  'Stylet for ETT: adult & paediatric (each)': { base: 'Stylet for ETT', sizes: ['Adult', 'Paed'] },
+  'Endotracheal Tube — cuffed sizes 5, 5.5, 6, 6.5, 7, 7.5, 8 (each)': { base: 'ETT cuffed', sizes: ['5', '5.5', '6', '6.5', '7', '7.5', '8'] },
+  'Endotracheal Tube — uncuffed sizes 2.5, 3, 3.5, 4, 4.5, 5, 5.5 (each)': { base: 'ETT uncuffed', sizes: ['2.5', '3', '3.5', '4', '4.5', '5', '5.5'] },
+  'Microdrips (60 drops/ml) & Macrodrips (20 drops/ml) (each)': { names: ['Microdrips (60 drops/ml)', 'Macrodrips (20 drops/ml)'], sizes: ['Micro', 'Macro'] },
+  'Sterile Gloves sizes 6, 6.5, 7, 7.5 (each)': { base: 'Sterile Gloves', sizes: ['6', '6.5', '7', '7.5'] },
+  'Non-sterile Gloves — small, medium, large (each)': { base: 'Non-sterile Gloves', sizes: ['S', 'M', 'L'] }
+};
+// Names used by the short-lived "one row per size" version, so those carts get joined back.
+const LONG_SIZE_NAMES = {
+  'Side bag with 3-Lead ECG incl. electrodes, adult & paediatric (each)': ['Adult', 'Paediatric'],
+  'Suction catheter sizes 6, 8, 10, 12, 14 (each)': ['6 Fr', '8 Fr', '10 Fr', '12 Fr', '14 Fr'],
+  'IV Cannula sizes 16, 18, 20, 22, 24 (each)': ['16G', '18G', '20G', '22G', '24G'],
+  'Syringes 1, 2, 5, 10, 20ml (each)': ['1ml', '2ml', '5ml', '10ml', '20ml'],
+  'Needles sizes 19, 20, 23, 25 (each)': ['19G', '20G', '23G', '25G'],
+  'Assorted Butterflies sizes 21, 23, 25, 27 (each)': ['21G', '23G', '25G', '27G'],
+  'Oropharyngeal Airway sizes 000, 00, 1, 2, 3, 4 (each)': ['size 000', 'size 00', 'size 1', 'size 2', 'size 3', 'size 4'],
+  'Nasopharyngeal Airway sizes 4, 6, 7, 8 (each)': ['size 4', 'size 6', 'size 7', 'size 8'],
+  'Stylet for ETT: adult & paediatric (each)': ['Adult', 'Paediatric'],
+  'Endotracheal Tube — cuffed sizes 5, 5.5, 6, 6.5, 7, 7.5, 8 (each)': ['size 5', 'size 5.5', 'size 6', 'size 6.5', 'size 7', 'size 7.5', 'size 8'],
+  'Endotracheal Tube — uncuffed sizes 2.5, 3, 3.5, 4, 4.5, 5, 5.5 (each)': ['size 2.5', 'size 3', 'size 3.5', 'size 4', 'size 4.5', 'size 5', 'size 5.5'],
+  'Sterile Gloves sizes 6, 6.5, 7, 7.5 (each)': ['size 6', 'size 6.5', 'size 7', 'size 7.5'],
+  'Non-sterile Gloves — small, medium, large (each)': ['Small', 'Medium', 'Large']
+};
+function sizesOf(m){ const sp = m && SIZE_SPLITS[(m.name || '').trim()]; return sp ? sp.sizes : null; }
+
 const I18N = {
   ar: {
     eyebrow: 'Operation Theater',
@@ -1700,7 +1792,7 @@ const I18N = {
     auditUnknown: 'غير محدد', auditTodayLbl: 'اليوم', auditYesterday: 'أمس',
     actDate: 'تعديل تاريخ الانتهاء', actDateAdd: 'إضافة تاريخ انتهاء', actDateRemove: 'حذف تاريخ انتهاء',
     actQty: 'تعديل الكمية الفعلية', actNAOn: 'تحويل إلى غير مطبق (N/A)', actNAOff: 'إلغاء غير مطبق (N/A)',
-    reportBtn: 'تقرير PDF', rpTitle: 'تقرير فحص عربة الإنعاش', rpSub: 'Crash Cart Inspection Report — حسب دليل المستشفى الرسمي',
+    reportBtn: 'تقرير PDF', backupBtn: 'نسخة احتياطية', rpTitle: 'تقرير فحص عربة الإنعاش', rpSub: 'Crash Cart Inspection Report — حسب دليل المستشفى الرسمي',
     rpCart: 'العربة', rpGenerated: 'تاريخ التقرير', rpCheckedBy: 'تم الفحص بواسطة', rpLastUpdate: 'آخر تحديث', rpRef: 'رقم التقرير',
     rpReadiness: 'الجاهزية', rpShort: 'ناقص', rpActionTitle: 'عناصر تحتاج إجراء', rpAllGood: '✓ العربة جاهزة — لا توجد عناصر تحتاج إجراء',
     rpItem: 'الصنف', rpSection: 'القسم', rpIssue: 'المشكلة', rpDetail: 'التفاصيل', rpChecklist: 'قائمة الجرد الكاملة',
@@ -1760,7 +1852,7 @@ const I18N = {
     auditUnknown: 'Unspecified', auditTodayLbl: 'Today', auditYesterday: 'Yesterday',
     actDate: 'Expiry date changed', actDateAdd: 'Expiry date added', actDateRemove: 'Expiry date removed',
     actQty: 'Actual quantity changed', actNAOn: 'Marked as N/A', actNAOff: 'N/A removed',
-    reportBtn: 'PDF report', rpTitle: 'Crash Cart Inspection Report', rpSub: 'Expiry & stock check — per the hospital SOP',
+    reportBtn: 'PDF report', backupBtn: 'Backup', rpTitle: 'Crash Cart Inspection Report', rpSub: 'Expiry & stock check — per the hospital SOP',
     rpCart: 'Cart', rpGenerated: 'Generated', rpCheckedBy: 'Checked by', rpLastUpdate: 'Last updated', rpRef: 'Report no.',
     rpReadiness: 'Readiness', rpShort: 'Short', rpActionTitle: 'Items requiring action', rpAllGood: '✓ Cart ready — no items require action',
     rpItem: 'Item', rpSection: 'Section', rpIssue: 'Issue', rpDetail: 'Detail', rpChecklist: 'Full checklist',
@@ -1873,18 +1965,18 @@ function rowStatus(m){
     const present = q.actualVal !== null && q.actualVal > 0 && !q.short;
     return { days: null, flag: present ? 'green' : 'noexp' };
   }
-  let minDate = null;
-  (m.dates || []).forEach(d => {
+  let minDate = null, minSize = '';
+  activeDates(m).forEach(d => {
     if(!d.date) return;
     const target = new Date(d.date + 'T00:00:00');
     if(isNaN(target.getTime())) return;
-    if(minDate === null || target < minDate) minDate = target;
+    if(minDate === null || target < minDate){ minDate = target; minSize = d.size || ''; }
   });
   if(minDate === null) return { days: null, flag: 'none' };
   const today = new Date();
   today.setHours(0,0,0,0);
   const days = Math.round((minDate - today) / (1000*60*60*24));
-  return { days, flag: flagFor(days) };
+  return { days, flag: flagFor(days), size: minSize };
 }
 
 function fmtDate(d){
@@ -1938,6 +2030,7 @@ async function switchCart(cartId){
   if(cartId === currentCart) return;
   await flushPendingSave();
   currentCart = cartId;
+  renderLockBtn();
   alertSoundPlayedThisLoad = false;
   document.getElementById('cartLabel').textContent = '· ' + currentCart;
   document.querySelectorAll('.cart-tab').forEach(btn => {
@@ -3338,19 +3431,67 @@ function printQrLabels(carts){
       <div class="ql-hint">${tx('امسح الرمز لفتح قائمة جرد هذي العربة','Scan to open this cart checklist')}</div>
     </div>`).join('')}</div>`;
   printingLabels = true;
-  setTimeout(() => {
-    window.print();
-    setTimeout(() => { printingLabels = false; }, 800);
-  }, 120);
+  enterPrintMode();
 }
 
 const NO_EXPIRY_NAMES = new Set(DEFAULT_ITEMS.filter(it => it.noExpiry).map(it => it.name.trim()));
 
 // Migrate legacy records (single `expiry`, single `qty`, no `section`) to the current shape.
+function joinSplitMeds(meds){
+  const childOf = {};
+  Object.keys(SIZE_SPLITS).forEach(orig => {
+    const sp = SIZE_SPLITS[orig];
+    const longNames = sp.names || (LONG_SIZE_NAMES[orig] || []).map(z => `${sp.base} — ${z}`);
+    longNames.forEach((n, k) => { childOf[n] = { orig, k }; });
+  });
+  const out = [], groups = {};
+  (meds || []).forEach(m => {
+    const c = childOf[(m.name || '').trim()];
+    if(!c){ out.push(m); return; }
+    let g = groups[c.orig];
+    if(!g){
+      g = groups[c.orig] = Object.assign({}, m, { id: String(m.id || 'm_legacy').replace(/_z\d+$/, ''), name: c.orig, dates: [], _nas: [] });
+      out.push(g);
+    }
+    const size = SIZE_SPLITS[c.orig].sizes[c.k];
+    (m.dates || []).forEach(d => { if(d.date) g.dates.push({ id: d.id, date: d.date, size }); });
+    g._nas.push(!!m.na);
+  });
+  Object.values(groups).forEach(g => { g.na = g._nas.every(Boolean); delete g._nas; });
+  return out;
+}
+// Sized items: every size has at least one date slot (the first one = "main" slot, fixed id so
+// every device agrees). A size can have extra dates (a second batch) and can be marked N/A.
+// A date entered before sizes existed is kept as an "unassigned" slot until cleared.
+function fitSizeDates(m){
+  const sizes = sizesOf(m);
+  if(!sizes) return m;
+  const groups = sizes.map(() => []), loose = [];
+  m.dates.forEach(d => {
+    const k = d.size ? sizes.indexOf(d.size) : -1;
+    if(k >= 0) groups[k].push(d);
+    else if(d.date) loose.push(Object.assign(d, { size: '' }));
+  });
+  groups.forEach((g, k) => { if(!g.length) g.push({ id: m.id + '_sz' + k, date: '', size: sizes[k], na: false }); });
+  m.dates = [].concat(...groups, loose);
+  return m;
+}
+function sizeMainSlot(m, size){ return (m.dates || []).find(d => d.size === size) || null; }
+function naSizes(m){
+  const out = new Set();
+  if(sizesOf(m)) (m.dates || []).forEach(d => { if(d.size && d.na && sizeMainSlot(m, d.size) === d) out.add(d.size); });
+  return out;
+}
+// Dates that count for expiry (sizes marked N/A are ignored).
+function activeDates(m){
+  const na = naSizes(m);
+  return (m.dates || []).filter(d => !(d.size && na.has(d.size)));
+}
+let openSizeMenu = null;   // which size's action strip is open (UI only)
 function normalizeMeds(meds){
-  return (meds || []).map(m => {
+  return joinSplitMeds(meds).map(m => fitSizeDates((() => {
     const dates = Array.isArray(m.dates)
-      ? m.dates.map(d => ({ id: d.id || duid(), date: d.date || '' }))
+      ? m.dates.map(d => ({ id: d.id || duid(), date: d.date || '', size: d.size || '', na: !!d.na }))
       : (m.expiry ? [{ id: duid(), date: m.expiry }] : [{ id: duid(), date: '' }]);
     return {
       id: m.id || uid(),
@@ -3364,15 +3505,16 @@ function normalizeMeds(meds){
       // was marked "no expiry" pick up the new setting instead of keeping the old one.
       noExpiry: NO_EXPIRY_NAMES.has((m.name || '').trim()) || !!m.noExpiry
     };
-  });
+  })()));
 }
 
 function populateCheckedBySelect(){
+  // Each cart has one responsible nurse — shown fixed, recorded automatically on every check/edit.
   const sel = document.getElementById('checkedBy');
-  const current = state.checkedBy || '';
-  sel.innerHTML = `<option value="">${escapeHtml(t('checkedBySelectPh'))}</option>` +
-    CHECKER_NAMES.map(name => `<option value="${escapeHtml(name)}">${escapeHtml(name)}</option>`).join('');
-  sel.value = CHECKER_NAMES.includes(current) ? current : '';
+  const owner = cartOwner();
+  sel.innerHTML = `<option value="${escapeHtml(owner)}">${escapeHtml(owner)}</option>`;
+  sel.value = owner;
+  sel.disabled = true;
 }
 
 async function loadState(){
@@ -3381,6 +3523,7 @@ async function loadState(){
     const parsed = await supabaseLoad(currentCart);
     hasBaseline = true;
     baseState = parsed ? clone(parsed) : null;
+    if(parsed) autoDailySnapshot(currentCart, parsed);
     setNetState('online');
     if(parsed){
       state = Object.assign({meds:[], checkedBy:'', lastUpdate:null, lang:'ar', readinessHistory:[], auditLog:[]}, parsed);
@@ -3404,9 +3547,11 @@ async function loadState(){
       if(ind && !hasBaseline) ind.textContent = tx('البيانات لم تُحمّل (', 'Data not loaded (') + why + tx(') — لن يُحفظ أي تعديل', ') — edits will not be saved');
     }, 0);
   }
+  state.checkedBy = cartOwner();
   document.getElementById('loadState').innerHTML = '';
   applyI18n();
   render();
+  renderLockBtn();
   hidePageLoader();
 }
 
@@ -3424,7 +3569,7 @@ function seedDefault(){
     name: it.name,
     qtyStd: it.qtyStd,
     qtyActual: '',
-    dates: [{ id: 'd_s' + i, date: '' }],
+    dates: sizesOf(it) ? sizesOf(it).map((z, k) => ({ id: 'm_s' + i + '_sz' + k, date: '', size: z, na: false })) : [{ id: 'd_s' + i, date: '' }],
     na: false,
     noExpiry: !!it.noExpiry
   }));
@@ -3453,6 +3598,13 @@ function showToast(message, type){
 }
 
 function saveState(touch){
+  if(!isUnlocked()){
+    askPin();
+    loadState();            // undo the change on screen (nothing was saved)
+    return;
+  }
+  touchUnlock();
+  state.checkedBy = cartOwner();
   if(touch){
     state.lastUpdate = new Date().toISOString();
     const readout = document.getElementById('lastUpdateDisplay');
@@ -3779,12 +3931,33 @@ function buildRow(m, displayIndex){
     ? `<div class="no-expiry-note">${escapeHtml(t('noExpiryLabel'))}</div>`
     : (m.dates || []).map(d => {
         const f = flagFor(daysLeft(d.date));
+        const sized = !!sizesOf(m);
+        const isMain = sized && d.size && sizeMainSlot(m, d.size) === d;
+        const sizeNA = sized && d.size && naSizes(m).has(d.size);
+        if(sizeNA && !isMain) return '';                      // extra dates of an N/A size stay hidden
+        const menuOpen = isMain && openSizeMenu === d.id;
+        const sizeTag = !sized ? ''
+          : !d.size ? `<span class="size-tag loose">${escapeHtml(tx('بدون مقاس', 'No size'))}</span>`
+          : isMain ? `<button type="button" class="size-tag is-btn ${sizeNA ? 'is-na' : ''} ${menuOpen ? 'open' : ''}" data-size-menu="${d.id}" ${m.na ? 'disabled' : ''}>${escapeHtml(d.size)}<i>▾</i></button>`
+          : `<span class="size-tag extra">${escapeHtml(d.size)}</span>`;
+        const menu = menuOpen ? `
+          <div class="size-menu">
+            ${sizeNA ? '' : `<button type="button" class="add-date-btn" data-size-add="${d.id}">+ ${escapeHtml(tx('تاريخ ثاني لـ', 'Another date for'))} ${escapeHtml(d.size)}</button>`}
+            <button type="button" class="add-date-btn size-na-toggle ${sizeNA ? 'on' : ''}" data-size-na="${d.id}">${sizeNA ? escapeHtml(tx('إلغاء N/A', 'Undo N/A')) : 'N/A'}</button>
+          </div>` : '';
+        if(sizeNA) return `
+          <div class="size-na-row">
+            <span class="mini-dot" style="background:#C7CEDD"></span>
+            ${sizeTag}
+            <span class="size-na-pill">N/A — ${escapeHtml(tx('غير متوفر بهذي العربة', 'not stocked in this cart'))}</span>
+          </div>${menu}`;
         return `
           <div class="date-row" data-date-id="${d.id}">
             <span class="mini-dot" style="background:${flagColor(f)}"></span>
+            ${sizeTag}
             <input class="cell date-cell date-input" type="date" value="${d.date || ''}" ${m.na ? 'disabled' : ''}>
             <button class="mini-del" title="remove date" ${m.na ? 'disabled' : ''}>×</button>
-          </div>`;
+          </div>${menu}`;
       }).join('');
 
   const stdVal = (m.qtyStd === '' || m.qtyStd === undefined || m.qtyStd === null) ? null : Number(m.qtyStd);
@@ -3810,10 +3983,10 @@ function buildRow(m, displayIndex){
     <td>
       <div class="dates-cell">
         ${datesHtml}
-        ${m.noExpiry ? '' : `<button class="add-date-btn" type="button" ${m.na ? 'disabled' : ''}>${escapeHtml(t('addDateBtn'))}</button>`}
+        ${m.noExpiry || sizesOf(m) ? '' : `<button class="add-date-btn" type="button" ${m.na ? 'disabled' : ''}>${escapeHtml(t('addDateBtn'))}</button>`}
       </div>
     </td>
-    <td class="days">${m.na || m.noExpiry ? '—' : (status.days === null ? '—' : status.days)}</td>
+    <td class="days">${m.na || m.noExpiry ? '—' : (status.days === null ? '—' : status.days + (status.size ? ` <span class="days-size">${escapeHtml(status.size)}</span>` : ''))}</td>
     <td class="center"><span class="badge ${m.na ? 'na' : status.flag}"><i></i>${badgeLabel(status.flag, m.na)}</span></td>
     <td class="center"><button class="na-btn ${m.na ? 'active' : ''}" title="N/A" type="button">N/A</button></td>
   `;
@@ -3846,14 +4019,41 @@ function buildRow(m, displayIndex){
     row.querySelector('.mini-del').addEventListener('click', () => {
       const removed = m.dates.find(x => x.id === dId);
       if(removed && removed.date) logEvent(m, 'date', removed.date, '', dId);
-      m.dates = m.dates.filter(x => x.id !== dId);
+      // A size's main slot stays (just cleared); extra dates and other dates are removed.
+      if(removed && removed.size && sizesOf(m) && sizeMainSlot(m, removed.size) === removed) removed.date = '';
+      else m.dates = m.dates.filter(x => x.id !== dId);
       if(m.dates.length === 0) m.dates.push({ id: duid(), date: '' });
       saveState(true);
       render();
     });
   });
 
-  const addDateBtn = tr.querySelector('.add-date-btn');
+  tr.querySelectorAll('[data-size-menu]').forEach(b => b.addEventListener('click', () => {
+    const id = b.getAttribute('data-size-menu');
+    openSizeMenu = openSizeMenu === id ? null : id;
+    render();
+  }));
+  tr.querySelectorAll('[data-size-add]').forEach(b => b.addEventListener('click', () => {
+    const main = m.dates.find(x => x.id === b.getAttribute('data-size-add'));
+    if(!main) return;
+    let at = m.dates.length;
+    for(let k = m.dates.length - 1; k >= 0; k--){ if(m.dates[k].size === main.size){ at = k + 1; break; } }
+    m.dates.splice(at, 0, { id: duid(), date: '', size: main.size, na: false });
+    openSizeMenu = null;
+    saveState(true);
+    render();
+  }));
+  tr.querySelectorAll('[data-size-na]').forEach(b => b.addEventListener('click', () => {
+    const main = m.dates.find(x => x.id === b.getAttribute('data-size-na'));
+    if(!main) return;
+    main.na = !main.na;
+    logEvent(m, 'na', !main.na, main.na, main.id);
+    openSizeMenu = null;
+    saveState(true);
+    render();
+  }));
+
+  const addDateBtn = tr.querySelector('.add-date-btn:not([data-size-add]):not([data-size-na])');
   if(addDateBtn){
     addDateBtn.addEventListener('click', () => {
       m.dates.push({ id: duid(), date: '' });
@@ -3881,7 +4081,7 @@ function refreshRowInPlace(tr, m){
     if(d && dot) dot.style.background = flagColor(flagFor(daysLeft(d.date)));
   });
   const daysEl = tr.querySelector('td.days');
-  if(daysEl) daysEl.textContent = (m.na || m.noExpiry) ? '—' : (status.days === null ? '—' : status.days);
+  if(daysEl) daysEl.innerHTML = (m.na || m.noExpiry) ? '—' : (status.days === null ? '—' : status.days + (status.size ? ` <span class="days-size">${escapeHtml(status.size)}</span>` : ''));
   const badge = tr.querySelector('.badge');
   if(badge){
     badge.className = `badge ${m.na ? 'na' : status.flag}`;
@@ -3932,11 +4132,11 @@ function render(){
 
   const isFiltering = activeFilter !== 'all' || searchQuery !== '';
   const cartMode = viewMode === 'cart';
-  if(cartMode && !cartSel) cartSel = attentionSection();
+  if(cartMode && !cartSel && !cartClosed) cartSel = attentionSection();
   document.querySelector('.card').classList.toggle('cart-mode', cartMode);
   document.querySelectorAll('#viewToggle button').forEach(b => b.classList.toggle('on', b.getAttribute('data-view') === viewMode));
   const visibleMeds = state.meds.filter(m => itemMatchesFilter(m) && itemMatchesSearch(m)
-    && (!cartMode || isFiltering || secOf(m) === cartSel));
+    && (!cartMode || isFiltering || (!cartClosed && secOf(m) === cartSel)));
 
   // Group items by section, preserving the SECTIONS order; unknown sections fall back to 'general'.
   const knownIds = SECTIONS.map(s => s.id);
@@ -4008,6 +4208,7 @@ document.getElementById('langToggle').addEventListener('click', () => {
   lang = lang === 'ar' ? 'en' : 'ar';
   applyI18n();
   render();
+  renderLockBtn();
 });
 
 document.getElementById('displayModeBtn').addEventListener('click', openDisplayMode);
@@ -4078,8 +4279,9 @@ function logEvent(m, type, from, to, dateId){
     last.ts = new Date(now).toISOString();
     if(last.from === last.to) log.pop();
   } else {
+    const dEntry = dateId ? (m.dates || []).find(x => x.id === dateId) : null;
     log.push({ id: 'a_' + Math.random().toString(36).slice(2, 9), ts: new Date(now).toISOString(), by,
-      itemId: m.id, item: m.name, section: m.section, type, from, to, dateId: dateId || '' });
+      itemId: m.id, item: m.name + (dEntry && dEntry.size ? ` [${dEntry.size}]` : ''), section: m.section, type, from, to, dateId: dateId || '' });
     if(log.length > AUDIT_MAX) state.auditLog = log.slice(log.length - AUDIT_MAX);
   }
   if(auditOpen) renderAudit();
@@ -4282,7 +4484,8 @@ function buildReport(){
       const st = rowStatus(m);
       const q = qtyState(m);
       const dates = m.noExpiry ? '—'
-        : ((m.dates || []).filter(d => d.date).map(d => fmtDay(d.date)).join('<br>') || '—');
+        : ([...activeDates(m).filter(d => d.date).map(d => (d.size ? `<b>${escapeHtml(d.size)}</b> ` : '') + fmtDay(d.date)),
+            ...[...naSizes(m)].map(z => `<b>${escapeHtml(z)}</b> N/A`)].join('<br>') || '—');
       const pillKey = m.na ? 'na' : st.flag;
       return `<tr class="${m.na ? 'rp-na' : ''}">
         <td class="mono">${n}</td>
@@ -4349,17 +4552,250 @@ function buildReport(){
     <div class="rp-foot"><span>CRUSH CHART · ${escapeHtml(ref)}</span><span>${escapeHtml(genStr)}</span></div>`;
 }
 
+let printPrevTitle = null;
+function enterPrintMode(title){
+  if(printPrevTitle === null) printPrevTitle = document.title;
+  if(title) document.title = title;
+  document.documentElement.classList.add('print-mode');
+  document.getElementById('pbPrint').textContent = tx('طباعة', 'Print');
+  document.getElementById('pbBack').textContent = tx('رجوع', 'Back');
+  window.scrollTo(0, 0);
+  setTimeout(() => { try { window.print(); } catch(e){} }, 250);
+}
+function exitPrintMode(){
+  document.documentElement.classList.remove('print-mode');
+  if(printPrevTitle !== null){ document.title = printPrevTitle; printPrevTitle = null; }
+  printingLabels = false;
+}
 function printReport(){
   buildReport();
-  const prevTitle = document.title;
-  document.title = `Crash-Cart-Report-${currentCart}-${dayKey(new Date().toISOString())}`;
-  setTimeout(() => {
-    window.print();
-    setTimeout(() => { document.title = prevTitle; }, 500);
-  }, 150);
+  enterPrintMode(`Crash-Cart-Report-${currentCart}-${dayKey(new Date().toISOString())}`);
 }
 document.getElementById('reportBtn').addEventListener('click', printReport);
-window.addEventListener('beforeprint', () => { if(!printingLabels) buildReport(); });
+
+/* ================= Edit lock (PIN per cart) =================
+   Viewing is open to everyone; editing a cart needs that cart's PIN.
+   Note: this stops casual/accidental edits — it is not strong security (the PIN lives in this file). */
+let unlock = { cart: null, until: 0 };
+let pinFails = 0, pinBlockedUntil = 0;
+function isUnlocked(){ return !!unlock.cart && Date.now() < unlock.until; }
+function touchUnlock(){ if(unlock.cart) unlock.until = Date.now() + LOCK_AFTER_MIN * 60000; }
+function lockNow(){ unlock = { cart: null, until: 0 }; renderLockBtn(); }
+function renderLockBtn(){
+  const b = document.getElementById('lockBtn');
+  if(!b) return;
+  const open = isUnlocked();
+  const icon = open
+    ? '<svg viewBox="0 0 24 24" fill="none"><rect x="4.5" y="10.5" width="15" height="10" rx="2.5" stroke="currentColor" stroke-width="1.7"/><path d="M8 10.5V7.5a4 4 0 017.6-1.7" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>'
+    : '<svg viewBox="0 0 24 24" fill="none"><rect x="4.5" y="10.5" width="15" height="10" rx="2.5" stroke="currentColor" stroke-width="1.7"/><path d="M8 10.5V7.5a4 4 0 018 0v3" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>';
+  b.classList.toggle('is-open', open);
+  b.innerHTML = icon + `<span>${escapeHtml(open ? tx('مفتوح للتعديل — قفل', 'Editing on — lock') : tx('مقفل — ', 'Locked — ') + cartOwner())}</span>`;
+  document.documentElement.classList.toggle('edit-locked', !open);
+}
+document.getElementById('lockBtn').addEventListener('click', () => { if(isUnlocked()) lockNow(); else askPin(); });
+setInterval(() => { if(unlock.cart && !isUnlocked()){ lockNow(); } }, 20000);
+
+let pinSheetOpen = false;
+function askPin(onOk){
+  if(pinSheetOpen) return;
+  pinSheetOpen = true;
+  const cart = currentCart;
+  const sheet = document.createElement('div');
+  sheet.className = 'install-sheet pin-sheet';
+  sheet.innerHTML = `<div class="install-card pin-card">
+    <div class="pin-ic"><svg viewBox="0 0 24 24" fill="none"><rect x="4.5" y="10.5" width="15" height="10" rx="2.5" stroke="currentColor" stroke-width="1.7"/><path d="M8 10.5V7.5a4 4 0 018 0v3" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></div>
+    <h3>${tx('التعديل على عربة','Edit cart')} ${escapeHtml(cart)}</h3>
+    <p>${tx('مسؤول العربة:','Responsible:')} <b>${escapeHtml(cartOwner(cart))}</b><br>${tx('أدخل رمز الـ PIN للتعديل','Enter the PIN to edit')}</p>
+    <input class="pin-input" type="password" inputmode="numeric" pattern="[0-9]*" maxlength="8" autocomplete="off" placeholder="••••">
+    <div class="pin-err"></div>
+    <button type="button" class="md-btn primary pin-ok">${tx('فتح','Unlock')}</button>
+    <button type="button" class="md-btn pin-cancel">${tx('إلغاء','Cancel')}</button>
+  </div>`;
+  document.body.appendChild(sheet);
+  const input = sheet.querySelector('.pin-input'), err = sheet.querySelector('.pin-err');
+  const close = () => { pinSheetOpen = false; sheet.remove(); };
+  const tryPin = () => {
+    if(Date.now() < pinBlockedUntil){
+      err.textContent = tx('محاولات كثيرة — انتظري ', 'Too many tries — wait ') + Math.ceil((pinBlockedUntil - Date.now()) / 1000) + tx(' ثانية', 's');
+      return;
+    }
+    if(input.value === EDIT_PIN){
+      pinFails = 0;
+      unlock = { cart: 'all', until: Date.now() + LOCK_AFTER_MIN * 60000 };
+      renderLockBtn();
+      close();
+      showToast(tx('تم فتح التعديل', 'Editing unlocked'), 'success');
+      if(typeof onOk === 'function') onOk();
+    } else {
+      pinFails++;
+      if(pinFails >= 5){ pinBlockedUntil = Date.now() + 30000; pinFails = 0; }
+      err.textContent = tx('الرمز غير صحيح', 'Wrong PIN');
+      input.value = '';
+      sheet.querySelector('.pin-card').classList.remove('shake'); void sheet.offsetWidth;
+      sheet.querySelector('.pin-card').classList.add('shake');
+    }
+  };
+  sheet.querySelector('.pin-ok').addEventListener('click', tryPin);
+  input.addEventListener('keydown', e => { if(e.key === 'Enter') tryPin(); });
+  input.addEventListener('input', () => { err.textContent = ''; if(input.value.length === EDIT_PIN.length) tryPin(); });
+  sheet.querySelector('.pin-cancel').addEventListener('click', close);
+  sheet.addEventListener('click', e => { if(e.target === sheet) close(); });
+  setTimeout(() => input.focus(), 150);
+}
+// While locked, tapping any edit control in the table asks for the PIN instead of editing.
+(function guardEdits(){
+  const EDIT = 'input, select, textarea, .na-btn, .mini-del, .add-date-btn, .size-tag.is-btn, [data-size-add], [data-size-na]';
+  const area = () => document.querySelector('.tbl-scroll');
+  const block = e => {
+    if(isUnlocked()) return;
+    const a = area(); const el = e.target && e.target.closest && e.target.closest(EDIT);
+    if(!a || !el || !a.contains(el)) return;
+    e.preventDefault(); e.stopPropagation();
+    if(el.blur) el.blur();
+    if(e.type !== 'focusin') askPin();
+  };
+  ['pointerdown', 'mousedown', 'touchstart', 'click', 'focusin', 'keydown'].forEach(t => document.addEventListener(t, block, { capture: true, passive: false }));
+})();
+
+/* ================= Backups =================
+   1) Download: one JSON file with every cart.
+   2) Automatic: the first time a cart is opened each day, a snapshot is stored in Supabase
+      (row id crash-cart-backup-<CART>-<YYYY-MM-DD>, same table). Last 30 days are kept.
+   3) Restore: from a downloaded file or from one of the daily snapshots. */
+const BACKUP_KEEP_DAYS = 30;
+function backupKey(cart, day){ return `crash-cart-backup-${cart}-${day}`; }
+function todayKey(){ const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`; }
+async function autoDailySnapshot(cart, data){
+  if(!data || !data.meds || !data.meds.some(m => (m.dates || []).some(d => d.date))) return;   // nothing worth saving
+  const flag = 'crashcart-snap-' + cart + '-' + todayKey();
+  try { if(sessionStorage.getItem(flag)) return; } catch(e){}
+  try{
+    await fetch(`${SUPABASE_URL}/rest/v1/crash_cart_data`, {
+      method: 'POST',
+      headers: Object.assign({}, SUPABASE_HEADERS, { 'Prefer': 'resolution=ignore-duplicates' }),
+      body: JSON.stringify([{ id: backupKey(cart, todayKey()), data, updated_at: new Date().toISOString() }])
+    });
+    try { sessionStorage.setItem(flag, '1'); } catch(e){}
+    // Tidy up snapshots older than the retention window (ignored if the table doesn't allow deletes).
+    const old = new Date(); old.setDate(old.getDate() - BACKUP_KEEP_DAYS);
+    const oldKey = `${old.getFullYear()}-${String(old.getMonth()+1).padStart(2,'0')}-${String(old.getDate()).padStart(2,'0')}`;
+    const list = await listSnapshots(cart);
+    const stale = list.filter(x => x.day < oldKey);
+    for(const x of stale){
+      fetch(`${SUPABASE_URL}/rest/v1/crash_cart_data?id=eq.${encodeURIComponent(x.id)}`, { method: 'DELETE', headers: SUPABASE_HEADERS }).catch(() => {});
+    }
+  }catch(e){ /* backups are best-effort */ }
+}
+async function listSnapshots(cart){
+  const prefix = `crash-cart-backup-${cart}-`;
+  const res = await fetch(`${SUPABASE_URL}/rest/v1/crash_cart_data?id=like.${encodeURIComponent(prefix + '*')}&select=id,updated_at&order=id.desc`, { headers: SUPABASE_HEADERS });
+  if(!res.ok) throw await httpError(res);
+  const rows = await res.json();
+  return rows.map(r => ({ id: r.id, day: r.id.slice(prefix.length), at: r.updated_at }));
+}
+async function downloadBackup(){
+  const out = { app: 'CRUSH CHART', kind: 'backup', version: 1, createdAt: new Date().toISOString(), carts: {} };
+  for(const c of CARTS){
+    const d = await supabaseLoad(c);
+    if(d) out.carts[c] = d;
+  }
+  const blob = new Blob([JSON.stringify(out, null, 1)], { type: 'application/json' });
+  const name = `crush-chart-backup-${todayKey()}.json`;
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = name;
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 4000);
+  return Object.keys(out.carts).length;
+}
+// Replace a cart's data with a backup copy (atomic; retries if another device saves meanwhile).
+async function restoreCart(cart, data){
+  const clean = Object.assign({meds:[], checkedBy:'', lastUpdate:null, readinessHistory:[], auditLog:[]}, clone(data));
+  clean.lastUpdate = new Date().toISOString();
+  for(let attempt = 0; attempt < 8; attempt++){
+    const row = await supabaseLoadRow(cart);
+    if(row && row.data) autoDailySnapshot(cart, row.data);   // keep today's pre-restore copy too
+    if(await supabaseSaveIfUnchanged(clean, cart, row)) return;
+    await new Promise(r => setTimeout(r, 200 + Math.random() * 300));
+  }
+  throw new Error(tx('تعارض متكرر مع جهاز آخر', 'Repeated conflict with another device'));
+}
+async function afterRestore(){
+  await flushPendingSave().catch(() => {});
+  await loadState();
+}
+function openBackupSheet(){
+  const sheet = document.createElement('div');
+  sheet.className = 'install-sheet';
+  sheet.innerHTML = `<div class="install-card bk-card">
+    <div class="bk-head"><h3>${tx('النسخ الاحتياطية','Backups')}</h3><button type="button" class="bk-x" aria-label="close">×</button></div>
+    <button type="button" class="md-btn primary" data-bk="download">${tx('تنزيل نسخة احتياطية (كل العربات)','Download backup (all carts)')}</button>
+    <label class="md-btn bk-file">${tx('استرجاع من ملف...','Restore from file...')}<input type="file" accept=".json,application/json" hidden></label>
+    <div class="bk-sub">${tx('نسخ تلقائية يومية لعربة','Daily automatic copies for cart')} <b>${escapeHtml(currentCart)}</b></div>
+    <div class="bk-list"><div class="bk-empty">${tx('جارٍ التحميل...','Loading...')}</div></div>
+    <p class="bk-note">${tx('تنحفظ نسخة تلقائياً أول مرة تنفتح فيها العربة كل يوم، وتبقى آخر 30 يوم. الاسترجاع يستبدل بيانات العربة بالنسخة المختارة.','A copy is saved automatically the first time a cart is opened each day, kept for 30 days. Restoring replaces the cart data with the chosen copy.')}</p>
+  </div>`;
+  document.body.appendChild(sheet);
+  const close = () => sheet.remove();
+  sheet.addEventListener('click', e => { if(e.target === sheet) close(); });
+  sheet.querySelector('.bk-x').addEventListener('click', close);
+  sheet.querySelector('[data-bk="download"]').addEventListener('click', async (e) => {
+    const b = e.currentTarget; b.disabled = true;
+    try { const n = await downloadBackup(); showToast(tx(`تم تنزيل نسخة لـ ${n} عربة`, `Backup downloaded (${n} carts)`), 'success'); }
+    catch(err){ showToast(tx('تعذّر التنزيل: ','Download failed: ') + (err.message || err), 'error'); }
+    b.disabled = false;
+  });
+  sheet.querySelector('.bk-file').addEventListener('click', e => {
+    if(!isUnlocked()){ e.preventDefault(); close(); askPin(openBackupSheet); }
+  }, true);
+  sheet.querySelector('.bk-file input').addEventListener('change', async (e) => {
+    const f = e.target.files && e.target.files[0];
+    if(!f) return;
+    let json;
+    try { json = JSON.parse(await f.text()); } catch(err){ showToast(tx('الملف غير صالح','Invalid file'), 'error'); return; }
+    const carts = json && json.carts ? Object.keys(json.carts).filter(c => CARTS.includes(c)) : [];
+    if(!carts.length){ showToast(tx('الملف ما فيه بيانات عربات','No cart data in this file'), 'error'); return; }
+    const when = json.createdAt ? fmtDate(json.createdAt) : '';
+    if(!confirm(tx(`استرجاع ${carts.join('، ')} من نسخة ${when}؟\nالبيانات الحالية لهذي العربات بتنستبدل.`, `Restore ${carts.join(', ')} from backup ${when}?\nCurrent data for these carts will be replaced.`))) return;
+    try{
+      for(const c of carts) await restoreCart(c, json.carts[c]);
+      showToast(tx('تم الاسترجاع','Restored'), 'success');
+      close(); await afterRestore();
+    }catch(err){ showToast(tx('تعذّر الاسترجاع: ','Restore failed: ') + (err.message || err), 'error'); }
+  });
+  const listEl = sheet.querySelector('.bk-list');
+  listSnapshots(currentCart).then(list => {
+    if(!list.length){ listEl.innerHTML = `<div class="bk-empty">${tx('ما فيه نسخ تلقائية لهذي العربة للحين','No automatic copies for this cart yet')}</div>`; return; }
+    listEl.innerHTML = list.map(x => `<div class="bk-row"><span>${escapeHtml(x.day)}</span><button type="button" class="md-btn" data-snap="${escapeHtml(x.id)}">${tx('استرجاع','Restore')}</button></div>`).join('');
+    listEl.querySelectorAll('[data-snap]').forEach(b => b.addEventListener('click', async () => {
+      if(!isUnlocked()){ close(); askPin(openBackupSheet); return; }
+      const id = b.getAttribute('data-snap');
+      const day = id.split('-').slice(-3).join('-');
+      if(!confirm(tx(`استرجاع عربة ${currentCart} لنسخة ${day}؟\nالبيانات الحالية بتنستبدل.`, `Restore cart ${currentCart} to ${day}?\nCurrent data will be replaced.`))) return;
+      b.disabled = true;
+      try{
+        const res = await fetch(`${SUPABASE_URL}/rest/v1/crash_cart_data?id=eq.${encodeURIComponent(id)}&select=data`, { headers: SUPABASE_HEADERS });
+        if(!res.ok) throw await httpError(res);
+        const rows = await res.json();
+        if(!rows.length) throw new Error('not found');
+        await restoreCart(currentCart, rows[0].data);
+        showToast(tx('تم الاسترجاع','Restored'), 'success');
+        close(); await afterRestore();
+      }catch(err){ b.disabled = false; showToast(tx('تعذّر الاسترجاع: ','Restore failed: ') + (err.message || err), 'error'); }
+    }));
+  }).catch(err => { listEl.innerHTML = `<div class="bk-empty">${tx('تعذّر تحميل القائمة: ','Could not load list: ')}${escapeHtml(err.message || String(err))}</div>`; });
+}
+document.getElementById('backupBtn').addEventListener('click', openBackupSheet);
+
+document.getElementById('pbPrint').addEventListener('click', () => { try { window.print(); } catch(e){} });
+document.getElementById('pbBack').addEventListener('click', exitPrintMode);
+// Only rebuild for a print started from the browser menu (not from our own buttons).
+window.addEventListener('beforeprint', () => { if(!document.documentElement.classList.contains('print-mode')) buildReport(); });
+// Desktop browsers: leave print mode automatically once the dialog closes.
+// (Phones keep the preview with a "Back" button, since their print sheet doesn't block.)
+window.addEventListener('afterprint', () => {
+  if(!/iphone|ipad|ipod|android/i.test(navigator.userAgent) && !(navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1)) setTimeout(exitPrintMode, 300);
+});
 
 
 /* ================= Shared helpers for map & check mode ================= */
@@ -4391,7 +4827,7 @@ function sectionHealth(secId){
 }
 const HC = { red:'#D8425A', amber:'#DE9A2E', green:'#2C9A72', none:'#8A93A8' };
 function earliestDate(m){
-  const ds = (m.dates || []).map(d => d.date).filter(Boolean).sort();
+  const ds = activeDates(m).map(d => d.date).filter(Boolean).sort();
   return ds[0] || '';
 }
 
@@ -4551,6 +4987,7 @@ function chkRoot(){
   return el;
 }
 function openCheck(scope){
+  if(!isUnlocked()){ askPin(() => openCheck(scope)); return; }
   chk.open = true; chk.scope = scope || null; chk.onlyUnchecked = false;
   chkRoot().style.display = 'flex';
   document.body.style.overflow = 'hidden';
@@ -4585,9 +5022,9 @@ function renderCheckStart(){
       </div>
       <div class="chk-field">
         <label>${escapeHtml(t('checkedByLabel'))}</label>
-        <select id="chkName"><option value="">${escapeHtml(t('checkedBySelectPh'))}</option>${CHECKER_NAMES.map(n => `<option ${state.checkedBy === n ? 'selected' : ''}>${escapeHtml(n)}</option>`).join('')}</select>
+        <select id="chkName" disabled><option selected>${escapeHtml(cartOwner())}</option></select>
       </div>
-      <button class="chk-go" id="chkGo" type="button" ${state.checkedBy ? '' : 'disabled'}>${tx('ابدأ','Start')}</button>
+      <button class="chk-go" id="chkGo" type="button">${tx('ابدأ','Start')}</button>
     </div>`;
   root.querySelector('#chkX').addEventListener('click', closeCheck);
   root.querySelectorAll('#chkSeg button').forEach(b => b.addEventListener('click', () => { chk.onlyUnchecked = b.getAttribute('data-u') === '1'; renderCheckStart(); }));
@@ -4606,10 +5043,11 @@ function renderCheckStart(){
 }
 function chkDateRows(m){
   if(m.noExpiry) return `<div class="chk-noexp">${escapeHtml(t('noExpiryLabel'))}</div>`;
-  const ds = (m.dates && m.dates.length) ? m.dates : [];
-  return `<div class="chk-dates">${ds.map(d => {
+  const ds = activeDates(m);
+  const naList = [...naSizes(m)];
+  return `<div class="chk-dates">${naList.map(z => `<div class="chk-date"><span class="size-tag is-na">${escapeHtml(z)}</span><span class="size-na-pill">N/A</span></div>`).join('')}${ds.map(d => {
     const f = d.date ? flagFor(daysLeft(d.date)) : 'none';
-    return `<label class="chk-date"><input type="date" data-did="${d.id}" value="${escapeHtml(d.date || '')}" max="2099-12-31">
+    return `<label class="chk-date">${sizesOf(m) ? `<span class="size-tag ${d.size ? '' : 'loose'}">${escapeHtml(d.size || tx('بدون مقاس', 'No size'))}</span>` : ''}<input type="date" data-did="${d.id}" value="${escapeHtml(d.date || '')}" max="2099-12-31">
       <span class="badge ${f}" data-badge="${d.id}"><i></i>${escapeHtml(d.date ? badgeLabel(f, false) : t('noDateLabel'))}</span></label>`;
   }).join('')}</div>`;
 }
@@ -4842,6 +5280,7 @@ document.addEventListener('keydown', e => {
 var viewMode = 'cart';
 try { const v = localStorage.getItem('crashcart-view'); if(v === 'table' || v === 'cart') viewMode = v; } catch(e){}
 var cartSel = null;
+var cartClosed = false;   // drawer view: true after tapping the open drawer again
 function attentionSection(){
   const ranked = SECTIONS.map(s => ({ id: s.id, h: sectionHealth(s.id) })).filter(x => x.h.total > 0)
     .map(x => ({ id: x.id, score: (x.h.red + x.h.missing) * 100 + x.h.amber * 10 + (x.h.unchecked ? 1 : 0) }))
@@ -4901,11 +5340,13 @@ function renderCartSide(){
   if(!side) return;
   if(viewMode !== 'cart'){ side.innerHTML = ''; return; }
   const isFiltering = activeFilter !== 'all' || searchQuery !== '';
-  const sel = isFiltering ? null : cartSel;
+  const sel = (isFiltering || cartClosed) ? null : cartSel;
   let info;
   if(isFiltering){
     info = `<div class="cs-info"><div class="cs-filter-note">${tx('تعرضين نتائج الفلتر/البحث من كل الأدراج','Showing filter/search results from all drawers')}</div>
       <button type="button" class="md-btn" id="csBack" style="margin-top:10px">${tx('رجوع لعرض الدرج','Back to drawer view')}</button></div>`;
+  } else if(!sel){
+    info = `<div class="cs-info"><div class="cs-filter-note">${tx('اضغطي على أي درج لعرض عناصره','Tap a drawer to show its items')}</div></div>`;
   } else {
     const h = sectionHealth(sel);
     const act = Math.max(h.active, 1);
@@ -4918,11 +5359,14 @@ function renderCartSide(){
   }
   side.innerHTML = cartArtHtml(sel) + info;
   side.querySelectorAll('[data-sec]').forEach(b => b.addEventListener('click', () => {
-    cartSel = b.getAttribute('data-sec');
+    const sec = b.getAttribute('data-sec');
+    const wasFiltering = activeFilter !== 'all' || searchQuery !== '';
+    if(!wasFiltering && !cartClosed && cartSel === sec){ cartClosed = true; }   // 2nd tap: close
+    else { cartSel = sec; cartClosed = false; }                                // 1st tap: open
     activeFilter = 'all'; searchQuery = '';
     const si = document.getElementById('searchInput'); if(si) si.value = '';
     render();
-    if(window.innerWidth <= 860){
+    if(!cartClosed && window.innerWidth <= 860){
       const tbl = document.querySelector('.card.cart-mode .tbl-scroll');
       if(tbl) tbl.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
@@ -5005,8 +5449,9 @@ function mergeFields(l, b, s, fields){
 function mergeMed(l, b, s){
   let changed = mergeFields(l, b, s, ['name','section','qtyStd','qtyActual','na','noExpiry']);
   if(!Array.isArray(l.dates)) l.dates = [];
-  if(mergeList(l.dates, b ? b.dates : [], s.dates, (ld, bd, sd) => mergeFields(ld, bd, sd, ['date']))) changed = true;
+  if(mergeList(l.dates, b ? b.dates : [], s.dates, (ld, bd, sd) => mergeFields(ld, bd, sd, ['date', 'size', 'na']))) changed = true;
   if(l.dates.length === 0){ l.dates.push({ id: duid(), date: '' }); }
+  if(sizesOf(l)) fitSizeDates(l);   // keep each size's dates together
   return changed;
 }
 function unionById(a, b, keyFn, max){
