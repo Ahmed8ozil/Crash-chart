@@ -1322,6 +1322,86 @@
   @media (max-width:639px){
     .ecg-line{display:block !important;height:22px;margin-bottom:4px;}
   }
+
+  /* ===== Live readiness color (ECG color left untouched) ===== */
+  .page-header{--ready-rgb:95,211,165;position:relative;}
+  .page-header[data-ready="warn"]{--ready-rgb:245,192,92;}
+  .page-header[data-ready="bad"]{--ready-rgb:255,107,122;}
+  .page-header::before{
+    content:"";position:absolute;inset:0;pointer-events:none;z-index:0;
+    background-color:rgb(var(--ready-rgb));opacity:.5;
+    -webkit-mask-image:radial-gradient(130% 110% at 85% 0%,#000 0%,transparent 78%);
+            mask-image:radial-gradient(130% 110% at 85% 0%,#000 0%,transparent 78%);
+    transition:background-color .8s ease;
+  }
+  .page-header::after{
+    content:"";position:absolute;inset-inline:0;bottom:0;height:3px;pointer-events:none;
+    background:linear-gradient(90deg,transparent,rgb(var(--ready-rgb)),transparent);
+    box-shadow:0 0 22px 2px rgba(var(--ready-rgb),.55);
+  }
+  .page-header .wrap{position:relative;z-index:1;}
+  .page-header .gauge-card{border-color:rgba(var(--ready-rgb),.45);box-shadow:0 0 22px -6px rgba(var(--ready-rgb),.6), inset 0 1px 0 rgba(255,255,255,.1);transition:border-color .8s ease, box-shadow .8s ease;}
+  .page-header .gauge-pct{color:rgb(var(--ready-rgb));text-shadow:0 0 12px rgba(var(--ready-rgb),.5);transition:color .8s ease;}
+  .page-header .gauge-arc{stroke:rgb(var(--ready-rgb));filter:drop-shadow(0 0 4px rgba(var(--ready-rgb),.7));transition:stroke-dashoffset .5s ease, stroke .8s ease;}
+  .page-header .brand-text h1 #cartLabel{color:rgb(var(--ready-rgb));transition:color .8s ease;}
+
+  /* ===== Cart cards: subtle gradient by readiness / shortage ===== */
+  .drawer{background:linear-gradient(180deg,color-mix(in srgb,var(--hc,#8A93A8) 20%,#fff),color-mix(in srgb,var(--hc,#8A93A8) 6%,#EEF1F6));}
+  html[data-theme="dark"] .drawer{background:linear-gradient(180deg,color-mix(in srgb,var(--hc,#8A93A8) 28%,#1E2A44),color-mix(in srgb,var(--hc,#8A93A8) 8%,#172238));}
+  .cart-tray{background:linear-gradient(180deg,color-mix(in srgb,var(--hc,#8A93A8) 22%,#DDE3EE),color-mix(in srgb,var(--hc,#8A93A8) 8%,#C9D1E0));}
+  html[data-theme="dark"] .cart-tray{background:linear-gradient(180deg,color-mix(in srgb,var(--hc,#8A93A8) 26%,#2A3856),color-mix(in srgb,var(--hc,#8A93A8) 8%,#1E2A44));color:#E8ECF5;}
+  .card.cart-mode tbody tr:not(.section-row){
+    --fc:#C7CEDD;
+    background:linear-gradient(to left,color-mix(in srgb,var(--fc) 12%,var(--card)),var(--card) 55%);
+  }
+  html[dir="ltr"] .card.cart-mode tbody tr:not(.section-row){background:linear-gradient(to right,color-mix(in srgb,var(--fc) 12%,var(--card)),var(--card) 55%);}
+
+  /* ===== Single-line item cards ===== */
+  .card.cart-mode .add-date-btn:not(.size-na-toggle){flex:0 0 auto;width:30px;height:30px;padding:0;font-size:0;border-radius:9px;display:inline-flex;align-items:center;justify-content:center;}
+  .card.cart-mode .add-date-btn:not(.size-na-toggle)::before{content:"+";font-size:17px;font-weight:800;line-height:1;}
+  .card.cart-mode .dates-cell{display:flex;flex-direction:row;align-items:center;gap:4px 6px;flex-wrap:nowrap;}
+  .card.cart-mode .dates-cell:has(.date-row ~ .date-row){flex-wrap:wrap;}
+  .card.cart-mode .dates-cell:has(.date-row ~ .date-row) .date-row{flex:1 1 100%;}
+  .card.cart-mode .date-row{gap:6px;}
+  .card.cart-mode .date-row .date-input{min-height:34px;padding-top:6px;padding-bottom:6px;font-size:12.5px;}
+  .card.cart-mode .mini-del{flex-shrink:0;width:20px;padding:0;}
+  .card.cart-mode .badge{padding:3px 9px;font-size:11px;}
+  .card.cart-mode .qty-box{padding:3px 8px;}
+  @media (min-width:621px){
+    .card.cart-mode tbody{gap:8px;}
+    .card.cart-mode tbody tr:not(.section-row){
+      grid-template-columns:26px minmax(110px,1fr) auto auto auto auto;
+      grid-template-areas:"idx name qty dates badge na";
+      gap:8px 10px;padding:8px 12px;border-radius:14px;
+    }
+    .card.cart-mode tbody tr:not(.section-row) > td:nth-child(4):has(.no-expiry-note){display:none;}
+    .card.cart-mode .item-name{font-size:13.5px;line-height:1.35;}
+    .card.cart-mode .date-row .date-input{min-width:104px;}
+  }
+  @media (min-width:861px){ .card.cart-mode .view-split{grid-template-columns:256px minmax(0,1fr);} }
+  @media (max-width:620px){
+    .card.cart-mode tbody{gap:8px;}
+    .card.cart-mode tbody tr:not(.section-row){
+      grid-template-columns:26px minmax(0,1fr) auto auto;
+      grid-template-areas:"idx name badge na" "qty qty dates dates";
+      gap:7px 8px;padding:9px 10px;border-radius:14px;
+    }
+    .card.cart-mode tbody tr:not(.section-row) > td:nth-child(4):has(.no-expiry-note){display:none;}
+    .card.cart-mode .item-name{font-size:13px;line-height:1.3;}
+    .card.cart-mode .date-row .date-input{min-width:0;flex:1;width:auto;}
+    .card.cart-mode .dates-cell{width:100%;}
+  }
+
+  @media (max-width:620px){
+    .card.cart-mode tbody tr:not(.section-row){
+      grid-template-columns:26px minmax(0,1fr) auto;
+      grid-template-areas:"idx name na" "qty qty badge" "dates dates dates";
+      gap:6px 8px;
+    }
+    .card.cart-mode tbody tr:not(.section-row) > td:nth-child(6){justify-self:end;}
+    .card.cart-mode tbody tr:not(.section-row) > td:nth-child(4){min-width:0;}
+    .card.cart-mode .date-row{min-width:0;flex:1 1 auto;}
+  }
 </style>
 <meta name="app-version" content="2026-09-19b">
 </head>
@@ -3953,6 +4033,8 @@ function renderGauge(pct){
   const arc = document.getElementById('gaugeArc');
   arc.style.strokeDashoffset = offset;
   arc.classList.remove('gauge-warn', 'gauge-bad');
+  const hdr = document.querySelector('.page-header');
+  if(hdr) hdr.setAttribute('data-ready', pct < 60 ? 'bad' : pct < 90 ? 'warn' : 'good');
   if(pct < 60) arc.classList.add('gauge-bad');
   else if(pct < 90) arc.classList.add('gauge-warn');
   animateNumber(document.getElementById('gaugePct'), pct, '%');
@@ -4048,6 +4130,7 @@ function buildRow(m, displayIndex){
   const tr = document.createElement('tr');
   tr.className = m.na ? 'row-na row-enter' : 'row-enter';
   tr.style.borderInlineStart = `5px solid ${m.na ? '#C7CEDD' : flagColor(status.flag)}`;
+  tr.style.setProperty('--fc', m.na ? '#C7CEDD' : flagColor(status.flag));
 
   const datesHtml = m.noExpiry
     ? `<div class="no-expiry-note">${escapeHtml(t('noExpiryLabel'))}</div>`
@@ -4197,6 +4280,7 @@ function buildRow(m, displayIndex){
 function refreshRowInPlace(tr, m){
   const status = rowStatus(m);
   tr.style.borderInlineStart = `5px solid ${m.na ? '#C7CEDD' : flagColor(status.flag)}`;
+  tr.style.setProperty('--fc', m.na ? '#C7CEDD' : flagColor(status.flag));
   tr.querySelectorAll('.date-row').forEach(row => {
     const d = (m.dates || []).find(x => x.id === row.getAttribute('data-date-id'));
     const dot = row.querySelector('.mini-dot');
