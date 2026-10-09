@@ -1556,6 +1556,9 @@
   .ss-pill.cur{box-shadow:0 0 0 2px rgba(255,255,255,.75);}
   .ss-alert{flex:1 1 220px;text-align:start;padding:7px 12px;border-radius:12px;border:1px solid rgba(255,107,122,.7);background:rgba(255,107,122,.2);color:#FFD5DA;font-family:'Tajawal',sans-serif;font-size:12.5px;font-weight:800;cursor:pointer;direction:rtl;animation:ssPulse 2.2s ease-in-out infinite;}
   @keyframes ssPulse{50%{background:rgba(255,107,122,.34);}}
+
+  .sh-del{margin-top:10px;width:100%;padding:8px;border-radius:12px;border:1.5px solid rgba(216,66,90,.5);background:transparent;color:#D8425A;font-family:'Tajawal',sans-serif;font-size:12.5px;font-weight:800;cursor:pointer;}
+  .sh-del.all{margin-top:14px;} .pin-ic.adm{color:#D8425A;}
 </style>
 <meta name="app-version" content="2026-09-19b">
 </head>
@@ -1933,6 +1936,7 @@ const CART_OWNERS = {
   GOT: 'Aisha Almoqbali'
 };
 const EDIT_PIN = '3600';   // one PIN for editing all carts
+const ADMIN_PIN = '9001';   // ONLY the owner knows this - needed to delete the Inventory log (change it here)
 const LOCK_AFTER_MIN = 30;   // re-lock after this many minutes without edits
 function cartOwner(c){ return CART_OWNERS[c || currentCart] || ''; }
 const CHECKER_NAMES = Object.values(CART_OWNERS);
@@ -2280,6 +2284,7 @@ let lastPct = 100;
 let state = {
   meds: [],
   shiftLog: {},
+  shiftDel: {},
   checkedBy: '',
   lastUpdate: null,
   lang: 'ar'
@@ -3900,7 +3905,7 @@ async function loadState(){
     if(parsed) autoDailySnapshot(currentCart, parsed);
     setNetState('online');
     if(parsed){
-      state = Object.assign({meds:[], checkedBy:'', lastUpdate:null, lang:'ar', readinessHistory:[], auditLog:[], shiftLog:{}}, parsed);
+      state = Object.assign({meds:[], checkedBy:'', lastUpdate:null, lang:'ar', readinessHistory:[], auditLog:[], shiftLog:{}, shiftDel:{}}, parsed);
       state.meds = normalizeMeds(state.meds);
       // Language is a session-wide UI preference, not per-cart — never let a cart's
       // saved data override the language the user currently has selected.
@@ -3952,6 +3957,7 @@ function seedDefault(){
   state.auditLog = [];
   state.readinessHistory = [];
   state.shiftLog = {};
+  state.shiftDel = {};
   state.lang = lang;
 }
 
@@ -4832,6 +4838,7 @@ const SHIFT_HOURS = { M: '7–14', E: '14–21', N: '21–7' };
 function shiftGuess(){ const h = new Date().getHours(); return h >= 7 && h < 14 ? 'M' : (h >= 14 && h < 21 ? 'E' : 'N'); }
 function shiftDefaultDate(){ const d = new Date(); if(d.getHours() < 7) d.setDate(d.getDate() - 1); return shiftFmt(d); }
 function shiftLogObj(){ if(!state.shiftLog || typeof state.shiftLog !== 'object' || Array.isArray(state.shiftLog)) state.shiftLog = {}; return state.shiftLog; }
+function shiftDelObj(){ if(!state.shiftDel || typeof state.shiftDel !== 'object' || Array.isArray(state.shiftDel)) state.shiftDel = {}; return state.shiftDel; }
 function shiftStd(m){ const n = parseInt(m && m.qtyStd, 10); return n > 0 ? n : 1; }
 function shiftParse(c){
   if(c === 'o') return { s: 'o' };
@@ -4943,6 +4950,7 @@ function renderShift(){
       <div class="sh-prog"><div class="bar"><i style="width:${pct}%"></i></div><span>${st.ok}/${total}</span>
         <button type="button" id="shAll">${st.un ? tx('الباقي كله ✓', 'Rest all ✓') : tx('مسح الكل', 'Reset all')}</button></div>
       <div class="sh-chips"><span class="c-ok">✓ ${st.ok}</span><span class="c-part">± ${st.part}</span><span class="c-no">✗ ${st.miss}</span><span class="c-un">${tx('لم يُفحص', 'Unchecked')} ${st.un}</span></div>
+      ${rec && rec.ts ? `<button type="button" class="sh-del" id="shDelOne">🗑 ${tx('حذف سجل هذا الشفت', 'Delete this shift record')}</button>` : ''}
       ${rec && rec.ts ? `<div class="sh-sign"><b>${escapeHtml(rec.by || '—')}</b><span>${escapeHtml(shiftDateStr(rec.ts))}</span><span class="t">${escapeHtml(shiftTimeStr(rec.ts))}</span></div>` : `<div class="sh-sign empty">${tx('لم يُسجَّل فحص لهذا الشفت بعد', 'No check saved for this shift yet')}</div>`}
     </div>`;
     if(prev){
@@ -4992,6 +5000,7 @@ function renderShift(){
           if(!r) return `<button type="button" class="sh-cell" data-d="${ds}" data-s="${sf.id}"><b>—</b></button>`;
           const x = shiftStats(shiftDecode(r)), who = String(r.by || '').trim().split(/\s+/)[0], issues = x.part + x.miss;
           return `<button type="button" class="sh-cell ${cellCls(x)}" data-d="${ds}" data-s="${sf.id}"><b>${x.ok === x.total && total ? '✓' : x.ok + '/' + total}</b>${issues ? `<em>⚠ ${issues}</em>` : ''}<small>${escapeHtml(who)}</small><small class="tm">${escapeHtml(shiftClock(r.ts))}</small></button>`; }).join('')}</div>`; }).join('') + '</div>' +
+      `<button type="button" class="sh-del all" id="shDelAll">🗑 ${tx('حذف كل سجل Inventory لهذه العربة', 'Delete the whole Inventory log of this cart')}</button>` +
       `<div class="sh-legend"><span class="done">✓ ${tx('مكتمل', 'Complete')}</span><span class="part">${tx('كمية ناقصة', 'Short qty')}</span><span class="bad">${tx('غير موجود', 'Missing')}</span><span>— ${tx('لم يُفحص', 'Not checked')}</span></div>`;
   }
   body.innerHTML = html;
@@ -5062,6 +5071,34 @@ document.getElementById('shiftStrip').addEventListener('click', e => {
 setInterval(renderShiftStrip, 3000);
 setTimeout(renderShiftStrip, 800);
 
+
+/* ---- Delete Inventory records: owner only (ADMIN_PIN). Deletions are remembered so other devices don't bring them back. ---- */
+function shiftAdminAsk(msg, onOk){
+  if(document.querySelector('.adm-sheet')) return;
+  const sh = document.createElement('div'); sh.className = 'install-sheet pin-sheet adm-sheet';
+  sh.innerHTML = `<div class="install-card pin-card">
+    <div class="pin-ic adm"><svg viewBox="0 0 24 24" fill="none"><path d="M5 7h14M10 7V5h4v2M7 7l1 12h8l1-12M10.5 11v5M13.5 11v5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+    <h3>${tx('حذف سجل Inventory', 'Delete Inventory log')}</h3>
+    <p>${msg}<br>${tx('للمسؤول فقط — أدخل الرقم السري الخاص', 'Owner only — enter the admin PIN')}</p>
+    <input class="pin-input" type="password" inputmode="numeric" maxlength="8" autocomplete="off" placeholder="••••">
+    <div class="pin-err"></div>
+    <button type="button" class="md-btn primary adm-ok" style="background:#D8425A">${tx('حذف نهائيًا', 'Delete permanently')}</button>
+    <button type="button" class="md-btn adm-cancel">${tx('إلغاء', 'Cancel')}</button></div>`;
+  document.body.appendChild(sh);
+  const inp = sh.querySelector('input'), err = sh.querySelector('.pin-err'); inp.focus();
+  const close = () => sh.remove();
+  const go = () => { if(inp.value === ADMIN_PIN){ close(); onOk(); } else { err.textContent = tx('رقم سري خاطئ', 'Wrong PIN'); inp.value = ''; } };
+  sh.querySelector('.adm-ok').addEventListener('click', go);
+  sh.querySelector('.adm-cancel').addEventListener('click', close);
+  inp.addEventListener('keydown', e => { if(e.key === 'Enter') go(); });
+}
+function shiftDeleteKeys(keys){
+  const log = shiftLogObj(), del = shiftDelObj(), now = new Date().toISOString();
+  keys.forEach(k => { if(log[k]){ del[k] = now; delete log[k]; } });
+  shiftDraft = null; saveState(false); renderShift(); renderShiftStrip();
+  if(typeof showToast === 'function') showToast(tx('تم حذف السجل', 'Log deleted'), 'success');
+}
+
 function shiftGoBack(){
   if(!shiftConfirmLeave()) return;
   if(history.state && history.state.sh){ shiftLeaving = true; history.back(); }
@@ -5117,6 +5154,8 @@ document.getElementById('shBody').addEventListener('click', e => {
   if(t.dataset.sec) shiftBulk((state.meds || []).filter(m => m.section === t.dataset.sec).map(m => m.id));
   else if(t.id === 'shAll') shiftBulk((state.meds || []).map(m => m.id));
   else if(t.id === 'shCopyPrev') shiftCopyPrev();
+  else if(t.id === 'shDelOne'){ const k = shiftKey(); shiftAdminAsk(tx('سيُحذف سجل الشفت ', 'This will delete shift ') + shiftSel + ' · ' + shiftDate, () => shiftDeleteKeys([k])); }
+  else if(t.id === 'shDelAll'){ const n = Object.keys(shiftLogObj()).length; shiftAdminAsk(tx('سيُحذف كل السجل (', 'This deletes the whole log (') + n + tx(' شفت) للعربة ', ' shifts) of cart ') + currentCart, () => shiftDeleteKeys(Object.keys(shiftLogObj()))); }
   else if(t.dataset.sh){ if(t.dataset.sh !== shiftSel && shiftConfirmLeave()){ shiftSel = t.dataset.sh; shiftDraft = null; renderShift(); } }
   else if(t.dataset.dstep){ const d = new Date(shiftDate + 'T00:00:00'); d.setDate(d.getDate() + Number(t.dataset.dstep));
     if(shiftFmt(d) <= shiftToday() && shiftConfirmLeave()){ shiftDate = shiftFmt(d); shiftDraft = null; renderShift(); } }
@@ -5407,7 +5446,7 @@ async function downloadBackup(){
 }
 // Replace a cart's data with a backup copy (atomic; retries if another device saves meanwhile).
 async function restoreCart(cart, data){
-  const clean = Object.assign({meds:[], checkedBy:'', lastUpdate:null, readinessHistory:[], auditLog:[], shiftLog:{}}, clone(data));
+  const clean = Object.assign({meds:[], checkedBy:'', lastUpdate:null, readinessHistory:[], auditLog:[], shiftLog:{}, shiftDel:{}}, clone(data));
   clean.lastUpdate = new Date().toISOString();
   for(let attempt = 0; attempt < 8; attempt++){
     const row = await supabaseLoadRow(cart);
@@ -6160,7 +6199,7 @@ function unionById(a, b, keyFn, max){
 // Pull `server` into the live state. Returns true if anything visible changed.
 function mergeServerIntoState(server){
   if(!server) return false;
-  server = Object.assign({meds:[], checkedBy:'', lastUpdate:null, readinessHistory:[], auditLog:[], shiftLog:{}}, server);
+  server = Object.assign({meds:[], checkedBy:'', lastUpdate:null, readinessHistory:[], auditLog:[], shiftLog:{}, shiftDel:{}}, server);
   server.meds = normalizeMeds(server.meds);
   const base = baseState ? Object.assign({meds:[]}, baseState) : { meds: [] };
   base.meds = normalizeMeds(base.meds);
@@ -6175,9 +6214,13 @@ function mergeServerIntoState(server){
   state.auditLog = unionById(state.auditLog, server.auditLog, x => x.id || x.ts, AUDIT_MAX);
   state.readinessHistory = unionById(state.readinessHistory, server.readinessHistory, x => x.ts, 20);
   if(state.auditLog.length !== beforeLog) changed = true;
-  { const sl = shiftLogObj(); const ssl = (server.shiftLog && typeof server.shiftLog === 'object' && !Array.isArray(server.shiftLog)) ? server.shiftLog : {};
+  { const sl = shiftLogObj(), sd = shiftDelObj();
+    const ssd = (server.shiftDel && typeof server.shiftDel === 'object' && !Array.isArray(server.shiftDel)) ? server.shiftDel : {};
+    Object.keys(ssd).forEach(k => { if(!sd[k] || ssd[k] > sd[k]){ sd[k] = ssd[k]; changed = true; } });
+    const ssl = (server.shiftLog && typeof server.shiftLog === 'object' && !Array.isArray(server.shiftLog)) ? server.shiftLog : {};
     Object.keys(ssl).forEach(k => { const a = sl[k], b = ssl[k];
       if(b && (!a || (b.ts && (!a.ts || b.ts > a.ts)))){ sl[k] = b; changed = true; } });
+    Object.keys(sl).forEach(k => { if(sd[k] && sl[k] && sl[k].ts && sd[k] >= sl[k].ts){ delete sl[k]; changed = true; } });
     if(changed && shiftOpen) renderShift(); }
   if(server.lastUpdate && (!state.lastUpdate || new Date(server.lastUpdate) > new Date(state.lastUpdate))){
     state.lastUpdate = server.lastUpdate; changed = true;
