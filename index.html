@@ -1559,6 +1559,37 @@
 
   .sh-del{margin-top:10px;width:100%;padding:8px;border-radius:12px;border:1.5px solid rgba(216,66,90,.5);background:transparent;color:#D8425A;font-family:'Tajawal',sans-serif;font-size:12.5px;font-weight:800;cursor:pointer;}
   .sh-del.all{margin-top:14px;} .pin-ic.adm{color:#D8425A;}
+
+  /* ===== Manager mode ===== */
+  #adminBtn.on{background:rgba(255,193,92,.22);color:#F5C05C;box-shadow:inset 0 0 0 1px rgba(245,192,92,.6);}
+  .admin-bar{display:flex;align-items:center;flex-wrap:wrap;gap:8px;margin:4px 0 6px;padding:8px 10px;border-radius:14px;background:linear-gradient(160deg,rgba(245,192,92,.22),rgba(245,192,92,.08));border:1px solid rgba(245,192,92,.55);}
+  .admin-bar .ab-t{margin-inline-end:auto;color:#FFE2A8;font-size:13px;font-weight:900;font-family:'Tajawal',sans-serif;}
+  .admin-bar button{height:34px;padding:0 12px;border-radius:10px;border:1px solid rgba(255,255,255,.25);background:rgba(255,255,255,.1);color:#fff;font-family:'Tajawal',sans-serif;font-size:12.5px;font-weight:800;cursor:pointer;}
+  .admin-bar #abAdd{background:#F5C05C;color:#3A2A06;border-color:#F5C05C;}
+  .admin-bar #abExit{background:rgba(255,107,122,.25);border-color:rgba(255,107,122,.6);}
+  .adm-acts{display:inline-flex;gap:4px;margin-inline-start:6px;vertical-align:middle;}
+  .adm-acts button{width:30px;height:30px;border-radius:9px;border:1px solid var(--line);background:var(--surface-2);cursor:pointer;font-size:14px;line-height:1;padding:0;color:var(--ink);}
+  .adm-acts .adm-del{border-color:rgba(216,66,90,.5);color:#D8425A;}
+  .adm-add-sec{margin-inline-start:auto;width:30px;height:30px;border-radius:10px;border:1.5px dashed #E6A93A;background:rgba(245,192,92,.14);color:#B9791A;font-size:18px;font-weight:900;line-height:1;cursor:pointer;padding:0;}
+  .itm-card{display:flex;flex-direction:column;gap:10px;max-height:88vh;overflow:auto;}
+  .itm-card h3{margin:0;font-size:17px;font-weight:900;}
+  .itm-card label{display:flex;flex-direction:column;gap:5px;font-size:12.5px;font-weight:800;color:var(--muted);}
+  .itm-card input[type=text],.itm-card input[type=number],.itm-card select{height:42px;border-radius:12px;border:1.5px solid var(--line);background:var(--surface-1);color:var(--ink);padding:0 12px;font-family:'Tajawal',sans-serif;font-size:14.5px;font-weight:700;}
+  .itm-card .itm-chk{flex-direction:row;align-items:center;gap:8px;color:var(--ink);}
+  .itm-note{margin:0;font-size:12px;color:var(--muted);line-height:1.6;}
+  .itm-list{list-style:none;margin:0;padding:0;}
+  .itm-list li{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:9px 4px;border-bottom:1px solid var(--line);font-size:14px;font-weight:700;color:var(--ink);}
+  .itm-list li em{font-style:normal;font-size:11px;color:var(--muted);}
+  .itm-list li button{width:28px;height:28px;border-radius:8px;border:1px solid rgba(216,66,90,.5);background:transparent;color:#D8425A;cursor:pointer;}
+  .itm-add{display:flex;gap:8px;} .itm-add input{flex:1;min-width:0;height:42px;border-radius:12px;border:1.5px solid var(--line);background:var(--surface-1);color:var(--ink);padding:0 12px;font-family:'Tajawal',sans-serif;font-size:14.5px;}
+  .itm-add .md-btn{width:52px;}
+  .install-sheet.itm-sheet,.install-sheet.chk-mgr,.install-sheet.adm-sheet{z-index:1700;}
+
+  .sh-export{display:flex;gap:8px;margin-top:12px;}
+  .sh-export select{flex:1;min-width:0;height:42px;border-radius:12px;border:1.5px solid var(--line);background:var(--surface-1);color:var(--ink);padding:0 10px;font-family:'Tajawal',sans-serif;font-size:13.5px;font-weight:700;}
+  .sh-export button{flex:0 0 auto;height:42px;padding:0 16px;border:none;border-radius:12px;background:var(--navy-2);color:#fff;font-family:'Tajawal',sans-serif;font-size:13.5px;font-weight:900;cursor:pointer;}
+  .sh-expiry{margin-top:12px;padding:10px 12px;border-radius:12px;background:rgba(245,192,92,.18);border:1px solid rgba(230,169,58,.6);color:#8A5A0C;font-size:12.5px;font-weight:800;line-height:1.6;}
+  .ss-alert.ss-exp{border-color:rgba(245,192,92,.7);background:rgba(245,192,92,.2);color:#FFE6B0;animation:none;}
 </style>
 <meta name="app-version" content="2026-09-19b">
 </head>
@@ -1620,6 +1651,7 @@
               <button class="btn-header btn-icon" id="reportBtn" type="button" title="تقرير PDF"><svg viewBox="0 0 24 24" fill="none"><path d="M14 3H7a2 2 0 00-2 2v14a2 2 0 002 2h10a2 2 0 002-2V8l-5-5z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M14 3v5h5M9 13h6M9 17h4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg><span data-i18n="reportBtn">تقرير PDF</span></button>
       </div>
       <div class="dock dock-settings">
+        <button class="theme-toggle" id="adminBtn" type="button" title="المدير"><svg viewBox="0 0 24 24" fill="none"><path d="M12 3l7 2.8v5.6c0 4.4-3 8-7 9.8-4-1.8-7-5.4-7-9.8V5.8L12 3z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><circle cx="12" cy="10.5" r="2" stroke="currentColor" stroke-width="1.7"/><path d="M12 12.5v3" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></button>
               <div class="lang-toggle" id="langToggle"><span id="langLabel">English</span></div>
       <button class="theme-toggle" id="themeToggle" type="button" title="Toggle theme">
         <svg id="themeIconMoon" viewBox="0 0 24 24" fill="none"><path d="M21 12.8A9 9 0 1111.2 3 7 7 0 0021 12.8z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>
@@ -1633,6 +1665,7 @@
       </div>
     </div>
 
+    <div class="admin-bar" id="adminBar" style="display:none;"><span class="ab-t"><b id="abLabel">وضع المدير</b></span><button type="button" id="abAdd">＋</button><button type="button" id="abNames">👥</button><button type="button" id="abExit">✕</button></div>
     <div class="shift-strip" id="shiftStrip"></div>
     <svg class="ecg-line" viewBox="0 0 800 40" preserveAspectRatio="none">
       <path class="ecg-path" d="M0 20 L120 20 L140 6 L155 34 L170 20 L210 20 L225 4 L242 36 L258 20 L800 20"
@@ -1776,7 +1809,7 @@
   </div></header>
   <div class="sh-body" id="shBody"></div>
   <div class="sh-foot" id="shFoot"><div class="sh-foot-in">
-    <div class="sh-foot-row"><input id="shBy" type="text" autocomplete="off" placeholder="اكتب اسم الفاحص"><button type="button" id="shSave" class="sh-save">حفظ</button></div>
+    <div class="sh-foot-row"><input id="shBy" type="text" list="shNames" autocomplete="off" placeholder="اكتب اسم الفاحص"><datalist id="shNames"></datalist><button type="button" id="shSave" class="sh-save">حفظ</button></div>
     <div class="sh-foot-note" id="shNote"></div>
   </div></div>
 </section>
@@ -1936,6 +1969,7 @@ const CART_OWNERS = {
   GOT: 'Aisha Almoqbali'
 };
 const EDIT_PIN = '3600';   // one PIN for editing all carts
+var adminOn = false;
 const ADMIN_PIN = '9001';   // ONLY the owner knows this - needed to delete the Inventory log (change it here)
 const LOCK_AFTER_MIN = 30;   // re-lock after this many minutes without edits
 function cartOwner(c){ return CART_OWNERS[c || currentCart] || ''; }
@@ -2285,6 +2319,7 @@ let state = {
   meds: [],
   shiftLog: {},
   shiftDel: {},
+  checkers: [],
   checkedBy: '',
   lastUpdate: null,
   lang: 'ar'
@@ -3882,7 +3917,8 @@ function normalizeMeds(meds){
       na: !!m.na,
       // Always re-derive from the current default list, so carts saved before an item
       // was marked "no expiry" pick up the new setting instead of keeping the old one.
-      noExpiry: NO_EXPIRY_NAMES.has((m.name || '').trim()) || !!m.noExpiry
+      noExpiry: NO_EXPIRY_NAMES.has((m.name || '').trim()) || !!m.noExpiry,
+      ...(m.addedAt ? { addedAt: m.addedAt } : {})
     };
   })()));
 }
@@ -3905,7 +3941,7 @@ async function loadState(){
     if(parsed) autoDailySnapshot(currentCart, parsed);
     setNetState('online');
     if(parsed){
-      state = Object.assign({meds:[], checkedBy:'', lastUpdate:null, lang:'ar', readinessHistory:[], auditLog:[], shiftLog:{}, shiftDel:{}}, parsed);
+      state = Object.assign({meds:[], checkedBy:'', lastUpdate:null, lang:'ar', readinessHistory:[], auditLog:[], shiftLog:{}, shiftDel:{}, checkers:[]}, parsed);
       state.meds = normalizeMeds(state.meds);
       // Language is a session-wide UI preference, not per-cart — never let a cart's
       // saved data override the language the user currently has selected.
@@ -3958,6 +3994,7 @@ function seedDefault(){
   state.readinessHistory = [];
   state.shiftLog = {};
   state.shiftDel = {};
+  state.checkers = [];
   state.lang = lang;
 }
 
@@ -4372,7 +4409,7 @@ function buildRow(m, displayIndex){
     </td>
     <td class="days">${m.na || m.noExpiry ? '—' : (status.days === null ? '—' : status.days + (status.size ? ` <span class="days-size">${escapeHtml(status.size)}</span>` : ''))}</td>
     <td class="center"><span class="badge ${m.na ? 'na' : status.flag}"><i></i>${badgeLabel(status.flag, m.na)}</span></td>
-    <td class="center"><button class="na-btn ${m.na ? 'active' : ''}" title="N/A" type="button">N/A</button></td>
+    <td class="center"><button class="na-btn ${m.na ? 'active' : ''}" title="N/A" type="button">N/A</button>${isAdmin() ? `<div class="adm-acts"><button type="button" class="adm-edit" title="${escapeHtml(tx('تعديل الصنف', 'Edit item'))}">✎</button><button type="button" class="adm-del" title="${escapeHtml(tx('حذف الصنف', 'Delete item'))}">🗑</button></div>` : ''}</td>
   `;
 
 
@@ -4452,6 +4489,10 @@ function buildRow(m, displayIndex){
     saveState(true);
     render();
   });
+
+  const aE = tr.querySelector('.adm-edit'), aD = tr.querySelector('.adm-del');
+  if(aE) aE.addEventListener('click', () => openItemEditor(m));
+  if(aD) aD.addEventListener('click', () => adminDeleteItem(m));
 
   return tr;
 }
@@ -4560,8 +4601,11 @@ function render(){
           <span class="section-title">${escapeHtml(sectionLabel(secId))}</span>
           <span class="section-count">(${items.length})</span>
           <span class="section-flags">${flagsHtml}</span>
+          ${isAdmin() ? `<button type="button" class="adm-add-sec" title="${escapeHtml(tx('إضافة صنف لهذا القسم', 'Add item to this section'))}">＋</button>` : ''}
         </div>
       </td>`;
+    const addSec = headerRow.querySelector('.adm-add-sec');
+    if(addSec) addSec.addEventListener('click', e => { e.stopPropagation(); openItemEditor(null, secId); });
     headerRow.addEventListener('click', () => {
       if(viewMode === 'cart') return;
       if(collapsedSections.has(secId)) collapsedSections.delete(secId);
@@ -4594,6 +4638,7 @@ document.getElementById('langToggle').addEventListener('click', () => {
   applyI18n();
   render();
   renderLockBtn();
+  renderAdmin();
 });
 
 document.getElementById('displayModeBtn').addEventListener('click', openDisplayMode);
@@ -4856,7 +4901,7 @@ function shiftDecode(rec){
     return map;
   }
   const def = rec.def || 'u', d = rec.d || {};
-  meds.forEach(m => map.set(m.id, shiftParse(d[m.id] !== undefined ? d[m.id] : def)));
+  meds.forEach(m => map.set(m.id, (m.addedAt && rec.ts && rec.ts < m.addedAt) ? { s: 'u' } : shiftParse(d[m.id] !== undefined ? d[m.id] : def)));
   return map;
 }
 function shiftStats(map){
@@ -4930,6 +4975,7 @@ function renderShift(){
   document.getElementById('shSub').innerHTML = `<b>${escapeHtml(currentCart)}</b> · ${tx('✓ موجود   ✗ غير موجود   +/− الكمية', '✓ present   ✗ missing   +/− quantity')}`;
   document.getElementById('shTitle').textContent = 'Inventory';
   document.getElementById('shBackTxt').textContent = tx('رجوع للعربة', 'Back to cart');
+  { const dl = document.getElementById('shNames'); if(dl) dl.innerHTML = checkerNames().map(x => `<option value="${escapeHtml(x)}">`).join(''); }
   document.getElementById('shTabRec').textContent = tx('تسجيل الفحص', 'Record check');
   document.getElementById('shTabLog').textContent = tx('السجل', 'Log');
   document.getElementById('shTabRec').classList.toggle('active', shiftTab === 'rec');
@@ -4992,6 +5038,9 @@ function renderShift(){
   } else {
     const days = []; const d0 = new Date();
     for(let i = 0; i < 14; i++){ const d = new Date(d0); d.setDate(d0.getDate() - i); days.push(d); }
+    const ex = shiftExpiring();
+    html += (ex ? `<div class="sh-expiry">🗓 ${tx('تنبيه: ' + ex.n + ' فحص سيُحذف تلقائيًا خلال ' + ex.left + ' يوم. صدّر نسخة PDF قبل الحذف.', 'Heads-up: ' + ex.n + ' record(s) will be deleted automatically in ' + ex.left + ' day(s). Export a PDF first.')}</div>` : '') +
+      `<div class="sh-export"><select id="shExpRange"><option value="7">${tx('آخر 7 أيام', 'Last 7 days')}</option><option value="30">${tx('آخر 30 يوم', 'Last 30 days')}</option><option value="0" selected>${tx('كل السجل المحفوظ', 'All stored records')}</option></select><button type="button" id="shExpBtn">📄 ${tx('تصدير PDF', 'Export PDF')}</button></div>`;
     html += `<div class="sh-lg"><div class="sh-lg-h"><span>${tx('اليوم', 'Day')}</span>${SHIFTS.map(sf => `<b>${sf.id}<small>${tx(sf.ar, sf.en)}</small></b>`).join('')}</div>` +
       days.map(d => { const ds = shiftFmt(d);
         const label = d.toLocaleDateString(lang === 'ar' ? 'ar' : 'en-GB', { weekday: 'short', day: 'numeric', month: 'short' });
@@ -5023,6 +5072,88 @@ function closeShift(force){
   document.body.style.overflow = '';
 }
 document.getElementById('shiftBtn').addEventListener('click', () => openShift());
+
+
+/* ---- Inventory log: PDF export + "about to be deleted" warning ----
+   Records older than SHIFT_KEEP_DAYS are removed automatically (on the next save). The page warns in the last
+   SHIFT_WARN_DAYS days and can print / save the whole log as a PDF first. */
+const SHIFT_WARN_DAYS = 7;
+function shiftExpiring(){
+  const keys = Object.keys(shiftLogObj()); if(!keys.length) return null;
+  const today = new Date(shiftToday() + 'T00:00:00').getTime();
+  let oldest = 0, n = 0;
+  keys.forEach(k => { const age = Math.round((today - new Date(k.split('|')[0] + 'T00:00:00').getTime()) / 864e5); if(age > oldest) oldest = age; if(age >= SHIFT_KEEP_DAYS - SHIFT_WARN_DAYS) n++; });
+  const left = SHIFT_KEEP_DAYS - oldest;
+  return left <= SHIFT_WARN_DAYS ? { n, left: Math.max(left, 0) } : null;
+}
+function shiftExportPdf(days){
+  const log = shiftLogObj(), meds = (state.meds || []).filter(m => !m.na);
+  const cutoff = days ? shiftFmt(new Date(Date.now() - days * 864e5)) : '';
+  const keys = Object.keys(log).filter(k => log[k] && log[k].ts && (!cutoff || k.split('|')[0] >= cutoff));
+  if(!keys.length){ showToast(tx('لا توجد سجلات للتصدير', 'No records to export'), 'info'); return; }
+  const loc = lang === 'ar' ? 'ar' : 'en-GB';
+  const dates = [...new Set(keys.map(k => k.split('|')[0]))].sort();
+  const PER = 10, chunks = [];
+  for(let i = 0; i < dates.length; i += PER) chunks.push(dates.slice(i, i + PER));
+  const maps = {}; keys.forEach(k => { maps[k] = shiftDecode(log[k]); });
+  const secIds = SECTIONS.map(x => x.id);
+  const secRows = []; // [{sec, items}]
+  secIds.forEach(id => { const it = meds.filter(m => (secIds.includes(m.section) ? m.section : 'general') === id); if(it.length) secRows.push({ id, it }); });
+  const nm = (m) => escapeHtml(m.name || '');
+  const exp = (m) => { const e = typeof earliestDate === 'function' ? earliestDate(m) : ''; return e ? escapeHtml(String(e)) : ''; };
+  const cell = (m, d, sh) => {
+    const k = d + '|' + sh, mp = maps[k];
+    if(!mp) return '<td class="xe"></td>';
+    const e = mp.get(m.id) || { s: 'u' };
+    if(e.s === 'o') return '<td class="xo">✓</td>';
+    if(e.s === 'x') return '<td class="xx">✗</td>';
+    if(e.s === 'p') return `<td class="xp">${escapeHtml(String(e.n))}</td>`;
+    return '<td class="xu"></td>';
+  };
+  const colsN = 3 + 0; 
+  const tables = chunks.map((ch, ci) => {
+    const pad = PER - ch.length;
+    const dh = ch.map(d => { const dt = new Date(d + 'T00:00:00'); return `<th colspan="3" class="xd">${escapeHtml(dt.toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: '2-digit' }))}<small>${escapeHtml(dt.toLocaleDateString(loc, { weekday: 'short' }))}</small></th>`; }).join('') + (pad ? `<th colspan="${pad * 3}" class="xd"></th>` : '');
+    const sh = ch.map(() => ['M', 'E', 'N'].map(x => `<th class="xs">${x}</th>`).join('')).join('') + '<th class="xs"></th>'.repeat(pad * 3);
+    const body = secRows.map(g => `<tr class="xsec"><td colspan="${3 + PER * 3}">${escapeHtml(sectionLabel(g.id))}</td></tr>` +
+      g.it.map(m => `<tr><td class="xn">${nm(m)}</td><td class="xt">${escapeHtml(String(shiftStd(m)))}</td><td class="xex">${exp(m)}</td>${ch.map(d => ['M', 'E', 'N'].map(s2 => cell(m, d, s2)).join('')).join('')}${'<td class="xe"></td>'.repeat(pad * 3)}</tr>`).join('')).join('');
+    const by = ch.map(d => ['M', 'E', 'N'].map(s2 => { const r = log[d + '|' + s2]; return `<td class="xby"><span>${r ? escapeHtml(r.by || '—') : ''}</span></td>`; }).join('')).join('') + '<td class="xby"></td>'.repeat(pad * 3);
+    const tm = ch.map(d => ['M', 'E', 'N'].map(s2 => { const r = log[d + '|' + s2]; return `<td class="xtm">${r ? escapeHtml(shiftClock(r.ts)) : ''}</td>`; }).join('')).join('') + '<td class="xtm"></td>'.repeat(pad * 3);
+    return `<table class="xtab ${ci ? 'xbrk' : ''}"><thead>
+      <tr><th colspan="${3 + PER * 3}" class="xtitle">Checklist for Crush Cart — ${escapeHtml(currentCart)}</th></tr>
+      <tr><th rowspan="3" class="xh">Resuscitation Trolley Basic Contents and Layout Checklist</th><th rowspan="3" class="xh xw">Total No.</th><th rowspan="3" class="xh xw">Expiry Date</th><th class="xlab" colspan="${PER * 3}">Date ►</th></tr>
+      <tr>${dh}</tr><tr>${sh}</tr></thead>
+      <tbody>${body}
+      <tr class="xfoot"><td colspan="3">${tx('اسم الفاحص', 'Checked by')}</td>${by}</tr>
+      <tr class="xfoot"><td colspan="3">${tx('الوقت', 'Time')}</td>${tm}</tr></tbody></table>`;
+  }).join('');
+  let sOk = 0, sIssue = 0;
+  keys.forEach(k => { const st = shiftStats(maps[k]); (st.part + st.miss) ? sIssue++ : sOk++; });
+  const now = new Date();
+  document.getElementById('printReport').innerHTML = `
+    <style id="rpLand">@page{size:A4 landscape;margin:8mm 8mm;}
+    .xtab{page-break-inside:auto;width:100%;border-collapse:collapse;table-layout:fixed;font-size:7.2px;direction:ltr;margin-bottom:6px;}
+    .xtab.xbrk{page-break-before:always;break-before:page;}
+    .xtab th,.xtab td{border:1px solid #1B2A4A;padding:0 2px !important;height:auto;text-align:center;overflow:hidden;line-height:1.25;}
+    .xtab col{width:auto;}
+    .xtitle{background:#D9E4F5;font-size:10px;font-weight:900;padding:4px !important;}
+    .xh{background:#fff;font-size:8.5px;font-weight:800;width:150px;} .xh.xw{width:30px;font-size:7px;}
+    .xlab{text-align:start !important;font-size:7px;background:#fff;}
+    .xd{font-size:7.5px;font-weight:800;background:#fff;height:18px;} .xd small{display:block;font-size:6px;font-weight:600;color:#6B7690;}
+    .xs{font-size:7px;font-weight:800;background:#F0F3F9;width:15px;}
+    .xsec td{background:#D9E4F5;font-weight:900;font-size:8px;text-align:center;}
+    .xn{text-align:start !important;font-size:7.4px;font-weight:600;white-space:normal;} .xt{font-weight:800;width:30px;font-size:7.5px !important;} .xex{font-size:6.2px;width:36px;}
+    .xo{color:#1E8A5F;font-weight:900;background:#E7F5EF;font-size:9px;} .xx{color:#fff;background:#D8425A;font-weight:900;font-size:9px;} .xp{background:#F6D88B;color:#7A4F00;font-weight:900;font-size:8px;}
+    .xtab tbody tr{height:11px;} .xtab tbody td{font-size:7px;} .xtab tbody td.xn{font-size:6.6px;} .xtab tbody td.xo,.xtab tbody td.xx{font-size:7px;} .xfoot td{background:#F0F3F9;font-weight:800;font-size:7px;} .xby{height:62px;padding:0 !important;}
+    .xby span{display:block;writing-mode:vertical-rl;transform:rotate(180deg);margin:0 auto;font-size:6.4px;font-weight:700;white-space:nowrap;max-height:60px;overflow:hidden;}
+    .xtm{font-size:6px;font-family:'Space Mono',monospace;}
+    .xkey{display:flex;gap:14px;font-size:9px;margin:6px 0;font-weight:700;direction:ltr;}
+    .xkey i{display:inline-block;min-width:14px;text-align:center;border:1px solid #1B2A4A;margin-inline-end:4px;font-style:normal;font-weight:900;}</style>
+    <div class="xkey"><span><i class="xo">✓</i>${tx('موجود', 'Present')}</span><span><i class="xx">✗</i>${tx('غير موجود', 'Missing')}</span><span><i class="xp">2</i>${tx('الكمية الموجودة (ناقص)', 'Qty present (short)')}</span><span><i></i>${tx('لم يُفحص', 'Not checked')}</span><span>${tx('العربة', 'Cart')}: <b>${escapeHtml(currentCart)}</b></span><span>${tx('الفحوصات', 'Checks')}: ${keys.length} · ${tx('بدون نواقص', 'OK')} ${sOk} · ${tx('فيها نواقص', 'Short')} ${sIssue}</span><span>${escapeHtml(now.toLocaleString(loc))}</span></div>
+    ${tables}`;
+  enterPrintMode(`Inventory-${currentCart}-${shiftToday()}`);
+}
+function shiftOpenLog(){ openShift(); shiftTab = 'log'; renderShift(); }
 
 /* ---- Today's shift status in the header + late-shift alert ---- */
 const SHIFT_END_H = { M: 14, E: 21, N: 7 };
@@ -5060,29 +5191,36 @@ function renderShiftStrip(){
     const names = late.map(([, s2]) => s2).join(' + ');
     banner = `<button type="button" class="ss-alert" data-d="${d}" data-s="${sh}">⚠ ${tx('لم يُسجَّل فحص الشفت', 'Check not recorded for shift')} ${names} — ${tx('سجّله الآن', 'record it now')}</button>`;
   }
+  const ex = shiftExpiring();
+  const exp = ex ? `<button type="button" class="ss-alert ss-exp" data-exp="1">🗓 ${tx('سجلات Inventory ستُحذف خلال', 'Inventory records will be deleted in')} ${ex.left} ${tx('يوم — صدّرها PDF', 'days — export as PDF')}</button>` : '';
+  banner += exp;
   const sig = pills + banner + lang + currentCart;
   if(sig === shiftStripSig) return;
   shiftStripSig = sig;
   el.innerHTML = `<span class="ss-title">${tx('جرد اليوم', "Today's inventory")}</span><div class="ss-pills">${pills}</div>${banner}`;
 }
 document.getElementById('shiftStrip').addEventListener('click', e => {
+  if(e.target.closest('[data-exp]')){ shiftOpenLog(); return; }
   const b = e.target.closest('[data-d]'); if(b) openShift(b.dataset.d, b.dataset.s);
 });
 setInterval(renderShiftStrip, 3000);
 setTimeout(renderShiftStrip, 800);
 
 
-/* ---- Delete Inventory records: owner only (ADMIN_PIN). Deletions are remembered so other devices don't bring them back. ---- */
-function shiftAdminAsk(msg, onOk){
+
+/* ================= Manager (admin) mode: add / edit / delete items, checker names, delete logs ================= */
+function isAdmin(){ return adminOn && isUnlocked(); }
+function checkerNames(){ return [...new Set([...Object.values(CART_OWNERS), ...(Array.isArray(state.checkers) ? state.checkers : [])])]; }
+function adminAsk(title, msg, btnLabel, onOk, danger){
   if(document.querySelector('.adm-sheet')) return;
   const sh = document.createElement('div'); sh.className = 'install-sheet pin-sheet adm-sheet';
   sh.innerHTML = `<div class="install-card pin-card">
-    <div class="pin-ic adm"><svg viewBox="0 0 24 24" fill="none"><path d="M5 7h14M10 7V5h4v2M7 7l1 12h8l1-12M10.5 11v5M13.5 11v5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
-    <h3>${tx('حذف سجل Inventory', 'Delete Inventory log')}</h3>
-    <p>${msg}<br>${tx('للمسؤول فقط — أدخل الرقم السري الخاص', 'Owner only — enter the admin PIN')}</p>
+    <div class="pin-ic adm"><svg viewBox="0 0 24 24" fill="none"><path d="M12 3l7 2.8v5.6c0 4.4-3 8-7 9.8-4-1.8-7-5.4-7-9.8V5.8L12 3z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg></div>
+    <h3>${escapeHtml(title)}</h3>
+    <p>${escapeHtml(msg)}<br>${tx('للمدير فقط — أدخل الرقم السري الخاص', 'Manager only — enter the manager PIN')}</p>
     <input class="pin-input" type="password" inputmode="numeric" maxlength="8" autocomplete="off" placeholder="••••">
     <div class="pin-err"></div>
-    <button type="button" class="md-btn primary adm-ok" style="background:#D8425A">${tx('حذف نهائيًا', 'Delete permanently')}</button>
+    <button type="button" class="md-btn primary adm-ok" ${danger ? 'style="background:#D8425A"' : ''}>${escapeHtml(btnLabel)}</button>
     <button type="button" class="md-btn adm-cancel">${tx('إلغاء', 'Cancel')}</button></div>`;
   document.body.appendChild(sh);
   const inp = sh.querySelector('input'), err = sh.querySelector('.pin-err'); inp.focus();
@@ -5091,6 +5229,114 @@ function shiftAdminAsk(msg, onOk){
   sh.querySelector('.adm-ok').addEventListener('click', go);
   sh.querySelector('.adm-cancel').addEventListener('click', close);
   inp.addEventListener('keydown', e => { if(e.key === 'Enter') go(); });
+}
+function enterAdmin(){
+  unlock = { cart: 'all', until: Date.now() + LOCK_AFTER_MIN * 60000 };
+  adminOn = true; renderLockBtn(); renderAdmin(); render();
+  showToast(tx('وضع المدير مفعّل', 'Manager mode on'), 'success');
+}
+function exitAdmin(){ adminOn = false; renderAdmin(); render(); showToast(tx('تم الخروج من وضع المدير', 'Manager mode off'), 'info'); }
+function renderAdmin(){
+  const on = isAdmin();
+  document.documentElement.classList.toggle('is-admin', on);
+  const bar = document.getElementById('adminBar'); if(!bar) return;
+  bar.style.display = on ? 'flex' : 'none';
+  document.getElementById('adminBtn').classList.toggle('on', on);
+  document.getElementById('abLabel').textContent = '🛡 ' + tx('وضع المدير', 'Manager mode');
+  document.getElementById('abAdd').textContent = '＋ ' + tx('إضافة صنف', 'Add item');
+  document.getElementById('abNames').textContent = '👥 ' + tx('الفاحصون', 'Checkers');
+  document.getElementById('abExit').textContent = tx('خروج', 'Exit');
+}
+document.getElementById('adminBtn').addEventListener('click', () => {
+  if(isAdmin()) exitAdmin();
+  else adminAsk(tx('دخول وضع المدير', 'Manager mode'), tx('إضافة وحذف وتعديل الأصناف والفاحصين', 'Add, edit and delete items and checkers'), tx('دخول', 'Enter'), enterAdmin, false);
+});
+document.getElementById('abAdd').addEventListener('click', () => openItemEditor(null, null));
+document.getElementById('abNames').addEventListener('click', openCheckerManager);
+document.getElementById('abExit').addEventListener('click', exitAdmin);
+setInterval(() => { if(adminOn && !isAdmin()){ adminOn = false; renderAdmin(); render(); } }, 15000);
+
+function openItemEditor(m, defSec){
+  if(!isAdmin() || document.querySelector('.itm-sheet')) return;
+  const isNew = !m, curSec = m ? secOf(m) : (defSec || (typeof cartSel === 'string' && cartSel) || 'd1');
+  const lockedNoExp = !!(m && NO_EXPIRY_NAMES.has((m.name || '').trim()));
+  const sh = document.createElement('div'); sh.className = 'install-sheet itm-sheet';
+  sh.innerHTML = `<div class="install-card itm-card">
+    <h3>${isNew ? tx('إضافة صنف جديد', 'Add a new item') : tx('تعديل الصنف', 'Edit item')} · ${escapeHtml(currentCart)}</h3>
+    <label>${tx('اسم الصنف', 'Item name')}<input id="itName" type="text" autocomplete="off" value="${escapeHtml(m ? m.name : '')}"></label>
+    <label>${tx('الدرج / القسم', 'Drawer / section')}<select id="itSec">${SECTIONS.map(sc => `<option value="${sc.id}" ${sc.id === curSec ? 'selected' : ''}>${escapeHtml(tx(sc.ar, sc.en))}</option>`).join('')}</select></label>
+    <label>${tx('الكمية المطلوبة', 'Required quantity')}<input id="itQty" type="number" min="1" step="1" value="${m ? shiftStd(m) : 1}"></label>
+    <label class="itm-chk"><input id="itNoExp" type="checkbox" ${(m && m.noExpiry) || lockedNoExp ? 'checked' : ''} ${lockedNoExp ? 'disabled' : ''}> ${tx('بدون تاريخ انتهاء', 'No expiry date')}</label>
+    <div class="pin-err" id="itErr"></div>
+    <button type="button" class="md-btn primary" id="itSave">${isNew ? tx('إضافة', 'Add') : tx('حفظ', 'Save')}</button>
+    <button type="button" class="md-btn" id="itCancel">${tx('إلغاء', 'Cancel')}</button></div>`;
+  document.body.appendChild(sh);
+  const $ = id => sh.querySelector('#' + id), close = () => sh.remove();
+  $('itName').focus();
+  $('itCancel').addEventListener('click', close);
+  sh.addEventListener('click', e => { if(e.target === sh) close(); });
+  $('itSave').addEventListener('click', () => {
+    const name = $('itName').value.trim(), sec = $('itSec').value;
+    const qty = Math.max(1, parseInt($('itQty').value, 10) || 1), ne = $('itNoExp').checked;
+    if(!name){ $('itErr').textContent = tx('اكتب اسم الصنف', 'Enter the item name'); $('itName').focus(); return; }
+    if(state.meds.some(x => x !== m && (x.name || '').trim().toLowerCase() === name.toLowerCase())){ $('itErr').textContent = tx('يوجد صنف بنفس الاسم في هذه العربة', 'An item with this name already exists in this cart'); return; }
+    if(isNew){
+      const nm = { id: uid(), section: sec, name, qtyStd: qty, qtyActual: '', dates: [{ id: duid(), date: '' }], na: false, noExpiry: ne, addedAt: new Date().toISOString() };
+      fitSizeDates(nm);
+      let at = -1; state.meds.forEach((x, i) => { if(secOf(x) === sec) at = i; });
+      if(at >= 0) state.meds.splice(at + 1, 0, nm); else state.meds.push(nm);
+      if(viewMode === 'cart'){ cartSel = sec; cartClosed = false; }
+    } else {
+      m.name = name; m.section = sec; m.qtyStd = qty; m.noExpiry = ne || lockedNoExp; fitSizeDates(m);
+    }
+    saveState(true); render(); close();
+    showToast(isNew ? tx('تمت إضافة الصنف ✓', 'Item added ✓') : tx('تم حفظ التعديل ✓', 'Changes saved ✓'), 'success');
+  });
+  sh.addEventListener('keydown', e => { if(e.key === 'Enter' && e.target.tagName === 'INPUT' && e.target.type !== 'checkbox') $('itSave').click(); });
+}
+function adminDeleteItem(m){
+  if(!isAdmin()) return;
+  if(!window.confirm(tx('حذف الصنف «', 'Delete item "') + m.name + tx('» من هذه العربة؟', '" from this cart?'))) return;
+  state.meds = state.meds.filter(x => x.id !== m.id);
+  saveState(true); render();
+  showToast(tx('تم حذف الصنف', 'Item deleted'), 'success');
+}
+function openCheckerManager(){
+  if(!isAdmin() || document.querySelector('.chk-mgr')) return;
+  const sh = document.createElement('div'); sh.className = 'install-sheet chk-mgr';
+  const draw = () => {
+    const extra = Array.isArray(state.checkers) ? state.checkers : [];
+    sh.innerHTML = `<div class="install-card itm-card">
+      <h3>${tx('أسماء الفاحصين', 'Checker names')}</h3>
+      <p class="itm-note">${tx('تظهر كاقتراحات في خانة اسم الفاحص بصفحة Inventory.', 'Shown as suggestions in the checker name box of the Inventory page.')}</p>
+      <ul class="itm-list">${Object.values(CART_OWNERS).map(n => `<li><span>${escapeHtml(n)}</span><em>${tx('مسؤول عربة', 'cart owner')}</em></li>`).join('')}
+        ${extra.map((n, i) => `<li><span>${escapeHtml(n)}</span><button type="button" data-rm="${i}" aria-label="remove">✕</button></li>`).join('')}</ul>
+      <div class="itm-add"><input id="cmName" type="text" autocomplete="off" placeholder="${escapeHtml(tx('اسم جديد', 'New name'))}"><button type="button" class="md-btn primary" id="cmAdd">＋</button></div>
+      <div class="pin-err" id="cmErr"></div>
+      <button type="button" class="md-btn" id="cmClose">${tx('إغلاق', 'Close')}</button></div>`;
+    sh.querySelector('#cmClose').addEventListener('click', () => sh.remove());
+    const add = () => {
+      const v = sh.querySelector('#cmName').value.trim();
+      if(!v) return;
+      if(checkerNames().some(x => x.toLowerCase() === v.toLowerCase())){ sh.querySelector('#cmErr').textContent = tx('الاسم موجود', 'Name already exists'); return; }
+      state.checkers = (state.checkers || []).concat(v); saveState(false); renderShift(); draw();
+      sh.querySelector('#cmName').focus();
+    };
+    sh.querySelector('#cmAdd').addEventListener('click', add);
+    sh.querySelector('#cmName').addEventListener('keydown', e => { if(e.key === 'Enter'){ e.preventDefault(); add(); } });
+    sh.querySelectorAll('[data-rm]').forEach(b => b.addEventListener('click', () => {
+      state.checkers = (state.checkers || []).filter((_, i) => i !== Number(b.dataset.rm)); saveState(false); renderShift(); draw();
+    }));
+  };
+  document.body.appendChild(sh);
+  sh.addEventListener('click', e => { if(e.target === sh) sh.remove(); });
+  draw(); sh.querySelector('#cmName').focus();
+}
+
+/* ---- Delete Inventory records: owner only (ADMIN_PIN). Deletions are remembered so other devices don't bring them back. ---- */
+function shiftAdminAsk(msg, onOk){
+  if(isAdmin()){ if(window.confirm(msg)) onOk(); return; }
+  adminAsk(tx('حذف سجل Inventory', 'Delete Inventory log'), msg, tx('حذف نهائيًا', 'Delete permanently'), onOk, true);
 }
 function shiftDeleteKeys(keys){
   const log = shiftLogObj(), del = shiftDelObj(), now = new Date().toISOString();
@@ -5154,6 +5400,7 @@ document.getElementById('shBody').addEventListener('click', e => {
   if(t.dataset.sec) shiftBulk((state.meds || []).filter(m => m.section === t.dataset.sec).map(m => m.id));
   else if(t.id === 'shAll') shiftBulk((state.meds || []).map(m => m.id));
   else if(t.id === 'shCopyPrev') shiftCopyPrev();
+  else if(t.id === 'shExpBtn') shiftExportPdf(Number(document.getElementById('shExpRange').value) || 0);
   else if(t.id === 'shDelOne'){ const k = shiftKey(); shiftAdminAsk(tx('سيُحذف سجل الشفت ', 'This will delete shift ') + shiftSel + ' · ' + shiftDate, () => shiftDeleteKeys([k])); }
   else if(t.id === 'shDelAll'){ const n = Object.keys(shiftLogObj()).length; shiftAdminAsk(tx('سيُحذف كل السجل (', 'This deletes the whole log (') + n + tx(' شفت) للعربة ', ' shifts) of cart ') + currentCart, () => shiftDeleteKeys(Object.keys(shiftLogObj()))); }
   else if(t.dataset.sh){ if(t.dataset.sh !== shiftSel && shiftConfirmLeave()){ shiftSel = t.dataset.sh; shiftDraft = null; renderShift(); } }
@@ -5316,7 +5563,7 @@ let unlock = { cart: null, until: 0 };
 let pinFails = 0, pinBlockedUntil = 0;
 function isUnlocked(){ return !!unlock.cart && Date.now() < unlock.until; }
 function touchUnlock(){ if(unlock.cart) unlock.until = Date.now() + LOCK_AFTER_MIN * 60000; }
-function lockNow(){ unlock = { cart: null, until: 0 }; renderLockBtn(); }
+function lockNow(){ const was = adminOn; unlock = { cart: null, until: 0 }; adminOn = false; renderLockBtn(); if(was){ renderAdmin(); render(); } }
 function renderLockBtn(){
   const b = document.getElementById('lockBtn');
   if(!b) return;
@@ -5446,7 +5693,7 @@ async function downloadBackup(){
 }
 // Replace a cart's data with a backup copy (atomic; retries if another device saves meanwhile).
 async function restoreCart(cart, data){
-  const clean = Object.assign({meds:[], checkedBy:'', lastUpdate:null, readinessHistory:[], auditLog:[], shiftLog:{}, shiftDel:{}}, clone(data));
+  const clean = Object.assign({meds:[], checkedBy:'', lastUpdate:null, readinessHistory:[], auditLog:[], shiftLog:{}, shiftDel:{}, checkers:[]}, clone(data));
   clean.lastUpdate = new Date().toISOString();
   for(let attempt = 0; attempt < 8; attempt++){
     const row = await supabaseLoadRow(cart);
@@ -6199,7 +6446,7 @@ function unionById(a, b, keyFn, max){
 // Pull `server` into the live state. Returns true if anything visible changed.
 function mergeServerIntoState(server){
   if(!server) return false;
-  server = Object.assign({meds:[], checkedBy:'', lastUpdate:null, readinessHistory:[], auditLog:[], shiftLog:{}, shiftDel:{}}, server);
+  server = Object.assign({meds:[], checkedBy:'', lastUpdate:null, readinessHistory:[], auditLog:[], shiftLog:{}, shiftDel:{}, checkers:[]}, server);
   server.meds = normalizeMeds(server.meds);
   const base = baseState ? Object.assign({meds:[]}, baseState) : { meds: [] };
   base.meds = normalizeMeds(base.meds);
@@ -6210,6 +6457,8 @@ function mergeServerIntoState(server){
   }
   let changed = mergeList(state.meds, base.meds, server.meds, mergeMed);
   if(same(state.checkedBy, base.checkedBy) && !same(server.checkedBy, base.checkedBy)){ state.checkedBy = server.checkedBy; changed = true; }
+  { const bc = base.checkers || [], lc = state.checkers || [], sc = server.checkers || [];
+    if(same(lc, bc) && !same(sc, bc)){ state.checkers = clone(sc); changed = true; } }
   const beforeLog = (state.auditLog || []).length;
   state.auditLog = unionById(state.auditLog, server.auditLog, x => x.id || x.ts, AUDIT_MAX);
   state.readinessHistory = unionById(state.readinessHistory, server.readinessHistory, x => x.ts, 20);
