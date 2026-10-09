@@ -1345,11 +1345,6 @@
   .page-header .gauge-arc{stroke:rgb(var(--ready-rgb));filter:drop-shadow(0 0 4px rgba(var(--ready-rgb),.7));transition:stroke-dashoffset .5s ease, stroke .8s ease;}
   .page-header .brand-text h1 #cartLabel{color:rgb(var(--ready-rgb));transition:color .8s ease;}
 
-  /* ===== Cart cards: subtle gradient by readiness / shortage ===== */
-  .drawer{background:linear-gradient(180deg,color-mix(in srgb,var(--hc,#8A93A8) 20%,#fff),color-mix(in srgb,var(--hc,#8A93A8) 6%,#EEF1F6));}
-  html[data-theme="dark"] .drawer{background:linear-gradient(180deg,color-mix(in srgb,var(--hc,#8A93A8) 28%,#1E2A44),color-mix(in srgb,var(--hc,#8A93A8) 8%,#172238));}
-  .cart-tray{background:linear-gradient(180deg,color-mix(in srgb,var(--hc,#8A93A8) 22%,#DDE3EE),color-mix(in srgb,var(--hc,#8A93A8) 8%,#C9D1E0));}
-  html[data-theme="dark"] .cart-tray{background:linear-gradient(180deg,color-mix(in srgb,var(--hc,#8A93A8) 26%,#2A3856),color-mix(in srgb,var(--hc,#8A93A8) 8%,#1E2A44));color:#E8ECF5;}
   .card.cart-mode tbody tr:not(.section-row){
     --fc:#C7CEDD;
     background:linear-gradient(to left,color-mix(in srgb,var(--fc) 12%,var(--card)),var(--card) 55%);
@@ -1402,6 +1397,165 @@
     .card.cart-mode tbody tr:not(.section-row) > td:nth-child(4){min-width:0;}
     .card.cart-mode .date-row{min-width:0;flex:1 1 auto;}
   }
+
+  /* ===== Shift check log ===== */
+  .sh-panel{z-index:1260;}
+  .sh-tabs{display:flex;gap:8px;margin-top:14px;}
+  .sh-tabs .log-chip{flex:1;text-align:center;padding:8px 10px;font-size:13px;background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.16);color:#CBD5EE;}
+  .sh-tabs .log-chip.active{background:#fff;color:var(--navy);border-color:#fff;}
+  .sh-body{padding:0 14px 30px;}
+  .sh-ctl{position:sticky;top:0;z-index:5;background:var(--paper);padding:12px 0 10px;border-bottom:1px solid var(--line);}
+  .sh-date{display:flex;align-items:center;gap:8px;margin-bottom:10px;}
+  .sh-date button{width:40px;height:40px;border-radius:12px;border:1px solid var(--line);background:var(--surface-1);color:var(--ink);font-size:20px;cursor:pointer;}
+  .sh-date input{flex:1;height:40px;border-radius:12px;border:1px solid var(--line);background:var(--surface-1);color:var(--ink);font-family:'Space Mono',monospace;font-size:14px;text-align:center;}
+  .sh-shifts{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:10px;}
+  .sh-shift{display:flex;flex-direction:column;align-items:center;gap:1px;padding:8px 4px;border-radius:14px;border:1.5px solid var(--line);background:var(--surface-1);color:var(--ink);cursor:pointer;font-family:'Tajawal',sans-serif;}
+  .sh-shift b{font-family:'Space Mono',monospace;font-size:18px;line-height:1.1;}
+  .sh-shift span{font-size:11.5px;font-weight:700;color:var(--muted);}
+  .sh-shift i{font-style:normal;font-family:'Space Mono',monospace;font-size:11px;color:var(--muted);}
+  .sh-shift.part{border-color:#E6A93A;} .sh-shift.done{border-color:#2FB587;}
+  .sh-shift.on{background:var(--navy-2);color:#fff;border-color:var(--navy-2);}
+  .sh-shift.on span,.sh-shift.on i{color:#CFD9F2;}
+  .sh-by{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
+  .sh-by label{font-size:12.5px;font-weight:800;color:var(--muted);white-space:nowrap;}
+  .sh-by input{flex:1;min-width:0;height:38px;border-radius:12px;border:1px solid var(--line);background:var(--surface-1);color:var(--ink);padding:0 12px;font-family:'Tajawal',sans-serif;font-size:14px;font-weight:700;}
+  .sh-prog{display:flex;align-items:center;gap:10px;}
+  .sh-prog .bar{flex:1;height:8px;border-radius:99px;background:var(--surface-3);overflow:hidden;}
+  .sh-prog .bar i{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,#2FB587,#5FD3A5);transition:width .3s ease;}
+  .sh-prog span{font-family:'Space Mono',monospace;font-size:12px;font-weight:700;color:var(--ink);}
+  .sh-prog button{border:none;border-radius:10px;padding:7px 12px;background:var(--navy-2);color:#fff;font-family:'Tajawal',sans-serif;font-size:12.5px;font-weight:800;cursor:pointer;}
+  .sh-meta{margin-top:8px;font-size:11.5px;color:var(--muted);}
+  .sh-sec{width:100%;display:flex;align-items:center;justify-content:space-between;margin-top:14px;padding:8px 12px;border:none;border-radius:12px;background:var(--surface-3);color:var(--ink);font-family:'Tajawal',sans-serif;font-size:13px;font-weight:900;cursor:pointer;text-align:start;}
+  .sh-sec em{font-style:normal;font-family:'Space Mono',monospace;font-size:12px;color:var(--muted);}
+  .sh-sec.done em{color:#1E9E73;}
+  .sh-row{width:100%;display:flex;align-items:center;gap:12px;padding:11px 6px;border:none;border-bottom:1px solid color-mix(in srgb,var(--line) 60%,transparent);background:transparent;color:var(--ink);font-family:'Tajawal',sans-serif;font-size:14px;font-weight:700;text-align:start;cursor:pointer;}
+  .sh-tick{flex:0 0 28px;height:28px;border-radius:9px;border:2px solid var(--line);display:inline-flex;align-items:center;justify-content:center;color:transparent;transition:all .15s ease;}
+  .sh-tick svg{width:18px;height:18px;}
+  .sh-row.on .sh-tick{background:#2FB587;border-color:#2FB587;color:#fff;}
+  .sh-row.on .sh-name{color:var(--muted);}
+  .sh-name{flex:1;line-height:1.35;}
+  .sh-q{font-family:'Space Mono',monospace;font-size:12px;color:var(--muted);}
+  .sh-lg{margin-top:12px;border:1px solid var(--line);border-radius:16px;overflow:hidden;}
+  .sh-lg-h,.sh-lg-r{display:grid;grid-template-columns:1.7fr repeat(3,1fr);align-items:stretch;}
+  .sh-lg-h{background:var(--surface-3);font-size:12px;font-weight:800;color:var(--muted);}
+  .sh-lg-h > *{padding:9px 6px;text-align:center;} .sh-lg-h b small{display:block;font-size:10px;font-weight:700;}
+  .sh-lg-r{border-top:1px solid var(--line);}
+  .sh-lg-r .d{padding:10px 10px;font-size:12px;font-weight:800;display:flex;align-items:center;}
+  .sh-cell{border:none;border-inline-start:1px solid var(--line);background:transparent;color:var(--muted);padding:8px 4px;cursor:pointer;font-family:'Tajawal',sans-serif;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:46px;}
+  .sh-cell b{font-family:'Space Mono',monospace;font-size:13px;}
+  .sh-cell small{font-size:10px;font-weight:700;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .sh-cell.done{background:rgba(47,181,135,.14);color:#1E9E73;}
+  .sh-cell.part{background:rgba(230,169,58,.16);color:#B9791A;}
+  .sh-legend{display:flex;gap:14px;margin-top:10px;font-size:11.5px;color:var(--muted);flex-wrap:wrap;}
+  .sh-legend .done{color:#1E9E73;} .sh-legend .part{color:#B9791A;}
+
+  /* ===== Shift log v2: ✓ / ✗ / partial ===== */
+  .sh-chips{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px;font-size:11.5px;font-weight:800;}
+  .sh-chips span{padding:3px 9px;border-radius:999px;background:var(--surface-3);color:var(--muted);font-family:'Tajawal',sans-serif;}
+  .sh-chips .c-ok{background:rgba(47,181,135,.16);color:#1E9E73;} .sh-chips .c-part{background:rgba(230,169,58,.18);color:#B9791A;} .sh-chips .c-no{background:rgba(216,66,90,.14);color:#D8425A;}
+  .sh-sign{margin-top:9px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:8px 12px;border-radius:12px;background:rgba(47,181,135,.12);border:1px solid rgba(47,181,135,.3);font-size:12.5px;color:var(--ink);}
+  .sh-sign b{font-weight:900;} .sh-sign span{color:var(--muted);font-weight:700;} .sh-sign .t{font-family:'Space Mono',monospace;color:var(--ink);margin-inline-start:auto;}
+  .sh-sign.empty{background:var(--surface-3);border-color:var(--line);color:var(--muted);}
+  .sh-sec em u{text-decoration:none;color:#D8425A;margin-inline-end:4px;}
+  .sh-row{cursor:pointer;gap:10px;}
+  .sh-row .sh-tick{cursor:pointer;}
+  .sh-row.s-o .sh-tick{background:#2FB587;border-color:#2FB587;color:#fff;}
+  .sh-row.s-x .sh-tick{background:#D8425A;border-color:#D8425A;color:#fff;}
+  .sh-row.s-p .sh-tick{background:#E6A93A;border-color:#E6A93A;color:#fff;}
+  .sh-row.s-x .sh-name{color:#D8425A;text-decoration:line-through;text-decoration-thickness:1.5px;}
+  .sh-row.s-p .sh-name{color:#B9791A;}
+  .sh-row.s-o .sh-name{color:var(--muted);}
+  .sh-step{display:inline-flex;align-items:center;gap:2px;flex:0 0 auto;}
+  .sh-step button{width:28px;height:28px;border-radius:9px;border:1px solid var(--line);background:var(--surface-1);color:var(--ink);font-size:17px;font-weight:800;line-height:1;cursor:pointer;padding:0;}
+  .sh-step b{min-width:38px;text-align:center;font-family:'Space Mono',monospace;font-size:12.5px;color:var(--ink);}
+  .sh-row.s-p .sh-step b{color:#B9791A;} .sh-row.s-x .sh-step b{color:#D8425A;}
+  .sh-no{flex:0 0 28px;width:28px;height:28px;border-radius:9px;border:1.5px solid var(--line);background:transparent;color:var(--muted);display:inline-flex;align-items:center;justify-content:center;padding:0;cursor:pointer;}
+  .sh-no svg{width:14px;height:14px;}
+  .sh-row.s-x .sh-no{background:#D8425A;border-color:#D8425A;color:#fff;}
+  .sh-shift.bad{border-color:#D8425A;}
+  .sh-cell.bad{background:rgba(216,66,90,.13);color:#D8425A;}
+  .sh-cell em{font-style:normal;font-size:10px;font-weight:800;color:#D8425A;}
+  .sh-cell small.tm{font-family:'Space Mono',monospace;font-size:9.5px;opacity:.85;}
+  .sh-legend .bad{color:#D8425A;}
+
+  /* ===== Shift log v3: save bar + previous shift ===== */
+  .sh-panel{display:flex;flex-direction:column;}
+  .sh-foot{flex:0 0 auto;padding:10px 14px calc(10px + env(safe-area-inset-bottom,0px));background:var(--paper);border-top:1px solid var(--line);box-shadow:0 -10px 24px -14px rgba(0,0,0,.35);}
+  .sh-foot-row{display:flex;gap:10px;}
+  .sh-foot input{flex:1;min-width:0;height:46px;border-radius:14px;border:1.5px solid var(--line);background:var(--surface-1);color:var(--ink);padding:0 14px;font-family:'Tajawal',sans-serif;font-size:15px;font-weight:700;}
+  .sh-foot input:focus{outline:none;border-color:var(--navy-2);}
+  .sh-foot input.shake{animation:shShake .4s ease;border-color:#D8425A;}
+  @keyframes shShake{20%,60%{transform:translateX(-6px);}40%,80%{transform:translateX(6px);}}
+  .sh-save{flex:0 0 auto;height:46px;padding:0 22px;border:none;border-radius:14px;background:linear-gradient(135deg,#2FB587,#1E9E73);color:#fff;font-family:'Tajawal',sans-serif;font-size:15px;font-weight:900;cursor:pointer;box-shadow:0 8px 18px -8px rgba(30,158,115,.8);}
+  .sh-foot-note{margin-top:6px;font-size:12px;font-weight:800;color:var(--muted);text-align:center;}
+  .sh-foot-note.dirty{color:#B9791A;} .sh-foot-note.clean{color:#1E9E73;}
+  .sh-prev{margin:10px 0 4px;border:1px solid var(--line);border-radius:14px;background:var(--surface-1);overflow:hidden;}
+  .sh-prev summary{list-style:none;cursor:pointer;display:grid;grid-template-columns:1fr auto;gap:2px 10px;padding:10px 12px;}
+  .sh-prev summary::-webkit-details-marker{display:none;}
+  .pv-t{grid-column:1 / -1;font-size:11px;font-weight:900;color:var(--muted);letter-spacing:.02em;}
+  .pv-m{font-size:13px;font-weight:800;color:var(--ink);} .pv-m b{font-family:'Space Mono',monospace;background:var(--navy-2);color:#fff;border-radius:6px;padding:0 6px;margin-inline-end:4px;}
+  .pv-n{font-size:12.5px;font-weight:900;color:#1E9E73;align-self:center;}
+  .pv-body{padding:2px 12px 12px;border-top:1px dashed var(--line);}
+  .pv-list{list-style:none;margin:8px 0 0;padding:0;}
+  .pv-list li{display:flex;justify-content:space-between;gap:10px;padding:6px 0;border-bottom:1px solid color-mix(in srgb,var(--line) 55%,transparent);font-size:12.5px;font-weight:700;}
+  .pv-list li b{font-family:'Space Mono',monospace;white-space:nowrap;}
+  .pv-list li.x b{color:#D8425A;} .pv-list li.p b{color:#B9791A;}
+  .pv-ok{margin-top:8px;font-size:12.5px;font-weight:800;color:#1E9E73;}
+  .pv-copy{margin-top:10px;width:100%;padding:9px;border-radius:12px;border:1.5px dashed var(--navy-2);background:transparent;color:var(--navy-2);font-family:'Tajawal',sans-serif;font-size:13px;font-weight:900;cursor:pointer;}
+  .pv-hint{display:block;margin-top:2px;font-size:10.5px;font-weight:800;}
+  .pv-hint.x{color:#D8425A;} .pv-hint.p{color:#B9791A;}
+
+  /* ===== Shift log as its own full page ===== */
+  .sh-page{position:fixed;inset:0;z-index:1400;flex-direction:column;background:var(--paper);--shpad:max(14px,calc((100% - 780px) / 2));}
+  .sh-head{flex:0 0 auto;background:linear-gradient(160deg,#16213D,#101A33);color:#fff;padding:calc(12px + env(safe-area-inset-top,0px)) var(--shpad) 12px;box-shadow:0 10px 26px -16px rgba(0,0,0,.6);}
+  .sh-head-row{display:flex;align-items:center;gap:12px;}
+  .sh-back{flex:0 0 auto;display:inline-flex;align-items:center;gap:6px;height:42px;padding:0 14px 0 12px;border-radius:14px;border:1px solid rgba(255,255,255,.22);background:rgba(255,255,255,.1);color:#fff;font-family:'Tajawal',sans-serif;font-size:14px;font-weight:900;cursor:pointer;}
+  .sh-back svg{width:20px;height:20px;}
+  html[dir="rtl"] .sh-back svg{transform:scaleX(-1);}
+  .sh-back:active{background:rgba(255,255,255,.2);}
+  .sh-head-title{min-width:0;} .sh-head-title h2{margin:0;font-size:18px;font-weight:900;line-height:1.25;}
+  .sh-sub{margin-top:2px;font-size:11.5px;color:#B9C5E4;font-weight:700;} .sh-sub b{color:#8FB3F2;font-family:'Space Mono',monospace;}
+  .sh-tabs{display:flex;gap:8px;margin-top:12px;}
+  .sh-tab{flex:1;text-align:center;padding:9px 10px;border-radius:12px;border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.08);color:#CBD5EE;font-family:'Tajawal',sans-serif;font-size:13.5px;font-weight:900;cursor:pointer;}
+  .sh-tab.active{background:#fff;color:#16213D;border-color:#fff;}
+  .sh-page .sh-body{flex:1 1 auto;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:0 var(--shpad) 40px;}
+  .sh-page .sh-foot{padding-inline:var(--shpad);}
+  .sh-page .sh-foot-in{max-width:none;}
+  .toast-container{z-index:1600 !important;}
+  /* previous shift: always fully visible */
+  .sh-prev{margin:12px 0 6px;padding:12px 14px;border:1.5px solid rgba(61,108,176,.35);border-radius:16px;background:linear-gradient(180deg,color-mix(in srgb,#3D6CB0 9%,var(--surface-1)),var(--surface-1));}
+  .pv-top{display:flex;justify-content:space-between;align-items:center;gap:10px;}
+  .pv-t{font-size:12.5px;font-weight:900;color:#3D6CB0;}
+  .pv-n{font-size:13px;font-weight:900;color:#1E9E73;}
+  .pv-m{margin-top:4px;font-size:14px;font-weight:800;color:var(--ink);} .pv-m .pv-time{font-family:'Space Mono',monospace;}
+  .pv-m b{font-family:'Space Mono',monospace;background:#16213D;color:#fff;border-radius:6px;padding:0 7px;margin-inline-end:4px;}
+  .pv-h{margin-top:12px;font-size:12px;font-weight:900;color:#D8425A;}
+  .pv-h2{margin-top:10px;font-size:11.5px;font-weight:700;color:var(--muted);}
+  .pv-list{max-height:none;} 
+  .pv-hint{display:block;margin-top:2px;font-size:11px;font-weight:800;color:var(--muted);}
+  .pv-hint.o{color:#1E9E73;} .pv-hint.x{color:#D8425A;} .pv-hint.p{color:#B9791A;} .pv-hint.u{opacity:.7;}
+
+  .sh-shift .sh-hrs{font-family:'Space Mono',monospace;font-size:10px;font-weight:700;color:var(--muted);direction:ltr;}
+  .sh-shift.on .sh-hrs{color:#B9C5E4;}
+
+  /* ===== Inventory button + today strip ===== */
+  .btn-inventory{display:inline-flex;align-items:center;gap:8px;height:44px;padding:0 16px;border-radius:14px;border:1px solid rgba(143,179,242,.55);background:linear-gradient(160deg,rgba(80,130,220,.45),rgba(60,100,190,.28));color:#fff;font-family:'Space Mono','Tajawal',sans-serif;font-size:14px;font-weight:700;letter-spacing:.02em;cursor:pointer;box-shadow:inset 0 1px 0 rgba(255,255,255,.25),0 8px 18px -10px rgba(80,130,220,.9);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);}
+  .btn-inventory svg{width:20px;height:20px;}
+  .hdr-bar .btn-inventory{order:2;}
+  @media (max-width:639px){.hdr-bar .btn-inventory{flex:1 1 0;justify-content:center;order:2;}}
+  .shift-strip{display:flex;align-items:center;flex-wrap:wrap;gap:8px 10px;margin:6px 0 8px;direction:ltr;}
+  .ss-title{font-size:12px;font-weight:800;color:#B9C5E4;font-family:'Tajawal',sans-serif;direction:rtl;}
+  .ss-pills{display:flex;gap:6px;}
+  .ss-pill{display:inline-flex;align-items:center;gap:6px;padding:5px 10px;border-radius:12px;border:1px solid rgba(255,255,255,.2);background:rgba(255,255,255,.08);color:#CFD9F2;cursor:pointer;font-family:'Space Mono',monospace;font-size:12px;}
+  .ss-pill b{font-size:13px;color:#fff;} .ss-pill i{font-style:normal;font-weight:800;} .ss-pill small{font-size:9.5px;opacity:.75;}
+  .ss-pill.ok{background:rgba(47,181,135,.22);border-color:rgba(95,211,165,.6);} .ss-pill.ok i{color:#5FD3A5;}
+  .ss-pill.warn{background:rgba(230,169,58,.22);border-color:rgba(245,192,92,.6);} .ss-pill.warn i{color:#F5C05C;}
+  .ss-pill.part{background:rgba(143,179,242,.18);border-color:rgba(143,179,242,.5);}
+  .ss-pill.late{background:rgba(255,107,122,.22);border-color:rgba(255,107,122,.7);} .ss-pill.late i{color:#FF8A97;}
+  .ss-pill.future{opacity:.55;}
+  .ss-pill.cur{box-shadow:0 0 0 2px rgba(255,255,255,.75);}
+  .ss-alert{flex:1 1 220px;text-align:start;padding:7px 12px;border-radius:12px;border:1px solid rgba(255,107,122,.7);background:rgba(255,107,122,.2);color:#FFD5DA;font-family:'Tajawal',sans-serif;font-size:12.5px;font-weight:800;cursor:pointer;direction:rtl;animation:ssPulse 2.2s ease-in-out infinite;}
+  @keyframes ssPulse{50%{background:rgba(255,107,122,.34);}}
 </style>
 <meta name="app-version" content="2026-09-19b">
 </head>
@@ -1448,6 +1602,7 @@
     <div class="cart-switcher-row">
       <div class="cart-switcher" id="cartSwitcher"></div>
       <button class="btn-start-check" id="startCheckBtn" type="button"><svg viewBox="0 0 24 24" fill="none"><rect x="4" y="3.5" width="16" height="17" rx="3" stroke="currentColor" stroke-width="2"/><path d="M8.5 12l2.5 2.5 4.5-5" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-i18n="startCheckBtn">ابدأ الفحص</span></button>
+      <button class="btn-inventory" id="shiftBtn" type="button"><svg viewBox="0 0 24 24" fill="none"><rect x="4" y="3.5" width="16" height="17" rx="3.5" stroke="currentColor" stroke-width="1.9"/><path d="M8.2 9.2l1.6 1.6 2.6-2.8M8.2 15.2l1.6 1.6 2.6-2.8M14.5 9.5h2.5M14.5 15.5h2.5" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Inventory</span></button>
       <button class="qr-btn" id="qrBtn" type="button" title="QR Code">
         <svg viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="7" height="7" rx="1" stroke="currentColor" stroke-width="1.6"/><rect x="14" y="3" width="7" height="7" rx="1" stroke="currentColor" stroke-width="1.6"/><rect x="3" y="14" width="7" height="7" rx="1" stroke="currentColor" stroke-width="1.6"/><path d="M14 14h3v3h-3zM20 14v3M14 20h3M20 20v.01" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
       </button>
@@ -1475,6 +1630,7 @@
       </div>
     </div>
 
+    <div class="shift-strip" id="shiftStrip"></div>
     <svg class="ecg-line" viewBox="0 0 800 40" preserveAspectRatio="none">
       <path class="ecg-path" d="M0 20 L120 20 L140 6 L155 34 L170 20 L210 20 L225 4 L242 36 L258 20 L800 20"
             fill="none" stroke="#FF6B7A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -1606,6 +1762,21 @@
 </div>
 
 <div id="toastContainer" class="toast-container"></div>
+
+<section id="shPanel" class="sh-page" style="display:none;" aria-hidden="true">
+  <header class="sh-head"><div class="sh-head-in">
+    <div class="sh-head-row">
+      <button type="button" id="shBack" class="sh-back"><svg viewBox="0 0 24 24" fill="none"><path d="M15 5.5L8.5 12 15 18.5" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg><span id="shBackTxt">رجوع للعربة</span></button>
+      <div class="sh-head-title"><h2 id="shTitle">Inventory</h2><div class="sh-sub" id="shSub"></div></div>
+    </div>
+    <div class="sh-tabs"><button type="button" id="shTabRec" class="sh-tab active">تسجيل الفحص</button><button type="button" id="shTabLog" class="sh-tab">السجل</button></div>
+  </div></header>
+  <div class="sh-body" id="shBody"></div>
+  <div class="sh-foot" id="shFoot"><div class="sh-foot-in">
+    <div class="sh-foot-row"><input id="shBy" type="text" autocomplete="off" placeholder="اكتب اسم الفاحص"><button type="button" id="shSave" class="sh-save">حفظ</button></div>
+    <div class="sh-foot-note" id="shNote"></div>
+  </div></div>
+</section>
 
 <div id="auditOverlay" class="log-overlay" style="display:none;"></div>
 <aside id="auditPanel" class="log-panel" style="display:none;" aria-hidden="true">
@@ -2108,6 +2279,7 @@ let lastPct = 100;
 
 let state = {
   meds: [],
+  shiftLog: {},
   checkedBy: '',
   lastUpdate: null,
   lang: 'ar'
@@ -3728,7 +3900,7 @@ async function loadState(){
     if(parsed) autoDailySnapshot(currentCart, parsed);
     setNetState('online');
     if(parsed){
-      state = Object.assign({meds:[], checkedBy:'', lastUpdate:null, lang:'ar', readinessHistory:[], auditLog:[]}, parsed);
+      state = Object.assign({meds:[], checkedBy:'', lastUpdate:null, lang:'ar', readinessHistory:[], auditLog:[], shiftLog:{}}, parsed);
       state.meds = normalizeMeds(state.meds);
       // Language is a session-wide UI preference, not per-cart — never let a cart's
       // saved data override the language the user currently has selected.
@@ -3779,6 +3951,7 @@ function seedDefault(){
   state.lastUpdate = null;
   state.auditLog = [];
   state.readinessHistory = [];
+  state.shiftLog = {};
   state.lang = lang;
 }
 
@@ -4638,6 +4811,324 @@ function closeAudit(){
 }
 document.getElementById('auditBtn').addEventListener('click', openAudit);
 document.getElementById('auditClose').addEventListener('click', closeAudit);
+
+/* ================= Shift check log (M / E / N) =================
+   Per item, per date + shift:  ✓ present  |  ✗ missing  |  partial (e.g. 4 of 5)  |  not checked.
+   state.shiftLog["YYYY-MM-DD|M"] = { by, ts, def, d }
+     def = code most items have ('o' or 'u'); d = { id: code } only for the exceptions.
+     codes: 'o' present, 'x' missing, 'u' not checked, 'p3' = 3 units present (partial). */
+const SHIFTS = [
+  { id: 'M', ar: 'صباحي', en: 'Morning' },
+  { id: 'E', ar: 'مسائي', en: 'Evening' },
+  { id: 'N', ar: 'ليلي',  en: 'Night' }
+];
+const SHIFT_KEEP_DAYS = 45;
+let shiftOpen = false, shiftTab = 'rec', shiftDate = '', shiftSel = 'M';
+function shiftPad(n){ return String(n).padStart(2, '0'); }
+function shiftFmt(d){ return `${d.getFullYear()}-${shiftPad(d.getMonth() + 1)}-${shiftPad(d.getDate())}`; }
+function shiftToday(){ return shiftFmt(new Date()); }
+/* Shift hours: M 07:00-14:00, E 14:00-21:00, N 21:00-07:00 (the night shift belongs to the day it STARTED). */
+const SHIFT_HOURS = { M: '7–14', E: '14–21', N: '21–7' };
+function shiftGuess(){ const h = new Date().getHours(); return h >= 7 && h < 14 ? 'M' : (h >= 14 && h < 21 ? 'E' : 'N'); }
+function shiftDefaultDate(){ const d = new Date(); if(d.getHours() < 7) d.setDate(d.getDate() - 1); return shiftFmt(d); }
+function shiftLogObj(){ if(!state.shiftLog || typeof state.shiftLog !== 'object' || Array.isArray(state.shiftLog)) state.shiftLog = {}; return state.shiftLog; }
+function shiftStd(m){ const n = parseInt(m && m.qtyStd, 10); return n > 0 ? n : 1; }
+function shiftParse(c){
+  if(c === 'o') return { s: 'o' };
+  if(c === 'x') return { s: 'x' };
+  if(typeof c === 'string' && c[0] === 'p') return { s: 'p', n: Math.max(1, parseInt(c.slice(1), 10) || 1) };
+  return { s: 'u' };
+}
+function shiftCode(e){ return e.s === 'p' ? 'p' + e.n : e.s; }
+function shiftDecode(rec){
+  const map = new Map(), meds = state.meds || [];
+  if(!rec){ meds.forEach(m => map.set(m.id, { s: 'u' })); return map; }
+  if(!rec.d && Array.isArray(rec.l)){            // first version of the log (present / missing id lists)
+    const l = new Set(rec.l);
+    meds.forEach(m => map.set(m.id, { s: (rec.inv ? !l.has(m.id) : l.has(m.id)) ? 'o' : 'u' }));
+    return map;
+  }
+  const def = rec.def || 'u', d = rec.d || {};
+  meds.forEach(m => map.set(m.id, shiftParse(d[m.id] !== undefined ? d[m.id] : def)));
+  return map;
+}
+function shiftStats(map){
+  const st = { ok: 0, part: 0, miss: 0, un: 0, total: 0 };
+  map.forEach(e => { st.total++; if(e.s === 'o') st.ok++; else if(e.s === 'p') st.part++; else if(e.s === 'x') st.miss++; else st.un++; });
+  return st;
+}
+function shiftWrite(date, sh, map, by){
+  const log = shiftLogObj();
+  let o = 0, u = 0; map.forEach(e => { if(e.s === 'o') o++; else if(e.s === 'u') u++; });
+  const def = o >= u ? 'o' : 'u', d = {};
+  map.forEach((e, id) => { const c = shiftCode(e); if(c !== def) d[id] = c; });
+  log[date + '|' + sh] = { by, ts: new Date().toISOString(), def, d };
+  const cutoff = Date.now() - SHIFT_KEEP_DAYS * 864e5;
+  Object.keys(log).forEach(k => { if(new Date(k.split('|')[0] + 'T00:00:00').getTime() < cutoff) delete log[k]; });
+}
+function shiftDateStr(ts){ try { return new Date(ts).toLocaleDateString(lang === 'ar' ? 'ar' : 'en-GB', { day: 'numeric', month: 'long', year: 'numeric' }); } catch(_) { return ''; } }
+function shiftTimeStr(ts){ try { return new Date(ts).toLocaleTimeString(lang === 'ar' ? 'ar' : 'en-GB', { hour: '2-digit', minute: '2-digit' }); } catch(_) { return ''; } }
+function shiftClock(ts){ try { return new Date(ts).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' }); } catch(_) { return ''; } }
+const SH_SVG = {
+  ok: '<svg viewBox="0 0 24 24" fill="none"><path d="M5.5 12.5l4.2 4.2L18.5 7.5" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+  no: '<svg viewBox="0 0 24 24" fill="none"><path d="M7 7l10 10M17 7L7 17" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></svg>',
+  part: '<svg viewBox="0 0 24 24" fill="none"><path d="M12 6.5v7M12 17.4v.1" stroke="currentColor" stroke-width="3.2" stroke-linecap="round"/></svg>'
+};
+/* ---- draft: edits stay local until the user presses Save (with the checker's name) ---- */
+let shiftDraft = null, shiftBy = '';
+function shiftKey(){ return shiftDate + '|' + shiftSel; }
+function shiftEnsureDraft(){
+  if(!shiftDraft || shiftDraft.key !== shiftKey()){
+    const m = shiftDecode(shiftLogObj()[shiftKey()]);
+    shiftDraft = { key: shiftKey(), map: new Map([...m].map(([id, e]) => [id, { ...e }])), dirty: false };
+  }
+  return shiftDraft;
+}
+function shiftConfirmLeave(){
+  if(shiftDraft && shiftDraft.dirty && shiftOpen) return window.confirm(tx('لديك تغييرات غير محفوظة. تجاهلها؟', 'You have unsaved changes. Discard them?'));
+  return true;
+}
+function shiftPrevRec(){
+  const order = ['M', 'E', 'N'], log = shiftLogObj();
+  const d = new Date(shiftDate + 'T00:00:00'); let idx = order.indexOf(shiftSel);
+  for(let i = 0; i < 90; i++){
+    idx--; if(idx < 0){ idx = 2; d.setDate(d.getDate() - 1); }
+    const r = log[shiftFmt(d) + '|' + order[idx]];
+    if(r && r.ts) return { rec: r, date: shiftFmt(d), sh: order[idx], immediate: i === 0 };
+  }
+  return null;
+}
+function shiftSave(){
+  const name = (document.getElementById('shBy').value || '').trim();
+  const inp = document.getElementById('shBy');
+  if(!name){
+    inp.classList.remove('shake'); void inp.offsetWidth; inp.classList.add('shake'); inp.focus();
+    setTimeout(() => inp.classList.remove('shake'), 1800);
+    if(typeof showToast === 'function') showToast(tx('اكتب اسم الفاحص قبل الحفظ', 'Enter the checker name before saving'), 'error');
+    return;
+  }
+  if(!isUnlocked()){ askPin(shiftSave); return; }
+  const dr = shiftEnsureDraft();
+  shiftWrite(shiftDate, shiftSel, dr.map, name);
+  saveState(false);
+  dr.dirty = false; shiftBy = ''; inp.value = ''; renderShiftStrip();
+  if(typeof showToast === 'function') showToast(tx('تم حفظ الفحص ✓', 'Check saved ✓'), 'success');
+  renderShift();
+}
+function renderShift(){
+  const body = document.getElementById('shBody');
+  if(!body) return;
+  const keep = body.scrollTop;
+  const meds = state.meds || [], log = shiftLogObj(), total = meds.length;
+  document.getElementById('shSub').innerHTML = `<b>${escapeHtml(currentCart)}</b> · ${tx('✓ موجود   ✗ غير موجود   +/− الكمية', '✓ present   ✗ missing   +/− quantity')}`;
+  document.getElementById('shTitle').textContent = 'Inventory';
+  document.getElementById('shBackTxt').textContent = tx('رجوع للعربة', 'Back to cart');
+  document.getElementById('shTabRec').textContent = tx('تسجيل الفحص', 'Record check');
+  document.getElementById('shTabLog').textContent = tx('السجل', 'Log');
+  document.getElementById('shTabRec').classList.toggle('active', shiftTab === 'rec');
+  document.getElementById('shTabLog').classList.toggle('active', shiftTab === 'log');
+  const foot = document.getElementById('shFoot');
+  foot.style.display = shiftTab === 'rec' ? 'block' : 'none';
+  const cellCls = st => (!st.ok && !st.part && !st.miss) ? '' : (st.ok === st.total && total ? 'done' : (st.miss ? 'bad' : 'part'));
+  let html = '';
+  if(shiftTab === 'rec'){
+    const dr = shiftEnsureDraft(), map = dr.map, rec = log[shiftKey()];
+    const st = shiftStats(map), pct = total ? Math.round(st.ok / total * 100) : 0;
+    const prev = shiftPrevRec();
+    const prevMap = prev ? shiftDecode(prev.rec) : null;
+    html += `<div class="sh-ctl">
+      <div class="sh-date"><button type="button" data-dstep="-1" aria-label="prev">‹</button><input type="date" id="shDate" value="${shiftDate}" max="${shiftToday()}"><button type="button" data-dstep="1" aria-label="next">›</button></div>
+      <div class="sh-shifts">${SHIFTS.map(sf => { const r = log[shiftDate + '|' + sf.id]; const x = r ? shiftStats(shiftDecode(r)) : { ok: 0, part: 0, miss: 0, total };
+        return `<button type="button" class="sh-shift ${sf.id === shiftSel ? 'on' : ''} ${cellCls(x)}" data-sh="${sf.id}"><b>${sf.id}</b><span>${tx(sf.ar, sf.en)}</span><i>${r ? x.ok + '/' + total : '—'}</i></button>`; }).join('')}</div>
+      <div class="sh-prog"><div class="bar"><i style="width:${pct}%"></i></div><span>${st.ok}/${total}</span>
+        <button type="button" id="shAll">${st.un ? tx('الباقي كله ✓', 'Rest all ✓') : tx('مسح الكل', 'Reset all')}</button></div>
+      <div class="sh-chips"><span class="c-ok">✓ ${st.ok}</span><span class="c-part">± ${st.part}</span><span class="c-no">✗ ${st.miss}</span><span class="c-un">${tx('لم يُفحص', 'Unchecked')} ${st.un}</span></div>
+      ${rec && rec.ts ? `<div class="sh-sign"><b>${escapeHtml(rec.by || '—')}</b><span>${escapeHtml(shiftDateStr(rec.ts))}</span><span class="t">${escapeHtml(shiftTimeStr(rec.ts))}</span></div>` : `<div class="sh-sign empty">${tx('لم يُسجَّل فحص لهذا الشفت بعد', 'No check saved for this shift yet')}</div>`}
+    </div>`;
+    if(prev){
+      const ps = shiftStats(prevMap), sfn = SHIFTS.find(x => x.id === prev.sh);
+      const issues = meds.filter(m => ['x', 'p'].includes(prevMap.get(m.id).s));
+      const pl = new Date(prev.date + 'T00:00:00').toLocaleDateString(lang === 'ar' ? 'ar' : 'en-GB', { weekday: 'long', day: 'numeric', month: 'long' });
+      html += `<section class="sh-prev">
+          <div class="pv-top"><span class="pv-t">${prev.immediate ? tx('تشييك الشفت السابق', 'Previous shift check') : tx('آخر تشييك مسجّل', 'Last recorded check')}</span><span class="pv-n">${escapeHtml(prev.rec.by || '—')}</span></div>
+          <div class="pv-m"><b>${prev.sh}</b> ${escapeHtml(tx(sfn.ar, sfn.en))} · ${escapeHtml(pl)} · <span class="pv-time">${escapeHtml(shiftClock(prev.rec.ts))}</span></div>
+          <div class="sh-chips"><span class="c-ok">✓ ${tx('موجود', 'Present')} ${ps.ok}</span><span class="c-part">± ${tx('ناقص كمية', 'Short')} ${ps.part}</span><span class="c-no">✗ ${tx('غير موجود', 'Missing')} ${ps.miss}</span><span class="c-un">${tx('لم يُفحص', 'Unchecked')} ${ps.un}</span></div>
+          ${issues.length ? `<div class="pv-h">${tx('النواقص في ذلك الشفت', 'Shortages in that shift')}</div><ul class="pv-list">${issues.map(m => { const e = prevMap.get(m.id); return `<li class="${e.s}"><span>${escapeHtml(m.name)}</span><b>${e.s === 'x' ? tx('غير موجود', 'Missing') : e.n + '/' + shiftStd(m)}</b></li>`; }).join('')}</ul>`
+            : `<div class="pv-ok">${tx('كل الأصناف المفحوصة كانت موجودة ✓', 'All checked items were present ✓')}</div>`}
+          <div class="pv-h2">${tx('حالة كل صنف في ذلك الشفت تظهر تحت اسمه في القائمة ↓', 'Each item shows its previous state under its name ↓')}</div>
+          <button type="button" class="pv-copy" id="shCopyPrev">${tx('تعبئة الفحص من هذا الشفت', 'Fill this check from it')}</button>
+        </section>`;
+    }
+    SECTIONS.forEach(sec => {
+      const ms = meds.filter(m => m.section === sec.id);
+      if(!ms.length) return;
+      const k = ms.filter(m => map.get(m.id).s === 'o').length;
+      const bad = ms.filter(m => ['x', 'p'].includes(map.get(m.id).s)).length;
+      html += `<button type="button" class="sh-sec ${k === ms.length ? 'done' : ''}" data-sec="${sec.id}"><span>${escapeHtml(tx(sec.ar, sec.en))}</span><em>${bad ? `<u>⚠ ${bad}</u> ` : ''}${k}/${ms.length}</em></button>`;
+      ms.forEach(m => {
+        const e = map.get(m.id), std = shiftStd(m);
+        const icon = e.s === 'o' ? SH_SVG.ok : e.s === 'x' ? SH_SVG.no : e.s === 'p' ? SH_SVG.part : '';
+        const cnt = e.s === 'o' ? std : e.s === 'p' ? e.n : e.s === 'x' ? 0 : null;
+        const step = std > 1 ? `<span class="sh-step"><button type="button" data-act="dec" aria-label="minus">−</button><b>${cnt === null ? '×' + std : cnt + '/' + std}</b><button type="button" data-act="inc" aria-label="plus">+</button></span>` : '';
+        const pe = prevMap && prevMap.get(m.id);
+        const hint = pe ? `<small class="pv-hint ${pe.s}">${tx('السابق', 'Previous')}: ${pe.s === 'o' ? tx('موجود ✓', 'present ✓') : pe.s === 'x' ? tx('غير موجود ✗', 'missing ✗') : pe.s === 'p' ? pe.n + '/' + std : tx('لم يُفحص', 'unchecked')}</small>` : '';
+        html += `<div class="sh-row s-${e.s}" data-id="${m.id}"><span class="sh-tick" data-act="ok">${icon}</span><span class="sh-name">${escapeHtml(m.name)}${hint}</span>${step}<button type="button" class="sh-no" data-act="no" title="${escapeHtml(tx('غير موجود', 'Missing'))}">${SH_SVG.no}</button>${std === 1 ? `<span class="sh-q">×1</span>` : ''}</div>`;
+      });
+    });
+    // footer state
+    const note = document.getElementById('shNote');
+    note.className = 'sh-foot-note ' + (dr.dirty ? 'dirty' : (rec && rec.ts ? 'clean' : 'idle'));
+    note.textContent = dr.dirty ? tx('● تغييرات غير محفوظة', '● Unsaved changes') : (rec && rec.ts ? tx('✓ محفوظ', '✓ Saved') : tx('لم يُحفظ بعد', 'Not saved yet'));
+    document.getElementById('shSave').textContent = tx('حفظ الفحص', 'Save check');
+    document.getElementById('shBy').placeholder = tx('اكتب اسم الفاحص', 'Enter checker name');
+  } else {
+    const days = []; const d0 = new Date();
+    for(let i = 0; i < 14; i++){ const d = new Date(d0); d.setDate(d0.getDate() - i); days.push(d); }
+    html += `<div class="sh-lg"><div class="sh-lg-h"><span>${tx('اليوم', 'Day')}</span>${SHIFTS.map(sf => `<b>${sf.id}<small>${tx(sf.ar, sf.en)}</small></b>`).join('')}</div>` +
+      days.map(d => { const ds = shiftFmt(d);
+        const label = d.toLocaleDateString(lang === 'ar' ? 'ar' : 'en-GB', { weekday: 'short', day: 'numeric', month: 'short' });
+        return `<div class="sh-lg-r"><span class="d">${escapeHtml(label)}</span>${SHIFTS.map(sf => {
+          const r = log[ds + '|' + sf.id];
+          if(!r) return `<button type="button" class="sh-cell" data-d="${ds}" data-s="${sf.id}"><b>—</b></button>`;
+          const x = shiftStats(shiftDecode(r)), who = String(r.by || '').trim().split(/\s+/)[0], issues = x.part + x.miss;
+          return `<button type="button" class="sh-cell ${cellCls(x)}" data-d="${ds}" data-s="${sf.id}"><b>${x.ok === x.total && total ? '✓' : x.ok + '/' + total}</b>${issues ? `<em>⚠ ${issues}</em>` : ''}<small>${escapeHtml(who)}</small><small class="tm">${escapeHtml(shiftClock(r.ts))}</small></button>`; }).join('')}</div>`; }).join('') + '</div>' +
+      `<div class="sh-legend"><span class="done">✓ ${tx('مكتمل', 'Complete')}</span><span class="part">${tx('كمية ناقصة', 'Short qty')}</span><span class="bad">${tx('غير موجود', 'Missing')}</span><span>— ${tx('لم يُفحص', 'Not checked')}</span></div>`;
+  }
+  body.innerHTML = html;
+  body.scrollTop = keep;
+}
+function openShift(date, sh){
+  shiftOpen = true; shiftTab = 'rec'; shiftDate = (typeof date === 'string' && date) || shiftDefaultDate(); shiftSel = (typeof sh === 'string' && sh) || shiftGuess();
+  shiftDraft = null; shiftBy = ''; document.getElementById('shBy').value = '';
+  renderShift();
+  const p = document.getElementById('shPanel'); p.style.display = 'flex'; p.setAttribute('aria-hidden', 'false');
+  document.body.style.overflow = 'hidden';
+  try { history.pushState({ sh: 1 }, '', '#shifts'); } catch(_) {}
+  window.scrollTo(0, 0);
+}
+let shiftLeaving = false;
+function closeShift(force){
+  if(force !== true && !shiftConfirmLeave()) return;
+  shiftOpen = false; shiftDraft = null;
+  const p = document.getElementById('shPanel'); p.style.display = 'none'; p.setAttribute('aria-hidden', 'true');
+  document.body.style.overflow = '';
+}
+document.getElementById('shiftBtn').addEventListener('click', () => openShift());
+
+/* ---- Today's shift status in the header + late-shift alert ---- */
+const SHIFT_END_H = { M: 14, E: 21, N: 7 };
+let shiftStripSig = '';
+function shiftCellState(date, sh){
+  const r = shiftLogObj()[date + '|' + sh];
+  if(!r || !r.ts) return { k: 'none' };
+  const st = shiftStats(shiftDecode(r));
+  return { k: (st.part + st.miss) ? 'warn' : (st.un ? 'part' : 'ok'), st, r };
+}
+function renderShiftStrip(){
+  const el = document.getElementById('shiftStrip'); if(!el) return;
+  const now = new Date(), h = now.getHours(), today = shiftFmt(now);
+  const y = new Date(now); y.setDate(y.getDate() - 1); const yest = shiftFmt(y);
+  const cur = shiftGuess(), curDate = shiftDefaultDate();
+  // shifts that already ended (today's M/E, plus last night's N after 07:00)
+  const ended = [];
+  if(h >= 7) ended.push([yest, 'N']);
+  if(h >= 14) ended.push([today, 'M']);
+  if(h >= 21) ended.push([today, 'E']);
+  const late = ended.filter(([d, sh]) => shiftCellState(d, sh).k === 'none');
+  const items = [[today, 'M'], [today, 'E'], [today, 'N']];
+  const pills = items.map(([d, sh]) => {
+    const c = shiftCellState(d, sh);
+    const isCur = d === curDate && sh === cur;
+    const future = !isCur && c.k === 'none' && !ended.some(([dd, ss]) => dd === d && ss === sh);
+    const lateP = late.some(([dd, ss]) => dd === d && ss === sh);
+    const cls = lateP ? 'late' : (future ? 'future' : c.k);
+    const ico = c.k === 'ok' ? '✓' : c.k === 'warn' ? '⚠' : c.k === 'part' ? '…' : (lateP ? '!' : '○');
+    return `<button type="button" class="ss-pill ${cls} ${isCur ? 'cur' : ''}" data-d="${d}" data-s="${sh}"><b>${sh}</b><i>${ico}</i></button>`;
+  }).join('');
+  let banner = '';
+  if(late.length){
+    const [d, sh] = late[late.length - 1];
+    const names = late.map(([, s2]) => s2).join(' + ');
+    banner = `<button type="button" class="ss-alert" data-d="${d}" data-s="${sh}">⚠ ${tx('لم يُسجَّل فحص الشفت', 'Check not recorded for shift')} ${names} — ${tx('سجّله الآن', 'record it now')}</button>`;
+  }
+  const sig = pills + banner + lang + currentCart;
+  if(sig === shiftStripSig) return;
+  shiftStripSig = sig;
+  el.innerHTML = `<span class="ss-title">${tx('جرد اليوم', "Today's inventory")}</span><div class="ss-pills">${pills}</div>${banner}`;
+}
+document.getElementById('shiftStrip').addEventListener('click', e => {
+  const b = e.target.closest('[data-d]'); if(b) openShift(b.dataset.d, b.dataset.s);
+});
+setInterval(renderShiftStrip, 3000);
+setTimeout(renderShiftStrip, 800);
+
+function shiftGoBack(){
+  if(!shiftConfirmLeave()) return;
+  if(history.state && history.state.sh){ shiftLeaving = true; history.back(); }
+  else closeShift(true);
+}
+document.getElementById('shBack').addEventListener('click', shiftGoBack);
+window.addEventListener('popstate', () => {
+  if(!shiftOpen) return;
+  if(!shiftLeaving && shiftDraft && shiftDraft.dirty && !window.confirm(tx('لديك تغييرات غير محفوظة. تجاهلها؟', 'You have unsaved changes. Discard them?'))){
+    try { history.pushState({ sh: 1 }, '', '#shifts'); } catch(_) {}
+    return;
+  }
+  shiftLeaving = false; closeShift(true);
+});
+document.getElementById('shTabRec').addEventListener('click', () => { shiftTab = 'rec'; document.getElementById('shBody').scrollTop = 0; renderShift(); });
+document.getElementById('shTabLog').addEventListener('click', () => { shiftTab = 'log'; document.getElementById('shBody').scrollTop = 0; renderShift(); });
+document.getElementById('shSave').addEventListener('click', shiftSave);
+document.getElementById('shBy').addEventListener('input', e => { shiftBy = e.target.value; e.target.classList.remove('shake'); });
+document.getElementById('shBy').addEventListener('keydown', e => { if(e.key === 'Enter'){ e.preventDefault(); shiftSave(); } });
+function shiftItemAct(id, act){
+  const m = (state.meds || []).find(x => x.id === id); if(!m) return;
+  const std = shiftStd(m), dr = shiftEnsureDraft(), e = dr.map.get(id) || { s: 'u' };
+  if(act === 'ok') dr.map.set(id, { s: e.s === 'o' ? 'u' : 'o' });
+  else if(act === 'no') dr.map.set(id, { s: e.s === 'x' ? 'u' : 'x' });
+  else if(act === 'dec'){
+    const cur = e.s === 'p' ? e.n : (e.s === 'x' ? 0 : std), nn = cur - 1;
+    dr.map.set(id, nn <= 0 ? { s: 'x' } : nn >= std ? { s: 'o' } : { s: 'p', n: nn });
+  } else if(act === 'inc'){
+    const cur = e.s === 'p' ? e.n : (e.s === 'x' ? 0 : (e.s === 'o' ? std : std - 1)), nn = cur + 1;
+    dr.map.set(id, nn >= std ? { s: 'o' } : { s: 'p', n: nn });
+  }
+  dr.dirty = true; renderShift();
+}
+function shiftBulk(ids){
+  const dr = shiftEnsureDraft();
+  const anyUn = ids.some(id => dr.map.get(id) && dr.map.get(id).s === 'u');
+  ids.forEach(id => { const e = dr.map.get(id); if(!e) return;
+    if(anyUn){ if(e.s === 'u') dr.map.set(id, { s: 'o' }); } else dr.map.set(id, { s: 'u' }); });
+  dr.dirty = true; renderShift();
+}
+function shiftCopyPrev(){
+  const prev = shiftPrevRec(); if(!prev) return;
+  const pm = shiftDecode(prev.rec), dr = shiftEnsureDraft();
+  pm.forEach((e, id) => { const cur = dr.map.get(id); if(cur && cur.s === 'u' && e.s !== 'u') dr.map.set(id, { ...e }); });
+  dr.dirty = true; renderShift();
+}
+document.getElementById('shBody').addEventListener('click', e => {
+  const act = e.target.closest('[data-act]');
+  if(act){ const row = act.closest('.sh-row'); if(row) shiftItemAct(row.dataset.id, act.dataset.act); return; }
+  const row = e.target.closest('.sh-row');
+  if(row){ shiftItemAct(row.dataset.id, 'ok'); return; }
+  const t = e.target.closest('button'); if(!t) return;
+  if(t.dataset.sec) shiftBulk((state.meds || []).filter(m => m.section === t.dataset.sec).map(m => m.id));
+  else if(t.id === 'shAll') shiftBulk((state.meds || []).map(m => m.id));
+  else if(t.id === 'shCopyPrev') shiftCopyPrev();
+  else if(t.dataset.sh){ if(t.dataset.sh !== shiftSel && shiftConfirmLeave()){ shiftSel = t.dataset.sh; shiftDraft = null; renderShift(); } }
+  else if(t.dataset.dstep){ const d = new Date(shiftDate + 'T00:00:00'); d.setDate(d.getDate() + Number(t.dataset.dstep));
+    if(shiftFmt(d) <= shiftToday() && shiftConfirmLeave()){ shiftDate = shiftFmt(d); shiftDraft = null; renderShift(); } }
+  else if(t.dataset.d){ if(shiftConfirmLeave()){ shiftDate = t.dataset.d; shiftSel = t.dataset.s; shiftTab = 'rec'; shiftDraft = null; document.getElementById('shBody').scrollTop = 0; renderShift(); } }
+});
+document.getElementById('shBody').addEventListener('change', e => {
+  if(e.target.id === 'shDate'){ const v = e.target.value;
+    if(v && v <= shiftToday() && shiftConfirmLeave()){ shiftDate = v; shiftDraft = null; }
+    renderShift(); }
+});
+document.addEventListener('keydown', e => { if(e.key === 'Escape' && shiftOpen && !document.querySelector('.pin-sheet')) shiftGoBack(); });
+
 document.getElementById('auditOverlay').addEventListener('click', closeAudit);
 document.getElementById('auditSearch').addEventListener('input', (e) => { auditQuery = e.target.value.trim(); renderAudit(); });
 document.addEventListener('keydown', (e) => { if(e.key === 'Escape' && auditOpen) closeAudit(); });
@@ -4916,7 +5407,7 @@ async function downloadBackup(){
 }
 // Replace a cart's data with a backup copy (atomic; retries if another device saves meanwhile).
 async function restoreCart(cart, data){
-  const clean = Object.assign({meds:[], checkedBy:'', lastUpdate:null, readinessHistory:[], auditLog:[]}, clone(data));
+  const clean = Object.assign({meds:[], checkedBy:'', lastUpdate:null, readinessHistory:[], auditLog:[], shiftLog:{}}, clone(data));
   clean.lastUpdate = new Date().toISOString();
   for(let attempt = 0; attempt < 8; attempt++){
     const row = await supabaseLoadRow(cart);
@@ -5669,7 +6160,7 @@ function unionById(a, b, keyFn, max){
 // Pull `server` into the live state. Returns true if anything visible changed.
 function mergeServerIntoState(server){
   if(!server) return false;
-  server = Object.assign({meds:[], checkedBy:'', lastUpdate:null, readinessHistory:[], auditLog:[]}, server);
+  server = Object.assign({meds:[], checkedBy:'', lastUpdate:null, readinessHistory:[], auditLog:[], shiftLog:{}}, server);
   server.meds = normalizeMeds(server.meds);
   const base = baseState ? Object.assign({meds:[]}, baseState) : { meds: [] };
   base.meds = normalizeMeds(base.meds);
@@ -5684,6 +6175,10 @@ function mergeServerIntoState(server){
   state.auditLog = unionById(state.auditLog, server.auditLog, x => x.id || x.ts, AUDIT_MAX);
   state.readinessHistory = unionById(state.readinessHistory, server.readinessHistory, x => x.ts, 20);
   if(state.auditLog.length !== beforeLog) changed = true;
+  { const sl = shiftLogObj(); const ssl = (server.shiftLog && typeof server.shiftLog === 'object' && !Array.isArray(server.shiftLog)) ? server.shiftLog : {};
+    Object.keys(ssl).forEach(k => { const a = sl[k], b = ssl[k];
+      if(b && (!a || (b.ts && (!a.ts || b.ts > a.ts)))){ sl[k] = b; changed = true; } });
+    if(changed && shiftOpen) renderShift(); }
   if(server.lastUpdate && (!state.lastUpdate || new Date(server.lastUpdate) > new Date(state.lastUpdate))){
     state.lastUpdate = server.lastUpdate; changed = true;
   }
