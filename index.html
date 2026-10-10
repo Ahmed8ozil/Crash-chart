@@ -747,6 +747,88 @@
   .cart-switcher-row{flex-wrap:wrap;}
   .cart-switcher-row .cart-switcher{margin-bottom:0;}
 
+
+  /* ===== Home page (cart overview) ===== */
+  #homeView{position:fixed;inset:0;z-index:850;background:var(--paper);overflow-y:auto;-webkit-overflow-scrolling:touch;display:none;}
+  #homeView.on{display:block;}
+  .hm-wrap{max-width:980px;margin:0 auto;padding:22px 14px 40px;}
+  .hm-top{display:flex;align-items:center;gap:12px;margin-bottom:18px;}
+  .hm-logo{width:44px;height:44px;border-radius:13px;background:linear-gradient(145deg,#E5546A,#C93349);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+  .hm-logo svg{width:26px;height:26px;}
+  .hm-top h1{margin:0;font-size:20px;font-weight:900;color:var(--ink);letter-spacing:.02em;}
+  .hm-top p{margin:2px 0 0;font-size:12px;color:var(--muted);font-weight:600;}
+  .hm-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;}
+  @media(min-width:760px){.hm-grid{grid-template-columns:repeat(4,1fr);}}
+  .hm-card{background:var(--card);border:1px solid var(--line);border-radius:24px;box-shadow:0 10px 28px -16px var(--shadow-color);overflow:hidden;display:flex;flex-direction:column;cursor:pointer;transition:transform .15s,box-shadow .15s;}
+  .hm-card:active{transform:scale(.985);}
+  .hm-card:hover{box-shadow:0 14px 32px -14px var(--shadow-color);}
+  .hm-head{display:flex;align-items:center;justify-content:space-between;padding:16px 16px 0;gap:8px;}
+  .hm-name{font-family:'Space Mono','Tajawal',sans-serif;font-size:22px;font-weight:700;color:var(--ink);letter-spacing:.02em;}
+  .hm-pill{display:inline-flex;align-items:center;gap:6px;border-radius:999px;padding:5px 10px;font-size:11px;font-weight:800;white-space:nowrap;background:#EEF1F6;color:#6B7690;}
+  .hm-pill i{width:7px;height:7px;border-radius:50%;background:currentColor;}
+  .hm-pill.today{background:#E3F4EC;color:#238A62;} .hm-pill.old{background:#FBF0DA;color:#B07A12;} .hm-pill.none{background:#FDE9EC;color:#D8425A;}
+  html[data-theme="dark"] .hm-pill{background:#1C2740;color:#93A0C0;} html[data-theme="dark"] .hm-pill.today{background:#12301F;color:#5BD6A0;}
+  html[data-theme="dark"] .hm-pill.old{background:#3A2E12;color:#F0B94F;} html[data-theme="dark"] .hm-pill.none{background:#3A1620;color:#FF8497;}
+  .hm-art{padding:6px 10px 0;display:flex;justify-content:center;}
+  .hm-art svg{width:100%;max-width:250px;height:auto;display:block;}
+  .hm-cap{text-align:center;font-size:12px;font-weight:600;color:var(--muted);padding:2px 0 14px;}
+  .hm-info{border-top:1px solid var(--line);padding:14px 16px 6px;display:flex;flex-direction:column;gap:12px;}
+  .hm-row{display:flex;align-items:center;gap:10px;}
+  .hm-row svg{width:20px;height:20px;color:var(--muted);flex-shrink:0;}
+  .hm-row small{display:block;font-size:12px;color:var(--muted);font-weight:600;}
+  .hm-row b{display:block;font-size:13px;color:var(--ink);font-weight:800;line-height:1.4;}
+  .hm-row b em{display:block;font-style:normal;font-size:12px;color:var(--muted);font-weight:700;}
+  .hm-row b span{font-family:'Space Mono',monospace;font-weight:700;font-size:11.5px;color:var(--muted);white-space:nowrap;}
+  .hm-btn{margin:10px 14px 16px;height:48px;border-radius:14px;border:1px solid var(--line);background:var(--surface-1);color:var(--ink);font-family:inherit;font-size:13px;font-weight:800;white-space:nowrap;display:flex;align-items:center;justify-content:space-between;padding:0 14px;cursor:pointer;}
+  .hm-btn svg{width:18px;height:18px;}
+  .sw-wrap{display:flex;align-items:center;gap:8px;}
+  .sw-wrap .cart-switcher{margin-bottom:0;}
+  @media(max-width:639px){.sw-wrap{flex:1 1 100%;} .sw-wrap .cart-switcher{flex:1;width:auto;}}
+  .btn-home{width:42px;height:42px;border-radius:14px;border:1px solid rgba(255,255,255,.3);background:rgba(255,255,255,.1);color:#fff;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;}
+  .btn-home svg{width:21px;height:21px;}
+
+  /* ===== Light header (light theme) ===== */
+  html:not([data-theme="dark"]) .page-header{
+    --ready-rgb:34,156,112;
+    background:linear-gradient(180deg,#FFFFFF 0%,#F1F5FB 100%);
+    box-shadow:0 10px 30px -22px rgba(16,27,51,.45);
+    border-bottom:1px solid #E3E9F3;
+  }
+  html:not([data-theme="dark"]) .page-header[data-ready="warn"]{--ready-rgb:201,134,10;}
+  html:not([data-theme="dark"]) .page-header[data-ready="bad"]{--ready-rgb:216,66,90;}
+  html:not([data-theme="dark"]) .page-header::before{opacity:.14;}
+  html:not([data-theme="dark"]) .page-header::after{box-shadow:none;height:3px;}
+  html:not([data-theme="dark"]) .brand-text h1{color:#101B33;}
+  html:not([data-theme="dark"]) .brand-text .sub{color:#6B7690;}
+  html:not([data-theme="dark"]) .cart-switcher{background:#E9EEF6;border-color:#DCE3EF;}
+  html:not([data-theme="dark"]) .cart-tab{color:#5B6785;}
+  html:not([data-theme="dark"]) .cart-tab:hover{color:#101B33;}
+  html:not([data-theme="dark"]) .cart-tab.active{background:#fff;color:#101B33;box-shadow:0 2px 8px -3px rgba(16,27,51,.35);}
+  html:not([data-theme="dark"]) .clock-box{background:#fff;border-color:#DCE3EF;color:#D8425A;}
+  html:not([data-theme="dark"]) .clock-text b{color:#101B33;}
+  html:not([data-theme="dark"]) .clock-text span{color:#6B7690;}
+  html:not([data-theme="dark"]) .lang-toggle,html:not([data-theme="dark"]) .btn-header,html:not([data-theme="dark"]) .theme-toggle,html:not([data-theme="dark"]) .btn-home,html:not([data-theme="dark"]) .qr-btn{
+    background:#fff;border:1px solid #DCE3EF;color:#33415E;box-shadow:none;}
+  html:not([data-theme="dark"]) .lang-toggle:hover,html:not([data-theme="dark"]) .btn-header:hover,html:not([data-theme="dark"]) .theme-toggle:hover{background:#F1F5FB;}
+  html:not([data-theme="dark"]) .dock{background:#fff;border-color:#DCE3EF;box-shadow:0 6px 16px -12px rgba(16,27,51,.4);backdrop-filter:none;-webkit-backdrop-filter:none;}
+  html:not([data-theme="dark"]) .dock .btn-header,html:not([data-theme="dark"]) .dock .theme-toggle,html:not([data-theme="dark"]) .dock .lang-toggle{background:transparent;border:none;}
+  html:not([data-theme="dark"]) .dock .btn-header:hover,html:not([data-theme="dark"]) .dock .theme-toggle:hover,html:not([data-theme="dark"]) .dock .lang-toggle:hover{background:#EEF2F9;}
+  html:not([data-theme="dark"]) .btn-inventory{background:#EAF1FD;border-color:#BCD0F3;color:#2B4F94;box-shadow:none;backdrop-filter:none;-webkit-backdrop-filter:none;}
+  html:not([data-theme="dark"]) .controls-row .lock-btn{box-shadow:none;}
+  html:not([data-theme="dark"]) .gauge-card{background:#fff;}
+  html:not([data-theme="dark"]) .gauge-track{stroke:#E3E9F3;}
+  html:not([data-theme="dark"]) .gauge-label{color:#6B7690;}
+  html:not([data-theme="dark"]) .page-header .statbar .stat{background:#fff;border:1px solid #E3E9F3;box-shadow:0 6px 16px -14px rgba(16,27,51,.4);}
+  html:not([data-theme="dark"]) .page-header .statbar .stat b{color:#101B33;text-shadow:none;}
+  html:not([data-theme="dark"]) .page-header .statbar .stat > span{color:#5B6785;}
+  html:not([data-theme="dark"]) .page-header .statbar .stat.stat-active{border-color:rgb(var(--rgb));box-shadow:0 0 0 2px rgba(var(--rgb),.25);}
+  html:not([data-theme="dark"]) .ss-pill{background:#fff;border-color:#DCE3EF;color:#5B6785;}
+  html:not([data-theme="dark"]) .ss-pill b{color:#101B33;}
+  html:not([data-theme="dark"]) .ss-pill.ok{background:#E3F4EC;border-color:#9ED8BD;} html:not([data-theme="dark"]) .ss-pill.ok i{color:#238A62;}
+  html:not([data-theme="dark"]) .ss-pill.warn{background:#FBF0DA;border-color:#EDC987;} html:not([data-theme="dark"]) .ss-pill.warn i{color:#B07A12;}
+  html:not([data-theme="dark"]) .ss-pill.part{background:#EAF1FD;border-color:#BCD0F3;}
+  html:not([data-theme="dark"]) .ss-pill.late{background:#FDE9EC;border-color:#F2A9B5;} html:not([data-theme="dark"]) .ss-pill.late i{color:#D8425A;}
+  html:not([data-theme="dark"]) .ss-pill.cur{box-shadow:0 0 0 2px #101B33;}
   /* ===== Cart map ===== */
   .map-modal{position:fixed;inset:0;z-index:1300;background:rgba(10,15,28,.7);display:flex;align-items:center;justify-content:center;padding:18px;animation:fadeIn .2s ease both;}
   .map-sheet{
@@ -1544,6 +1626,7 @@
   .hdr-bar .btn-inventory{order:2;}
   @media (max-width:639px){.hdr-bar .btn-inventory{flex:1 1 0;justify-content:center;order:2;}}
   .shift-strip{display:flex;align-items:center;flex-wrap:wrap;gap:8px 10px;margin:6px 0 8px;direction:ltr;}
+  html:not([data-theme="dark"]) .ss-title{color:#5B6785 !important;}
   .ss-title{font-size:12px;font-weight:800;color:#B9C5E4;font-family:'Tajawal',sans-serif;direction:rtl;}
   .ss-pills{display:flex;gap:6px;}
   .ss-pill{display:inline-flex;align-items:center;gap:6px;padding:5px 10px;border-radius:12px;border:1px solid rgba(255,255,255,.2);background:rgba(255,255,255,.08);color:#CFD9F2;cursor:pointer;font-family:'Space Mono',monospace;font-size:12px;}
@@ -1634,7 +1717,8 @@
 
 
     <div class="cart-switcher-row">
-      <div class="cart-switcher" id="cartSwitcher"></div>
+      <div class="sw-wrap"><button class="btn-home" id="homeBtn" type="button" title="Home"><svg viewBox="0 0 24 24" fill="none"><path d="M3.5 11L12 4l8.5 7M6 9.5V20h12V9.5M10 20v-5.5h4V20" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+      <div class="cart-switcher" id="cartSwitcher"></div></div>
       <button class="btn-start-check" id="startCheckBtn" type="button"><svg viewBox="0 0 24 24" fill="none"><rect x="4" y="3.5" width="16" height="17" rx="3" stroke="currentColor" stroke-width="2"/><path d="M8.5 12l2.5 2.5 4.5-5" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-i18n="startCheckBtn">ابدأ الفحص</span></button>
       <button class="btn-inventory" id="shiftBtn" type="button"><svg viewBox="0 0 24 24" fill="none"><rect x="4" y="3.5" width="16" height="17" rx="3.5" stroke="currentColor" stroke-width="1.9"/><path d="M8.2 9.2l1.6 1.6 2.6-2.8M8.2 15.2l1.6 1.6 2.6-2.8M14.5 9.5h2.5M14.5 15.5h2.5" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Inventory</span></button>
       <button class="qr-btn" id="qrBtn" type="button" title="QR Code">
@@ -1835,6 +1919,7 @@
   <div class="log-body" id="auditBody"></div>
 </aside>
 
+<div id="homeView"></div>
 <div id="printBar"><button type="button" class="pb-print" id="pbPrint">طباعة</button><button type="button" class="pb-back" id="pbBack">رجوع</button></div>
 <div id="printReport"></div>
 
@@ -1986,6 +2071,35 @@ const SECTIONS = [
   { id: 'd6',      ar: 'الدرج 6 — السوائل الوريدية',           en: 'Drawer 6 — IV Fluids' },
   { id: 'general', ar: 'عناصر إضافية',                        en: 'Additional Items' }
 ];
+/* Per-cart drawer layout. CC1 uses the 4-drawer SOP checklist; the other carts keep the 6-drawer one. */
+const CART_LAYOUT = { CC1: 4, CC2: 4 };
+const SECTIONS_6 = SECTIONS.map(x => Object.assign({}, x));
+const SECTIONS_4 = [
+  { id: 'top',     ar: 'خارج العربة وأعلاها',             en: 'Crash Cart Side & Top' },
+  { id: 'd1',      ar: 'الدرج 1 — أدوية الطوارئ',          en: 'Drawer 1 — Emergency Medications' },
+  { id: 'd3',      ar: 'الدرج 2 — أنابيب الوريد والمعدات',  en: 'Drawer 2 — Venipuncture & Equipment' },
+  { id: 'd5',      ar: 'الدرج 3 — إدارة مجرى الهواء',      en: 'Drawer 3 — Airway Management' },
+  { id: 'd6',      ar: 'الدرج 4 — السوائل الوريدية',       en: 'Drawer 4 — IV Fluids' },
+  { id: 'general', ar: 'عناصر إضافية',                    en: 'Additional Items' }
+];
+const LAYOUT4_MAP = { d1: 'd1', d2: 'd1', d3: 'd3', d4: 'd5', d5: 'd5', d6: 'd6' };
+const ORDER4 = ['Dobutamine','Dopamine','Amiodarone','Magnesium','Naloxone','Norepinephrine','Verapamil','Epinephrine 1:1000','Epinephrine (Pre','Atropine','Lidocaine','Sodium Bicarbonate','Dextrose 50%','Diltiazem','Adenosine','Calcium Gluconate','Inj. Cis','Inj. Sux',
+  'Flashlight','Complete functioning','Spare bulb','Spare batteries','Magill','Stylet','Bougie','Endotracheal Tube — cuffed','Endotracheal Tube — uncuffed','Oropharyngeal','Nasopharyngeal','Laryngeal Mask','Ambu mask','Artery forceps','Mouth Gag','Roller Gauze','Pacing Pads','Pack sterile Gauze'];
+function cartLayout(c){ return CART_LAYOUT[c || currentCart] || 6; }
+function applyCartLayout(c){
+  const src = cartLayout(c) === 4 ? SECTIONS_4 : SECTIONS_6;
+  SECTIONS.length = 0; src.forEach(x => SECTIONS.push(Object.assign({}, x)));
+}
+function layoutMeds(meds){
+  if(cartLayout() !== 4) return meds;
+  meds.forEach(m => {
+    if(m.section === 'top' && /^Ambu mask/.test(m.name || '')) m.section = 'd5';
+    else if(LAYOUT4_MAP[m.section]) m.section = LAYOUT4_MAP[m.section];
+  });
+  const sIdx = id => { const i = SECTIONS.findIndex(x => x.id === id); return i < 0 ? 99 : i; };
+  const rank = m => { const i = ORDER4.findIndex(p => (m.name || '').startsWith(p)); return i < 0 ? 999 : i; };
+  return meds.map((m, i) => ({ m, i })).sort((a, b) => sIdx(a.m.section) - sIdx(b.m.section) || rank(a.m) - rank(b.m) || a.i - b.i).map(x => x.m);
+}
 function sectionLabel(id){
   const s = SECTIONS.find(x => x.id === id) || SECTIONS[SECTIONS.length - 1];
   return lang === 'ar' ? s.ar : s.en;
@@ -2274,7 +2388,7 @@ const I18N = {
   }
 };
 
-let lang = 'ar';
+let lang = 'en';
 
 // Light/dark theme — UI preference only, resets each visit (not stored with cart data).
 let theme = 'light';
@@ -3903,7 +4017,7 @@ function activeDates(m){
 }
 let openSizeMenu = null;   // which size's action strip is open (UI only)
 function normalizeMeds(meds){
-  return joinSplitMeds(meds).map(m => fitSizeDates((() => {
+  return layoutMeds(joinSplitMeds(meds).map(m => fitSizeDates((() => {
     const dates = Array.isArray(m.dates)
       ? m.dates.map(d => ({ id: d.id || duid(), date: d.date || '', size: d.size || '', na: !!d.na }))
       : (m.expiry ? [{ id: duid(), date: m.expiry }] : [{ id: duid(), date: '' }]);
@@ -3920,7 +4034,7 @@ function normalizeMeds(meds){
       noExpiry: NO_EXPIRY_NAMES.has((m.name || '').trim()) || !!m.noExpiry,
       ...(m.addedAt ? { addedAt: m.addedAt } : {})
     };
-  })()));
+  })())));
 }
 
 function populateCheckedBySelect(){
@@ -3933,6 +4047,7 @@ function populateCheckedBySelect(){
 }
 
 async function loadState(){
+  applyCartLayout(currentCart);
   hasBaseline = false;
   try{
     const parsed = await supabaseLoad(currentCart);
@@ -3988,6 +4103,7 @@ function seedDefault(){
     na: false,
     noExpiry: !!it.noExpiry
   }));
+  state.meds = normalizeMeds(state.meds);
   state.checkedBy = '';
   state.lastUpdate = null;
   state.auditLog = [];
@@ -5858,7 +5974,7 @@ function renderMap(){
   const heights = { d1: 40, d2: 40, d3: 50, d4: 44, d5: 50, d6: 60, general: 40 };
   const drawerHtml = drawers.map((sec, i) => {
     const h = sectionHealth(sec.id);
-    const num = sec.id.startsWith('d') ? sec.id.slice(1) : '+';
+    const num = sec.id === 'general' ? '+' : (drawers.findIndex(x => x.id === sec.id) + 1);
     return `<button type="button" class="drawer h-${h.flag} ${mapSelected === sec.id ? 'selected' : ''}" data-sec="${sec.id}" style="--hc:${HC[h.flag]};min-height:${heights[sec.id] || 44}px">
       <span class="d-num">${num}</span>
       <span class="d-name">${escapeHtml(drawerShortName(sec.id))}<small>${h.total} ${tx('صنف','items')}</small></span>
@@ -6299,7 +6415,7 @@ function cartArtHtml(sel){
     </button>
     <div class="cart-body">${drawers.map(sec => {
       const h = sectionHealth(sec.id);
-      const num = sec.id.startsWith('d') ? sec.id.slice(1) : '+';
+      const num = sec.id === 'general' ? '+' : (drawers.findIndex(x => x.id === sec.id) + 1);
       return `<button type="button" class="drawer h-${h.flag} ${sel === sec.id ? 'selected' : ''}" data-sec="${sec.id}" style="--hc:${HC[h.flag]};min-height:${heights[sec.id] || 44}px">
         <span class="d-num">${num}</span>
         <span class="d-name">${escapeHtml(drawerShortName(sec.id))}<small>${h.total} ${tx('صنف','items')}</small></span>
@@ -6607,6 +6723,131 @@ document.querySelectorAll('.statbar .stat[data-filter]').forEach(el => {
 
 updateUrlForCart();
 loadState();
+</script>
+<script>
+/* ================= Home page ================= */
+(function(){
+  const home = document.getElementById('homeView');
+  let timer = null, seq = 0;
+  function cartSvg(n, id){
+    const top = 128, bot = 256, gap = n > 4 ? 3 : 4.5, h = (bot - top - gap * (n - 1)) / n;
+    let dr = '';
+    for(let i = 0; i < n; i++){
+      const y = top + i * (h + gap);
+      dr += `<rect x="45" y="${y.toFixed(1)}" width="120" height="${h.toFixed(1)}" rx="4" fill="url(#hd${id})"/>
+      <rect x="${n > 4 ? 82 : 80}" y="${(y + h / 2 - 1.8).toFixed(1)}" width="${n > 4 ? 40 : 46}" height="3.6" rx="1.8" fill="#fff" opacity=".93"/>
+      <rect x="145" y="${(y + h / 2 - 1.8).toFixed(1)}" width="10" height="3.6" rx="1.8" fill="#A12A3B" opacity=".7"/>`;
+    }
+    return `<svg viewBox="0 0 240 300" aria-hidden="true">
+    <defs>
+      <linearGradient id="hb${id}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#E24A5F"/><stop offset="1" stop-color="#C73148"/></linearGradient>
+      <linearGradient id="hd${id}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#E5566B"/><stop offset="1" stop-color="#D23C52"/></linearGradient>
+      <linearGradient id="hc${id}" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#E6EBF3"/><stop offset="1" stop-color="#CBD4E2"/></linearGradient>
+    </defs>
+    <ellipse cx="120" cy="285" rx="88" ry="6" fill="#1B2A4A" opacity=".08"/>
+    <rect x="170" y="100" width="32" height="156" rx="15" fill="url(#hc${id})" stroke="#C3CCDA" stroke-width="1"/>
+    <rect x="177" y="90" width="15" height="16" rx="3" fill="#5E8C74"/><rect x="170" y="97" width="10" height="6" rx="2.5" fill="#4B7561"/>
+    <rect x="171" y="30" width="5" height="96" rx="2.5" fill="#98A8C2"/>
+    <path d="M171 32h-7" stroke="#98A8C2" stroke-width="3" stroke-linecap="round"/>
+    <rect x="148" y="40" width="24" height="42" rx="7" fill="#E3E8F1" stroke="#B7C2D6" stroke-width="1.3"/>
+    <rect x="155" y="59" width="11" height="2.6" rx="1.3" fill="#8C9BB5"/>
+    <path d="M34 123h-10v30h10" stroke="#98A8C2" stroke-width="3.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+    <polygon points="168,126 182,119 182,254 168,258" fill="#A52C3E"/>
+    <rect x="40" y="124" width="128" height="134" rx="4" fill="url(#hb${id})"/>
+    ${dr}
+    <rect x="30" y="112" width="152" height="12" rx="4" fill="#D6DDE9" stroke="#B9C4D6" stroke-width="1"/>
+    <rect x="30" y="112" width="152" height="3.5" rx="1.7" fill="#fff" opacity=".6"/>
+    <rect x="46" y="70" width="64" height="40" rx="4" fill="#E9EEF6" stroke="#C2CBDA" stroke-width="1"/>
+    <rect x="50.5" y="74.5" width="55" height="31" rx="3" fill="#12243A"/>
+    <path d="M54 90h10l3.5-9 6 18 4.5-12 3 3H102" stroke="#43D6A0" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M122 90a9 9 0 0118 0" stroke="#C3CBD9" stroke-width="2.6" fill="none" stroke-linecap="round"/>
+    <rect x="114" y="86" width="34" height="26" rx="5" fill="#fff" stroke="#CDD5E2" stroke-width="1.1"/>
+    <rect x="129" y="90.5" width="4" height="16" rx="1.2" fill="#D8425A"/><rect x="123" y="96.5" width="16" height="4" rx="1.2" fill="#D8425A"/>
+    <rect x="36" y="258" width="148" height="10" rx="4.5" fill="#7C8DA8"/>
+    <circle cx="62" cy="276" r="10" fill="#4A5568"/><circle cx="62" cy="276" r="3.8" fill="#CBD5E1"/>
+    <circle cx="158" cy="276" r="10" fill="#4A5568"/><circle cx="158" cy="276" r="3.8" fill="#CBD5E1"/>
+    </svg>`;
+  }
+  const NUM_AR = ['٠','١','٢','٣','٤','٥','٦','٧','٨','٩'];
+  const arNum = n => String(n).replace(/\d/g, d => NUM_AR[d]);
+  function lastCheck(data){
+    let best = null;
+    const log = (data && data.shiftLog) || {};
+    Object.keys(log).forEach(k => { const r = log[k]; if(r && r.ts && (!best || r.ts > best.ts)) best = { ts: r.ts, by: r.by || '' }; });
+    if(!best && data && data.lastUpdate) best = { ts: data.lastUpdate, by: data.checkedBy || '' };
+    return best;
+  }
+  function lastEdit(data){
+    let best = null;
+    ((data && data.auditLog) || []).forEach(e => { if(e && e.ts && (!best || e.ts > best.ts)) best = { ts: e.ts, by: e.by || '' }; });
+    if(data && data.lastUpdate && (!best || data.lastUpdate > best.ts)) best = { ts: data.lastUpdate, by: (best && best.by) || data.checkedBy || '' };
+    return best;
+  }
+  function pillOf(ts){
+    if(!ts) return { cls: 'none', txt: tx('لا يوجد فحص', 'No check') };
+    const d = new Date(ts), now = new Date();
+    const a = new Date(d.getFullYear(), d.getMonth(), d.getDate()), b = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    const diff = Math.round((b - a) / 864e5);
+    if(diff <= 0) return { cls: 'today', txt: tx('فحص اليوم', 'Today') };
+    if(diff === 1) return { cls: '', txt: tx('فحص أمس', 'Yesterday') };
+    return { cls: 'old', txt: tx('منذ ' + arNum(diff) + ' أيام', diff + ' days ago') };
+  }
+  function fmtDT(ts){
+    const d = new Date(ts), loc = lang === 'ar' ? 'ar-u-nu-latn' : 'en-GB';
+    const dd = d.toLocaleDateString(loc, { day: 'numeric', month: 'long', year: 'numeric' });
+    const tt = d.toLocaleTimeString(loc, { hour: '2-digit', minute: '2-digit', hour12: true });
+    return `${escapeHtml(dd)} <span>${escapeHtml(tt)}</span>`;
+  }
+  const ICO_CLOCK = '<svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="8.5" stroke="currentColor" stroke-width="1.7"/><path d="M12 7.5V12l3 2" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>';
+  const ICO_USER = '<svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8.5" r="3.6" stroke="currentColor" stroke-width="1.7"/><path d="M4.8 20c.6-3.6 3.5-5.6 7.2-5.6s6.6 2 7.2 5.6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>';
+  const ICO_EDIT = '<svg viewBox="0 0 24 24" fill="none"><path d="M4 20h4L19 9l-4-4L4 16v4zM13.5 6.5l4 4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+  const ICO_ARROW = '<svg viewBox="0 0 24 24" fill="none"><path d="M19 12H5M11 6l-6 6 6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+  function card(c, info, err){
+    const n = (typeof cartLayout === 'function' ? cartLayout(c) : 6);
+    const lc = info ? lastCheck(info) : null, le = info ? lastEdit(info) : null;
+    const p = pillOf(lc && lc.ts);
+    const cap = tx('عربة إنعاش · ' + arNum(n) + ' أدراج', 'Resuscitation cart · ' + n + ' drawers');
+    return `<div class="hm-card" data-cart="${c}" role="button" tabindex="0">
+      <div class="hm-head"><span class="hm-pill ${p.cls}"><i></i>${escapeHtml(err ? tx('تعذّر التحميل', 'Load failed') : p.txt)}</span><span class="hm-name">${escapeHtml(c)}</span></div>
+      <div class="hm-art">${cartSvg(n, c)}</div>
+      <div class="hm-cap">${escapeHtml(cap)}</div>
+      <div class="hm-info">
+        <div class="hm-row">${ICO_CLOCK}<div><small>${tx('آخر فحص', 'Last check')}</small><b>${lc ? fmtDT(lc.ts) : '—'}</b></div></div>
+        <div class="hm-row">${ICO_USER}<div><small>${tx('فحص بواسطة', 'Checked by')}</small><b>${escapeHtml((lc && lc.by) || '—')}</b></div></div>
+        <div class="hm-row">${ICO_EDIT}<div><small>${tx('آخر تعديل', 'Last edit')}</small><b>${le ? fmtDT(le.ts) : '—'}${le && le.by ? '<em>' + escapeHtml(le.by) + '</em>' : ''}</b></div></div>
+      </div>
+      <button class="hm-btn" type="button"><span>${tx('عرض ملخص العربة', 'Open cart summary')}</span>${ICO_ARROW}</button>
+    </div>`;
+  }
+  function shell(cards){
+    home.innerHTML = `<div class="hm-wrap"><div class="hm-top"><div class="hm-logo"><svg viewBox="0 0 24 24" fill="none"><path d="M2.5 12H7l2-4 3 8 2-5.5 1.5 1.5H21.5" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      <div><h1>CRUSH CHART</h1><p>${tx('الرئيسية — عربات الإنعاش', 'Home — resuscitation carts')}</p></div></div>
+      <div class="hm-grid">${cards}</div></div>`;
+  }
+  function open(){
+    home.classList.add('on'); document.body.style.overflow = 'hidden';
+    const my = ++seq;
+    const infos = {};
+    const paint = () => shell(CARTS.map(c => card(c, infos[c] && infos[c].data, infos[c] && infos[c].err)).join(''));
+    paint();
+    CARTS.forEach(c => {
+      supabaseLoadRow(c).then(r => { infos[c] = { data: r && r.data }; }).catch(() => { infos[c] = { err: true }; })
+        .then(() => { if(my === seq && home.classList.contains('on')) paint(); });
+    });
+    clearInterval(timer); timer = setInterval(() => { if(home.classList.contains('on')) open(); }, 90000);
+  }
+  function close(){ home.classList.remove('on'); document.body.style.overflow = ''; clearInterval(timer); seq++; }
+  home.addEventListener('click', e => {
+    const el = e.target.closest('.hm-card'); if(!el) return;
+    const c = el.getAttribute('data-cart'); close();
+    if(c !== currentCart) switchCart(c); else updateUrlForCart();
+  });
+  home.addEventListener('keydown', e => { if(e.key === 'Enter' && e.target.classList.contains('hm-card')) e.target.click(); });
+  document.getElementById('homeBtn').addEventListener('click', open);
+  window.openHome = open;
+  let hasCart = false; try { hasCart = new URLSearchParams(location.search).has('cart'); } catch(_){}
+  if(!hasCart) open();
+})();
 </script>
 </body>
 </html>
